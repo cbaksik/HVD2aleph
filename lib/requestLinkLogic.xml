@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<requestlinkconfig>
+
+	<!-- copied and modified from producation version on 7/21/17 ;
+		itemProcessStatus is now processingstatus;
+		item-status is now itemcategorycode;
+		xserver is now json;
+		sublibrary is now mainlocationcode;
+		on-hold is now queue and Y is now NOTNULL;
+		loan-status is now itemstatusname;
+	-->				  
+
+	<mainlocationcode id="AJP">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI;OR;RE" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01"/>
+		</requestItem>				 
+	</mainlocationcode>
+
+	<mainlocationcode id="BAK">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="RE;OR" itemstatusname="* due *;Not checked out" itemcategorycode="*"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;61"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="BER">
+		<scanDeliver>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02;24"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="BLH">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI;OR;RE" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="02;03;23;28"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="23;28"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="28"/>
+		</requestItem>
+	</mainlocationcode>
+
+	<mainlocationcode id="CAB">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI;RE" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="OR;RE" itemstatusname="* due *;Not checked out" itemcategorycode="02;04;08;12;19;20;26;28;61;62;63;64;92;98"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="02;28;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="08;26;28;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="08;26;28;61"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="28"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02;11;28"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="CHE">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI;OR;RE" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;22;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;61"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="DDO">
+		<scanDeliver>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02"/>
+		</scanDeliver>
+	</mainlocationcode>				  
+
+	<mainlocationcode id="DES">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI;OR" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="RE;OR" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;04;14;20;24;61;62;63;64;92;98"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;20;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;20;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;20;61"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02;20"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="DIV">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="RE;OR" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;08;20;22;61;62;63;64;92;98"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;10;11;20;22;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;08;20;22;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;08;61"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;94"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
+			<json processingstatus="HD;BD" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="DOC">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI;OR;RE" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;61"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="FAL">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="RE;OR" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;03;61;62;63;64;92;98"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;61"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+		</requestItem>
+		<scanDeliver processingstatus="HD;RD;NULL">
+			<json itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
+		</scanDeliver>
+		<aeonrequest>
+			<json processingstatus="HD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="92"/>
+		</aeonrequest>
+	</mainlocationcode>
+
+	<mainlocationcode id="GUT">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="RE;OR" itemstatusname="* due *;Not checked out" itemcategorycode="*"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;61;"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;61;"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="HEL">
+		<scanDeliver>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="HFA">		
+		<requestItem>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;62;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;"/>
+		</requestItem>
+		<aeonrequest>
+			<json processingstatus="HD" itemstatusname="Not checked out" queue="NULL" itemcategorycode="92"/>
+		</aeonrequest>
+	</mainlocationcode> 
+
+	<mainlocationcode id="HOU">
+		<aeonrequest>
+			<json processingstatus="HD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02;92"/>
+		</aeonrequest>
+	</mainlocationcode>
+
+	<mainlocationcode id="HYL">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="RE;OR" itemstatusname="* due *;Not checked out" itemcategorycode="*"/>
+			<json processingstatus="HD;RD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;22;24;26;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;03;24;26;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;24;26;61"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="HD;RD" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02;26"/>
+		</scanDeliver>
+		<aeonrequest>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="92"/>
+		</aeonrequest>
+	</mainlocationcode>
+
+	<mainlocationcode id="KSG">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="RE;OR" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;08;20;21;22;61;62;63;64;92;98"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;08;22;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;08;22;61"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="LAM">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="OR;RE" itemstatusname="* due *;Not checked out" itemcategorycode="20;24;28"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="02;28;62;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="08;24;28;29"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="08;24;28;29"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="28"/>
+		</requestItem>
+	</mainlocationcode>
+
+	<mainlocationcode id="LAW">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="RE;OR" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;04;20;22;24;61;62;63;64;92;93;98"/>
+			<json processingstatus="HD;RD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;04;10;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;02;04;61;62;63"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;02;04"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02;04;95"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="MAP">
+		<aeonrequest>
+			<json processingstatus="BD;BP;CO;HD;MI;OR;RE;" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02"/>
+		</aeonrequest>
+	</mainlocationcode>
+
+	<mainlocationcode id="MCK">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI;OR;RE" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="02;03;23;28"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="23;28"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="28"/>
+		</requestItem>
+	</mainlocationcode>
+
+	<mainlocationcode id="MCZ">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="RE;OR" itemstatusname="* due *;Not checked out" itemcategorycode="*"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;61"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+		</requestItem>		
+		<scanDeliver>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+			<json processingstatus="HD;RD" itemstatusname="Not checked out" queue="NULL" itemcategorycode="92"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="MED">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="RE;OR" itemstatusname="* due *;Not checked out" itemcategorycode="*"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="02;24;28;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="08;21;24;28;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="08;21;24;28;61"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="28"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="28"/>
+			<json processingstatus="HD" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="MIC">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI;OR;RE" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01"/>
+		</requestItem>
+	</mainlocationcode>
+
+	<mainlocationcode id="MUS">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI;OR" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="RE;OR" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;03;13;22;61;62;63;64;92;98"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;11;13;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;61"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
+		</scanDeliver>
+		<aeonrequest>
+			<json processingstatus="HD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="92"/>
+		</aeonrequest>
+	</mainlocationcode>
+
+	<mainlocationcode id="PHY">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI;OR;RE" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="02;28;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="03;22;28;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="28;61"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="28"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02;28"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="POE">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI;OR;RE" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;24;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;20;24;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;24;61"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="RUB">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="RE;OR" itemstatusname="* due *;Not checked out" itemcategorycode="*"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;61"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
+		</scanDeliver>
+		<aeonrequest>
+			<json processingstatus="HD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="92"/>
+		</aeonrequest>
+	</mainlocationcode>
+
+	<mainlocationcode id="SCH">
+		<requestItem>
+			<json processingstatus="HD;NULL" itemstatusname="* due *;Not checked out" itemcategorycode="62"/>
+		</requestItem>
+	</mainlocationcode>
+	
+	<mainlocationcode id="THE">
+		<aeonrequest>
+			<json processingstatus="HD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02;92"/>
+		</aeonrequest>
+	</mainlocationcode>
+
+	<mainlocationcode id="TOZ">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="RE;OR" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;04;10;21;61;62;63;64;72;92;98"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;04;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;61"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;61"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="BP;CO;CT;RE;" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02;04"/>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;04"/>
+		</scanDeliver>
+		<aeonrequest>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="92"/>
+		</aeonrequest>					 
+	</mainlocationcode>
+
+	<mainlocationcode id="WID">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="RE;OR;TD" itemstatusname="* due *;Not checked out" itemcategorycode="*"/>
+			<json processingstatus="HD;RD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;24;96;61;62;63;64"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;02;24;61;62;63;81"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;02;24;61;62;63;81"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
+		</requestItem>
+		<scanDeliver>
+			<json processingstatus="HD;RD" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02;93;94"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
+		</scanDeliver>
+	</mainlocationcode>
+
+	<mainlocationcode id="WOL">
+		<requestItem>
+			<json processingstatus="BD;BP;CO;CT;MI;OR;RE" itemstatusname="* due *" itemcategorycode="*"/>
+			<json processingstatus="HD" itemstatusname="* due *;Not checked out" itemcategorycode="01;02;04"/>
+			<json processingstatus="NULL" itemstatusname="* due *" itemcategorycode="01;04;20;24;26"/>
+			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;04;24;26"/>
+		</requestItem>
+	</mainlocationcode>
+
+</requestlinkconfig>
+
