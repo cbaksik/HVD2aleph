@@ -10,7 +10,6 @@ angular.module('viewCustom')
             console.log('*** prm-location-items-after ***');
             console.log(vm);
             sv.setItems(vm.parentCtrl);
-            console.log(ev);
 
         }
 
