@@ -1,1 +1,2 @@
-<a ng-click="vm.goto($ctrl.item)">Scan & Delivery</a>
+
+<a ng-repeat="r in vm.requestLinks track by $index" ng-if="r.flag" ng-click="vm.goto(r.item)">{{r.text}}</a>

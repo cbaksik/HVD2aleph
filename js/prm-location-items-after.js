@@ -2,16 +2,15 @@
  * Created by samsan on 7/18/17.
  */
 angular.module('viewCustom')
-    .controller('prmLocationItemsAfterCtrl',['$element','customService',function ($element,customService) {
+    .controller('prmLocationItemsAfterCtrl',['customService',function (customService) {
         var vm=this;
         var sv=customService;
 
         vm.$onChanges=function (ev) {
-            console.log('*** prm-location-items-after ***');
-            console.log(vm);
+            // capture data and use it in prm-location-item-after component
             sv.setItems(vm.parentCtrl);
+        };
 
-        }
 
     }]);
 

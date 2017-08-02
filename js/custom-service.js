@@ -14,9 +14,9 @@ angular.module('viewCustom')
             })
         };
 
-        serviceObj.postAjax=function (url,jsonObj,methodType) {
+        serviceObj.postAjax=function (url,jsonObj) {
             return $http({
-                'method':methodType,
+                'method':'post',
                 'url':url,
                 'data':jsonObj
             })
@@ -64,14 +64,18 @@ angular.module('viewCustom')
                 }
             }
 
-
-            console.log('**** item **');
-            console.log(item);
-            console.log('*** currLoc ***');
-            console.log(currLoc);
-
             return item;
         };
+
+        // setter and getter for parent locations data
+        serviceObj.parentData={};
+        serviceObj.setParentData=function (data) {
+            serviceObj.parentData=data;
+        };
+        serviceObj.getParentData=function () {
+            return serviceObj.parentData;
+        };
+
 
         return serviceObj;
     }]);
