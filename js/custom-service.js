@@ -39,8 +39,14 @@ angular.module('viewCustom')
 
         //parse xml
         serviceObj.convertXML=function (str) {
+            var listItems=[];
             str=serviceObj.removeInvalidString(str);
-            return xmlToJSON.parseString(str);
+            var xmldata=xmlToJSON.parseString(str);
+            if(xmldata.requestlinkconfig) {
+                listItems=xmldata.requestlinkconfig[0].mainlocationcode;
+            }
+
+            return listItems;
         };
 
         // setter and getter for library list data logic from xml file
@@ -56,11 +62,11 @@ angular.module('viewCustom')
         // compare logic
         serviceObj.getLocation=function (currLoc) {
             var item='';
-            for (var i = 0; i < serviceObj.logicList.mainlocationcode.length; i++) {
-                var data = serviceObj.logicList.mainlocationcode[i];
+            for (var i = 0; i < serviceObj.logicList.length; i++) {
+                var data = serviceObj.logicList[i];
                 if (data._attr.id._value === currLoc.location.mainLocation) {
                     item = data;
-                    i = serviceObj.logicList.mainlocationcode.length;
+                    i = serviceObj.logicList.length;
                 }
             }
 
@@ -74,6 +80,120 @@ angular.module('viewCustom')
         };
         serviceObj.getParentData=function () {
             return serviceObj.parentData;
+        };
+
+        serviceObj.getRequestLinks=function (locationInfoArray, itemsCategory, ItemType,TextDisplay) {
+            var requestItem={'flag':false,'item':{},'type':'','text':''};
+            requestItem.type=ItemType; // requestItem, scanDeliver, aeonrequest
+            requestItem.text=TextDisplay; // Request Item, Scan & Delivery, Schedule visit
+
+            if(itemsCategory.length > 0 && locationInfoArray.length > 0) {
+
+                for (var i = 0; i < locationInfoArray.length; i++) {
+                    var json = locationInfoArray[i];
+
+                    for (var j = 0; j < itemsCategory.length; j++) {
+                        var itemCat = itemsCategory[j].items;
+
+                        for (var w = 0; w < itemCat.length; w++) {
+                            var item = itemCat[w];
+
+                            var itemCategoryCodeList = '';
+                            if (json._attr.itemcategorycode) {
+                                itemCategoryCodeList = json._attr.itemcategorycode._value;
+                                if (itemCategoryCodeList.length > 1) {
+                                    itemCategoryCodeList = itemCategoryCodeList.toString();
+                                    itemCategoryCodeList = itemCategoryCodeList.split(';'); // convert comma into array
+                                } else {
+                                    if(parseInt(itemCategoryCodeList)) {
+                                        // add 0 infront of a number
+                                        var arr = [];
+                                        itemCategoryCodeList = '0' + itemCategoryCodeList.toString();
+                                        arr.push(itemCategoryCodeList);
+                                        itemCategoryCodeList = arr;
+                                    } else {
+                                        itemCategoryCodeList = itemCategoryCodeList.toString();
+                                        itemCategoryCodeList = itemCategoryCodeList.split(';')
+                                    }
+                                }
+                            }
+                            var itemStatusNameList = '';
+                            if (json._attr.itemstatusname) {
+                                itemStatusNameList = json._attr.itemstatusname._value;
+                                itemStatusNameList = itemStatusNameList.split(';'); // convert comma into array
+                            }
+                            var processingStatusList = '';
+                            if (json._attr.processingstatus) {
+                                processingStatusList = json._attr.processingstatus._value;
+                                processingStatusList = processingStatusList.split(';'); // convert comma into array
+                            }
+                            var queueList = '';
+                            if (json._attr.queue) {
+                                queueList = json._attr.queue._value;
+                                queueList = queueList.split(';'); // convert comma into array
+                            }
+
+                            if (itemCategoryCodeList.length > 0) {
+
+                                if (itemCategoryCodeList.indexOf(item.itemcategorycode) !== -1) {
+                                    if(item.processingstatus==='') {
+                                        item.processingstatus='NULL';
+                                    }
+                                    if(item.queue === '') {
+                                        item.queue='NULL';
+                                    }
+                                    if (itemStatusNameList.indexOf(item.itemstatusname) !== -1) {
+                                        if (processingStatusList.indexOf(item.processingstatus) !== -1) {
+
+                                            if(queueList.indexOf(item.queue) !== -1) {
+                                                console.log('***** It is true queueList ***');
+                                                console.log(json);
+                                                console.log(item);
+                                                console.log(queueList);
+
+                                                requestItem.flag = true;
+                                                requestItem.item = item;
+                                                i = locationInfoArray.length;
+                                            } else if(!queueList) {
+                                                console.log('***** It has no queueList ***');
+                                                console.log(json);
+                                                console.log(item);
+                                                console.log(queueList);
+
+                                                requestItem.flag = true;
+                                                requestItem.item = item;
+                                                i = locationInfoArray.length;
+                                            }
+                                        }
+                                    } else if(itemStatusNameList.length > 0) {
+                                        for(var k=0; k < itemStatusNameList.length; k++) {
+                                            var statusName=itemStatusNameList[k];
+                                            statusName=statusName.replace(/\*/g,'');
+                                            var itemstatusname=item.itemstatusname;
+                                            if(itemstatusname.includes(statusName)) {
+                                                if (processingStatusList.indexOf(item.processingstatus) !== -1) {
+
+                                                    requestItem.flag = true;
+                                                    requestItem.item = item;
+                                                    i = locationInfoArray.length;
+
+                                                    console.log('*** statusName ***');
+                                                    console.log(statusName);
+                                                    console.log(item.processingstatus);
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+            return requestItem;
+
         };
 
 

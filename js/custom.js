@@ -48,8 +48,14 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
 
     //parse xml
     serviceObj.convertXML = function (str) {
+        var listItems = [];
         str = serviceObj.removeInvalidString(str);
-        return xmlToJSON.parseString(str);
+        var xmldata = xmlToJSON.parseString(str);
+        if (xmldata.requestlinkconfig) {
+            listItems = xmldata.requestlinkconfig[0].mainlocationcode;
+        }
+
+        return listItems;
     };
 
     // setter and getter for library list data logic from xml file
@@ -65,11 +71,11 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
     // compare logic
     serviceObj.getLocation = function (currLoc) {
         var item = '';
-        for (var i = 0; i < serviceObj.logicList.mainlocationcode.length; i++) {
-            var data = serviceObj.logicList.mainlocationcode[i];
+        for (var i = 0; i < serviceObj.logicList.length; i++) {
+            var data = serviceObj.logicList[i];
             if (data._attr.id._value === currLoc.location.mainLocation) {
                 item = data;
-                i = serviceObj.logicList.mainlocationcode.length;
+                i = serviceObj.logicList.length;
             }
         }
 
@@ -85,13 +91,124 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
         return serviceObj.parentData;
     };
 
+    serviceObj.getRequestLinks = function (locationInfoArray, itemsCategory, ItemType, TextDisplay) {
+        var requestItem = { 'flag': false, 'item': {}, 'type': '', 'text': '' };
+        requestItem.type = ItemType; // requestItem, scanDeliver, aeonrequest
+        requestItem.text = TextDisplay; // Request Item, Scan & Delivery, Schedule visit
+
+        if (itemsCategory.length > 0 && locationInfoArray.length > 0) {
+
+            for (var i = 0; i < locationInfoArray.length; i++) {
+                var json = locationInfoArray[i];
+
+                for (var j = 0; j < itemsCategory.length; j++) {
+                    var itemCat = itemsCategory[j].items;
+
+                    for (var w = 0; w < itemCat.length; w++) {
+                        var item = itemCat[w];
+
+                        var itemCategoryCodeList = '';
+                        if (json._attr.itemcategorycode) {
+                            itemCategoryCodeList = json._attr.itemcategorycode._value;
+                            if (itemCategoryCodeList.length > 1) {
+                                itemCategoryCodeList = itemCategoryCodeList.toString();
+                                itemCategoryCodeList = itemCategoryCodeList.split(';'); // convert comma into array
+                            } else {
+                                if (parseInt(itemCategoryCodeList)) {
+                                    // add 0 infront of a number
+                                    var arr = [];
+                                    itemCategoryCodeList = '0' + itemCategoryCodeList.toString();
+                                    arr.push(itemCategoryCodeList);
+                                    itemCategoryCodeList = arr;
+                                } else {
+                                    itemCategoryCodeList = itemCategoryCodeList.toString();
+                                    itemCategoryCodeList = itemCategoryCodeList.split(';');
+                                }
+                            }
+                        }
+                        var itemStatusNameList = '';
+                        if (json._attr.itemstatusname) {
+                            itemStatusNameList = json._attr.itemstatusname._value;
+                            itemStatusNameList = itemStatusNameList.split(';'); // convert comma into array
+                        }
+                        var processingStatusList = '';
+                        if (json._attr.processingstatus) {
+                            processingStatusList = json._attr.processingstatus._value;
+                            processingStatusList = processingStatusList.split(';'); // convert comma into array
+                        }
+                        var queueList = '';
+                        if (json._attr.queue) {
+                            queueList = json._attr.queue._value;
+                            queueList = queueList.split(';'); // convert comma into array
+                        }
+
+                        if (itemCategoryCodeList.length > 0) {
+
+                            if (itemCategoryCodeList.indexOf(item.itemcategorycode) !== -1) {
+                                if (item.processingstatus === '') {
+                                    item.processingstatus = 'NULL';
+                                }
+                                if (item.queue === '') {
+                                    item.queue = 'NULL';
+                                }
+                                if (itemStatusNameList.indexOf(item.itemstatusname) !== -1) {
+                                    if (processingStatusList.indexOf(item.processingstatus) !== -1) {
+
+                                        if (queueList.indexOf(item.queue) !== -1) {
+                                            console.log('***** It is true queueList ***');
+                                            console.log(json);
+                                            console.log(item);
+                                            console.log(queueList);
+
+                                            requestItem.flag = true;
+                                            requestItem.item = item;
+                                            i = locationInfoArray.length;
+                                        } else if (!queueList) {
+                                            console.log('***** It has no queueList ***');
+                                            console.log(json);
+                                            console.log(item);
+                                            console.log(queueList);
+
+                                            requestItem.flag = true;
+                                            requestItem.item = item;
+                                            i = locationInfoArray.length;
+                                        }
+                                    }
+                                } else if (itemStatusNameList.length > 0) {
+                                    for (var k = 0; k < itemStatusNameList.length; k++) {
+                                        var statusName = itemStatusNameList[k];
+                                        statusName = statusName.replace(/\*/g, '');
+                                        var itemstatusname = item.itemstatusname;
+                                        if (itemstatusname.includes(statusName)) {
+                                            if (processingStatusList.indexOf(item.processingstatus) !== -1) {
+
+                                                requestItem.flag = true;
+                                                requestItem.item = item;
+                                                i = locationInfoArray.length;
+
+                                                console.log('*** statusName ***');
+                                                console.log(statusName);
+                                                console.log(item.processingstatus);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return requestItem;
+    };
+
     return serviceObj;
 }]);
 
 /**
  * Created by samsan on 7/18/17.
  */
-angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['$element', 'customService', function ($element, customService) {
+angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customService', '$window', '$scope', function (customService, $window, $scope) {
     var vm = this;
     vm.currLoc = {};
     vm.locationInfo = {};
@@ -101,254 +218,99 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['$element',
     vm.requestLinks = [];
     var sv = customService;
 
-    // get static xml data and convert to json
-    vm.getLibData = function () {
-        vm.logicList = sv.getLogicList();
-        if (vm.logicList.length === 0) {
-            sv.getAjax('/primo-explore/custom/HVD2/lib/requestLinkLogic.xml', {}, 'get').then(function (respone) {
-                if (respone.status === 200) {
-                    var data = sv.convertXML(respone.data);
-                    if (data.requestlinkconfig) {
-                        vm.logicList = data.requestlinkconfig[0];
-                        sv.setLogicList(vm.logicList);
-                        vm.locationInfo = sv.getLocation(vm.currLoc);
-                    } else {
-                        console.log('*** It cannot access requestlinkconfig data ***');
-                        console.log(data);
-                    }
+    // get item category code
+    vm.getItemCategoryCodes = function () {
+        console.log('*** call getItemCategoryCodes ***');
+        if (vm.parentData.opacService && vm.currLoc.location) {
+            var url = vm.parentData.opacService.restBaseURLs.ILSServicesBaseURL + '/holdings';
+            var jsonObj = {
+                'filters': {
+                    'callnumber': '',
+                    'collection': '',
+                    'holid': '',
+                    ilsRecordList: [{ 'institution': 'HVD', 'recordId': '' }],
+                    'noItem': 6,
+                    'startPos': 1,
+                    'sublibrary': 'WID',
+                    'sublibs': 'WID',
+                    'vid': 'HVD2'
+                },
+                'locations': []
+            };
+            jsonObj.filters.holid = vm.currLoc.location.holdId;
+            jsonObj.filters.vid = vm.parentData.locationsService.vid;
+            jsonObj.filters.noItem = vm.parentData.locationsService.noItems;
+            jsonObj.filters.sublibrary = vm.currLoc.location.mainLocation;
+            jsonObj.filters.sublibs = vm.currLoc.location.mainLocation;
+            jsonObj.filters.ilsRecordList[0].institution = vm.currLoc.location.organization;
+            jsonObj.filters.ilsRecordList[0].recordId = vm.currLoc.location.ilsApiId;
+            jsonObj.locations.push(vm.currLoc.location);
+            sv.postAjax(url, jsonObj).then(function (result) {
+                if (result.data.locations) {
+                    vm.itemsCategory = result.data.locations;
+                    vm.compare(vm.itemsCategory);
                 }
             }, function (err) {
                 console.log(err);
             });
-        } else {
-            vm.locationInfo = sv.getLocation(vm.currLoc);
         }
-    };
-
-    // get item category code
-    vm.getItemCategoryCodes = function () {
-        var url = vm.parentData.opacService.restBaseURLs.ILSServicesBaseURL + '/holdings';
-        var jsonObj = { 'filters': { 'callnumber': '', 'collection': '', 'holid': '', ilsRecordList: [{ 'institution': 'HVD', 'recordId': '' }], 'noItem': 6, 'startPos': 1, 'sublibrary': 'WID', 'sublibs': 'WID', 'vid': 'HVD2' }, 'locations': [] };
-        jsonObj.filters.holid = vm.currLoc.location.holdId;
-        jsonObj.filters.vid = vm.parentData.locationsService.vid;
-        jsonObj.filters.noItem = vm.parentData.locationsService.noItems;
-        jsonObj.filters.sublibrary = vm.currLoc.location.mainLocation;
-        jsonObj.filters.sublibs = vm.currLoc.location.mainLocation;
-        jsonObj.filters.ilsRecordList[0].institution = vm.currLoc.location.organization;
-        jsonObj.filters.ilsRecordList[0].recordId = vm.currLoc.location.ilsApiId;
-        jsonObj.locations.push(vm.currLoc.location);
-        sv.postAjax(url, jsonObj).then(function (result) {
-            if (result.data.locations) {
-                vm.itemsCategory = result.data.locations;
-                vm.compare();
-            }
-        }, function (err) {
-            console.log(err);
-        });
     };
 
     // make comparison to see it is true so it can display the link
-    vm.compare = function () {
+    vm.compare = function (itemsCategory) {
         // get requestItem
         if (vm.locationInfo.requestItem) {
-            var requestItem = { 'flag': false, 'item': {}, 'type': 'requestItem', 'text': 'Request Item' };
-
-            for (var i = 0; i < vm.locationInfo.requestItem[0].json.length; i++) {
-                var json = vm.locationInfo.requestItem[0].json[i];
-
-                for (var j = 0; j < vm.itemsCategory.length; j++) {
-                    var itemCat = vm.itemsCategory[j].items;
-
-                    for (var w = 0; w < itemCat.length; w++) {
-                        var item = itemCat[w];
-
-                        var itemCategoryCodeList = '';
-                        if (json._attr.itemcategorycode) {
-                            itemCategoryCodeList = json._attr.itemcategorycode._value;
-                            itemCategoryCodeList = itemCategoryCodeList.toString();
-                        }
-                        var itemStatusNames = '';
-                        if (json._attr.itemstatusname) {
-                            itemStatusNames = json._attr.itemstatusname._value;
-                        }
-                        var processingStatusList = '';
-                        if (json._attr.processingstatus) {
-                            processingStatusList = json._attr.processingstatus._value;
-                        }
-                        var queueList = '';
-                        if (json._attr.queue) {
-                            queueList = json._attr.queue._value;
-                        }
-
-                        if (itemCategoryCodeList) {
-                            var patternCategoryCode = new RegExp(item.itemcategorycode);
-                            if (patternCategoryCode.test(itemCategoryCodeList)) {
-                                var patternStatusName = new RegExp(item.itemstatusname);
-                                if (patternStatusName.test(itemStatusNames)) {
-                                    if (processingStatusList === 'NULL' && item.processingstatus === '') {
-                                        requestItem.flag = true;
-                                        requestItem.item = item;
-                                        i = vm.locationInfo.requestItem[0].json.length;
-                                    } else if (processingStatusList && item.processingstatus) {
-                                        var patternProcessStatus = new RegExp(item.processingstatus);
-                                        if (patternProcessStatus.test(processingStatusList)) {
-                                            requestItem.flag = true;
-                                            requestItem.item = item;
-                                            i = vm.locationInfo.requestItem[0].json.length;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            // push to array
-            vm.requestLinks.push(requestItem);
+            var dataList = sv.getRequestLinks(vm.locationInfo.requestItem[0].json, itemsCategory, 'requestItem', 'Request Item');
+            vm.requestLinks.push(dataList);
         }
-        // scan & delivery
         if (vm.locationInfo.scanDeliver) {
-            var scanDeliver = { 'flag': false, 'item': {}, 'type': 'scanDeliver', 'text': 'Scan & Delivery' };
-            for (var i = 0; i < vm.locationInfo.scanDeliver[0].json.length; i++) {
-                var json = vm.locationInfo.scanDeliver[0].json[i];
-                for (var j = 0; j < vm.itemsCategory.length; j++) {
-                    var itemCat = vm.itemsCategory[j].items;
-
-                    for (var w = 0; w < itemCat.length; w++) {
-                        var item = itemCat[w];
-
-                        var itemCategoryCodeList = '';
-                        if (json._attr.itemcategorycode) {
-                            itemCategoryCodeList = json._attr.itemcategorycode._value;
-                            itemCategoryCodeList = itemCategoryCodeList.toString();
-                        }
-                        var itemStatusNames = '';
-                        if (json._attr.itemstatusname) {
-                            itemStatusNames = json._attr.itemstatusname._value;
-                        }
-                        var processingStatusList = '';
-                        if (json._attr.processingstatus) {
-                            processingStatusList = json._attr.processingstatus._value;
-                        }
-                        var queueList = '';
-                        if (json._attr.queue) {
-                            queueList = json._attr.queue._value;
-                        }
-
-                        if (itemCategoryCodeList) {
-                            var patternCategoryCode = new RegExp(item.itemcategorycode);
-                            if (patternCategoryCode.test(itemCategoryCodeList)) {
-                                var patternStatusName = new RegExp(item.itemstatusname);
-                                if (patternStatusName.test(itemStatusNames)) {
-                                    if (processingStatusList === 'NULL' && item.processingstatus === '') {
-                                        scanDeliver.flag = true;
-                                        scanDeliver.item = item;
-                                        i = vm.locationInfo.scanDeliver[0].json.length;
-                                    } else if (processingStatusList && item.processingstatus) {
-                                        var patternProcessStatus = new RegExp(item.processingstatus);
-                                        if (patternProcessStatus.test(processingStatusList)) {
-                                            scanDeliver.flag = true;
-                                            scanDeliver.item = item;
-                                            i = vm.locationInfo.scanDeliver[0].json.length;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            // push to array
-            vm.requestLinks.push(scanDeliver);
+            var dataList = sv.getRequestLinks(vm.locationInfo.scanDeliver[0].json, itemsCategory, 'scanDeliver', 'Scan & Deliver');
+            vm.requestLinks.push(dataList);
         }
-        // get aeonrequest
+
         if (vm.locationInfo.aeonrequest) {
-            var aeonrequest = { 'flag': false, 'item': {}, 'type': 'aeonrequest', 'text': 'Schedule visit' };
-            for (var i = 0; i < vm.locationInfo.aeonrequest[0].json.length; i++) {
-                var json = vm.locationInfo.aeonrequest[0].json[i];
-                for (var j = 0; j < vm.itemsCategory.length; j++) {
-                    var itemCat = vm.itemsCategory[j].items;
-
-                    for (var w = 0; w < itemCat.length; w++) {
-                        var item = itemCat[w];
-
-                        var itemCategoryCodeList = '';
-                        if (json._attr.itemcategorycode) {
-                            itemCategoryCodeList = json._attr.itemcategorycode._value;
-                            itemCategoryCodeList = itemCategoryCodeList.toString();
-                        }
-                        var itemStatusNames = '';
-                        if (json._attr.itemstatusname) {
-                            itemStatusNames = json._attr.itemstatusname._value;
-                        }
-                        var processingStatusList = '';
-                        if (json._attr.processingstatus) {
-                            processingStatusList = json._attr.processingstatus._value;
-                        }
-                        var queueList = '';
-                        if (json._attr.queue) {
-                            queueList = json._attr.queue._value;
-                        }
-
-                        if (itemCategoryCodeList) {
-                            var patternCategoryCode = new RegExp(item.itemcategorycode);
-                            if (patternCategoryCode.test(itemCategoryCodeList)) {
-                                var patternStatusName = new RegExp(item.itemstatusname);
-                                if (patternStatusName.test(itemStatusNames)) {
-                                    if (processingStatusList === 'NULL' && item.processingstatus === '') {
-                                        aeonrequest.flag = true;
-                                        aeonrequest.item = item;
-                                        i = vm.locationInfo.aeonrequest[0].json.length;
-                                    } else if (processingStatusList && item.processingstatus) {
-                                        var patternProcessStatus = new RegExp(item.processingstatus);
-                                        if (patternProcessStatus.test(processingStatusList)) {
-                                            aeonrequest.flag = true;
-                                            aeonrequest.item = item;
-                                            i = vm.locationInfo.aeonrequest[0].json.length;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            // push to array
-            vm.requestLinks.push(aeonrequest);
+            var dataList = sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json, itemsCategory, 'aeonrequest', 'Schedule visit');
+            vm.requestLinks.push(dataList);
         }
-
-        console.log('*** vm.requestLinks ***');
-        console.log(vm.requestLinks);
     };
 
     vm.$onInit = function () {
-        vm.getLibData();
-        console.log('*** OnInit ****');
-        console.log(vm);
-    };
-
-    vm.$onChanges = function (ev) {
-        // get data from prm-location-items-after component
-        vm.data = sv.getItems();
-        vm.currLoc = vm.data.currLoc;
-        // get data from prm-locations-after component
-        vm.parentData = sv.getParentData();
-
-        vm.getItemCategoryCodes();
-
-        console.log('*** onChanges ***');
-        console.log(vm);
+        // watch for variable change
+        $scope.$watch('vm.currLoc', function () {
+            vm.requestLinks = [];
+            vm.locationInfo = sv.getLocation(vm.currLoc);
+            vm.parentData = sv.getParentData();
+            vm.getItemCategoryCodes();
+        });
     };
 
     vm.$doCheck = function () {
-
-        console.log('**** doCheck ****');
-        console.log(vm);
+        vm.data = sv.getItems();
+        vm.currLoc = vm.data.currLoc;
     };
 
-    vm.goto = function (index) {
-        console.log('*** goto ***');
-        console.log(index);
+    vm.$onChanges = function (ev) {
+        // list of logic xml data list that convert into json array
+        vm.logicList = sv.getLogicList();
+    };
+
+    // link to other web sites
+    vm.goto = function (data) {
+        var url = '';
+        var itemrecordid = '';
+        if (data.item.itemrecordid) {
+            itemrecordid = data.item.itemrecordid;
+            if (itemrecordid.length > 14) {
+                itemrecordid = itemrecordid.substring(5, 14);
+            }
+        }
+        if (data.type === 'scanDeliver') {
+            url = 'http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:ILL&pid=DocNumber=' + itemrecordid + ',ItemSequence=000020&sfx.skip_augmentation=1';
+        } else if (data.type === 'aeonrequest') {
+            url = 'http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:AEON&pid=DocNumber=' + itemrecordid + ',ItemSequence=000080&sfx.skip_augmentation=1';
+        } else if (data.type === 'requestItem') {}
+
+        $window.open(url, '_blank');
     };
 }]);
 
@@ -364,6 +326,22 @@ angular.module('viewCustom').component('prmLocationItemAfter', {
 angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customService', function (customService) {
     var vm = this;
     var sv = customService;
+    vm.logicList = [];
+    // get static xml data and convert to json
+    vm.getLibData = function () {
+        sv.getAjax('/primo-explore/custom/HVD2/lib/requestLinkLogic.xml', {}, 'get').then(function (respone) {
+            if (respone.status === 200) {
+                vm.logicList = sv.convertXML(respone.data);
+                sv.setLogicList(vm.logicList);
+            }
+        }, function (err) {
+            console.log(err);
+        });
+    };
+
+    vm.$onInit = function () {
+        vm.getLibData();
+    };
 
     vm.$onChanges = function (ev) {
         // capture data and use it in prm-location-item-after component
@@ -393,90 +371,6 @@ angular.module('viewCustom').component('prmLocationsAfter', {
     bindings: { parentCtrl: '<' },
     controller: 'prmLocationsAfterCtrl',
     controllerAs: 'vm'
-});
-
-angular.module('viewCustom').controller('prmSearchResultListAfterController', ['$sce', 'angularLoad', function ($sce, angularLoad) {
-    var vm = this;
-    vm.items = vm.parentCtrl.searchResults;
-
-    vm.tiles = buildGridModel({
-        icon: "prm-grid-image-",
-        title: "",
-        background: ""
-    });
-
-    function buildGridModel(tileTmpl) {
-        var it,
-            results = [];
-
-        var images = {
-            0: 'sports',
-            1: 'abstract',
-            2: 'animals',
-            3: 'nature',
-            4: 'transport',
-            5: 'cats'
-
-        };
-        for (var j = 0; j < vm.items.length; j++) {
-
-            it = angular.extend({}, tileTmpl);
-            it.icon = it.icon + (images[j % 5] || 'food');
-            console.log(vm.items);
-            it.title = vm.items[j].pnx.display.title[0] || '';
-            it.span = { row: 1, col: 1 };
-
-            switch (j + 1) {
-                case 1:
-                    it.background = "red";
-                    it.span.row = it.span.col = 2;
-                    break;
-
-                case 2:
-                    it.background = "green";break;
-                case 3:
-                    it.background = "darkBlue";break;
-                case 4:
-                    it.background = "blue";
-                    it.span.col = 2;
-                    break;
-
-                case 5:
-                    it.background = "yellow";
-                    it.span.row = it.span.col = 2;
-                    break;
-
-                case 6:
-                    it.background = "pink";break;
-                case 7:
-                    it.background = "darkBlue";break;
-                case 8:
-                    it.background = "purple";break;
-                case 9:
-                    it.background = "deepBlue";break;
-                case 10:
-                    it.background = "lightPurple";break;
-                case 11:
-                    it.background = "yellow";break;
-            }
-
-            results.push(it);
-        }
-        return results;
-    }
-    /* vm.$onInit = function () {
-         angularLoad.loadScript('custom/HVD/img/avatar-icons.svg').then(function () {
-             console.log('1111');
-         });
-     }*/
-}]);
-
-/*http://dc03kg0084eu.hosted.exlibrisgroup.com:8991/pds*/
-
-angular.module('viewCustom').component('prmSearchResultListAfter', {
-    bindings: { parentCtrl: '<' },
-    controller: 'prmSearchResultListAfterController',
-    template: '<div class="gridListdemoDynamicTiles" flex ng-cloak>\n  <md-grid-list\n        md-cols="1" md-cols-sm="2" md-cols-md="3" md-cols-gt-md="6"\n        md-row-height-gt-md="1:1" md-row-height="4:3"\n        md-gutter="8px" md-gutter-gt-sm="4px" >\n\n    <md-grid-tile ng-repeat="tile in $ctrl.tiles"\n                  md-rowspan="{{tile.span.row}}"\n                  md-colspan="{{tile.span.col}}"\n                  md-colspan-sm="1"\n                  md-colspan-xs="1"\n                  ng-class="tile.background" >\n                  \n      <div class="prm-grid-image {{tile.icon}}"></div>\n      <md-grid-tile-footer><h3>{{tile.title}}</h3></md-grid-tile-footer>\n    </md-grid-tile>\n  </md-grid-list>\n</div>'
 });
 
 /* Copyright 2015 William Summers, MetaTribal LLC

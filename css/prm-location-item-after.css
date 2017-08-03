@@ -1,0 +1,8 @@
+.requestLink {
+    margin-right: 5px;
+    list-style: none;
+}
+
+.requestLink > li {
+    margin-bottom: 7px;
+}

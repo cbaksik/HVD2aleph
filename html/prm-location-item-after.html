@@ -1,2 +1,6 @@
 
-<a ng-repeat="r in vm.requestLinks track by $index" ng-if="r.flag" ng-click="vm.goto(r.item)">{{r.text}}</a>
+<ul>
+    <li ng-repeat="r in vm.requestLinks track by $index" ng-if="r.flag" class="requestLink">
+        <a ng-click="vm.goto(r)">{{r.text}}</a>
+    </li>
+</ul>
