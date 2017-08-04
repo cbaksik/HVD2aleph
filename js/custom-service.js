@@ -1,5 +1,6 @@
 /**
  * Created by samsan on 7/18/17.
+ * This is a service component and use to store data, get data, ajax call, compare any logic.
  */
 
 angular.module('viewCustom')
@@ -82,6 +83,8 @@ angular.module('viewCustom')
             return serviceObj.parentData;
         };
 
+        // locationInfoArray when the current Location is matched with xml location
+        // itemsCategory is an ajax response with itemcategorycode when pass current location
         serviceObj.getRequestLinks=function (locationInfoArray, itemsCategory, ItemType,TextDisplay) {
             var requestItem={'flag':false,'item':{},'type':'','text':''};
             requestItem.type=ItemType; // requestItem, scanDeliver, aeonrequest
@@ -97,7 +100,6 @@ angular.module('viewCustom')
 
                         for (var w = 0; w < itemCat.length; w++) {
                             var item = itemCat[w];
-
                             var itemCategoryCodeList = '';
                             if (json._attr.itemcategorycode) {
                                 itemCategoryCodeList = json._attr.itemcategorycode._value;
@@ -134,7 +136,7 @@ angular.module('viewCustom')
                             }
 
                             if (itemCategoryCodeList.length > 0) {
-
+                                // compare if item category code is number
                                 if (itemCategoryCodeList.indexOf(item.itemcategorycode) !== -1) {
                                     if(item.processingstatus==='') {
                                         item.processingstatus='NULL';
@@ -142,48 +144,48 @@ angular.module('viewCustom')
                                     if(item.queue === '') {
                                         item.queue='NULL';
                                     }
-                                    if (itemStatusNameList.indexOf(item.itemstatusname) !== -1) {
-                                        if (processingStatusList.indexOf(item.processingstatus) !== -1) {
-
+                                    if (itemStatusNameList.indexOf(item.itemstatusname) !== -1 && processingStatusList.indexOf(item.processingstatus) !== -1) {
                                             if(queueList.indexOf(item.queue) !== -1) {
-                                                console.log('***** It is true queueList ***');
-                                                console.log(json);
-                                                console.log(item);
-                                                console.log(queueList);
-
                                                 requestItem.flag = true;
                                                 requestItem.item = item;
                                                 i = locationInfoArray.length;
                                             } else if(!queueList) {
-                                                console.log('***** It has no queueList ***');
-                                                console.log(json);
-                                                console.log(item);
-                                                console.log(queueList);
-
                                                 requestItem.flag = true;
                                                 requestItem.item = item;
                                                 i = locationInfoArray.length;
                                             }
-                                        }
+
                                     } else if(itemStatusNameList.length > 0) {
                                         for(var k=0; k < itemStatusNameList.length; k++) {
                                             var statusName=itemStatusNameList[k];
                                             statusName=statusName.replace(/\*/g,'');
                                             var itemstatusname=item.itemstatusname;
-                                            if(itemstatusname.includes(statusName)) {
-                                                if (processingStatusList.indexOf(item.processingstatus) !== -1) {
-
+                                            if(itemstatusname.includes(statusName) && processingStatusList.indexOf(item.processingstatus) !== -1) {
                                                     requestItem.flag = true;
                                                     requestItem.item = item;
                                                     i = locationInfoArray.length;
-
-                                                    console.log('*** statusName ***');
-                                                    console.log(statusName);
-                                                    console.log(item.processingstatus);
-                                                }
                                             }
                                         }
 
+                                    }
+                                } else if(itemCategoryCodeList[0]==='*') {
+                                    // compare if item category code is asterisk
+                                    if(itemStatusNameList.indexOf(item.itemstatusname) !== -1 && processingStatusList.indexOf(item.processingstatus) !== -1) {
+                                        requestItem.flag = true;
+                                        requestItem.item = item;
+                                        i = locationInfoArray.length;
+                                    } else if(itemStatusNameList.length > 0) {
+                                        // remove asterisk and find word in the array list
+                                        for(var k=0; k < itemStatusNameList.length; k++) {
+                                            var statusName=itemStatusNameList[k];
+                                            statusName=statusName.replace(/\*/g,'');
+                                            var itemstatusname=item.itemstatusname;
+                                            if(itemstatusname.includes(statusName) && processingStatusList.indexOf(item.processingstatus) !== -1) {
+                                                requestItem.flag = true;
+                                                requestItem.item = item;
+                                                i = locationInfoArray.length;
+                                            }
+                                        }
                                     }
                                 }
                             }

@@ -1,5 +1,8 @@
 /**
  * Created by samsan on 7/18/17.
+ * This component is using to build Request Item, Scan & Delivery, and Schedule visit link.
+ * It pass the current location data to get a full list of current location with itemcategorycode.
+ * Then compare it with xml logic data file
  */
 angular.module('viewCustom')
     .controller('prmLocationItemAfterCtrl',['customService','$window','$scope',function (customService, $window,$scope) {
@@ -14,7 +17,6 @@ angular.module('viewCustom')
 
         // get item category code
         vm.getItemCategoryCodes=function () {
-           console.log('*** call getItemCategoryCodes ***');
            if(vm.parentData.opacService && vm.currLoc.location) {
                var url = vm.parentData.opacService.restBaseURLs.ILSServicesBaseURL + '/holdings';
                var jsonObj = {
@@ -42,7 +44,7 @@ angular.module('viewCustom')
                sv.postAjax(url, jsonObj).then(function (result) {
                        if (result.data.locations) {
                            vm.itemsCategory = result.data.locations;
-                           vm.compare(vm.itemsCategory);
+                           vm.requestLinks=vm.compare(vm.itemsCategory);
                        }
                    },
                    function (err) {
@@ -55,27 +57,29 @@ angular.module('viewCustom')
 
         // make comparison to see it is true so it can display the link
         vm.compare=function (itemsCategory) {
+            var requestLinks=[];
             // get requestItem
             if(vm.locationInfo.requestItem) {
-               var dataList=sv.getRequestLinks(vm.locationInfo.requestItem[0].json,itemsCategory,'requestItem','Request Item');
-               vm.requestLinks.push(dataList);
+                // Todo
+               //var dataList=sv.getRequestLinks(vm.locationInfo.requestItem[0].json,itemsCategory,'requestItem','Request Item');
+               //requestLinks.push(dataList);
             }
+            // get scan & deliver link
             if(vm.locationInfo.scanDeliver) {
                 var dataList=sv.getRequestLinks(vm.locationInfo.scanDeliver[0].json,itemsCategory,'scanDeliver','Scan & Deliver');
-                vm.requestLinks.push(dataList);
+                requestLinks.push(dataList);
             }
-
+            // get schedule visit link
             if(vm.locationInfo.aeonrequest) {
                 var dataList=sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json,itemsCategory,'aeonrequest','Schedule visit');
-                vm.requestLinks.push(dataList);
+                requestLinks.push(dataList);
             }
-
+            return requestLinks;
         };
 
         vm.$onInit=function () {
-            // watch for variable change
+            // watch for variable change, then call an ajax to get current location of itemcategorycode
             $scope.$watch('vm.currLoc',function () {
-                vm.requestLinks=[];
                 vm.locationInfo=sv.getLocation(vm.currLoc);
                 vm.parentData=sv.getParentData();
                 vm.getItemCategoryCodes();

@@ -10,6 +10,7 @@ angular.module('viewCustom', ['angularLoad']);
 
 /**
  * Created by samsan on 7/18/17.
+ * This is a service component and use to store data, get data, ajax call, compare any logic.
  */
 
 angular.module('viewCustom').service('customService', ['$http', function ($http) {
@@ -91,6 +92,8 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
         return serviceObj.parentData;
     };
 
+    // locationInfoArray when the current Location is matched with xml location
+    // itemsCategory is an ajax response with itemcategorycode when pass current location
     serviceObj.getRequestLinks = function (locationInfoArray, itemsCategory, ItemType, TextDisplay) {
         var requestItem = { 'flag': false, 'item': {}, 'type': '', 'text': '' };
         requestItem.type = ItemType; // requestItem, scanDeliver, aeonrequest
@@ -106,7 +109,6 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
 
                     for (var w = 0; w < itemCat.length; w++) {
                         var item = itemCat[w];
-
                         var itemCategoryCodeList = '';
                         if (json._attr.itemcategorycode) {
                             itemCategoryCodeList = json._attr.itemcategorycode._value;
@@ -143,7 +145,7 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
                         }
 
                         if (itemCategoryCodeList.length > 0) {
-
+                            // compare if item category code is number
                             if (itemCategoryCodeList.indexOf(item.itemcategorycode) !== -1) {
                                 if (item.processingstatus === '') {
                                     item.processingstatus = 'NULL';
@@ -151,45 +153,44 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
                                 if (item.queue === '') {
                                     item.queue = 'NULL';
                                 }
-                                if (itemStatusNameList.indexOf(item.itemstatusname) !== -1) {
-                                    if (processingStatusList.indexOf(item.processingstatus) !== -1) {
-
-                                        if (queueList.indexOf(item.queue) !== -1) {
-                                            console.log('***** It is true queueList ***');
-                                            console.log(json);
-                                            console.log(item);
-                                            console.log(queueList);
-
-                                            requestItem.flag = true;
-                                            requestItem.item = item;
-                                            i = locationInfoArray.length;
-                                        } else if (!queueList) {
-                                            console.log('***** It has no queueList ***');
-                                            console.log(json);
-                                            console.log(item);
-                                            console.log(queueList);
-
-                                            requestItem.flag = true;
-                                            requestItem.item = item;
-                                            i = locationInfoArray.length;
-                                        }
+                                if (itemStatusNameList.indexOf(item.itemstatusname) !== -1 && processingStatusList.indexOf(item.processingstatus) !== -1) {
+                                    if (queueList.indexOf(item.queue) !== -1) {
+                                        requestItem.flag = true;
+                                        requestItem.item = item;
+                                        i = locationInfoArray.length;
+                                    } else if (!queueList) {
+                                        requestItem.flag = true;
+                                        requestItem.item = item;
+                                        i = locationInfoArray.length;
                                     }
                                 } else if (itemStatusNameList.length > 0) {
                                     for (var k = 0; k < itemStatusNameList.length; k++) {
                                         var statusName = itemStatusNameList[k];
                                         statusName = statusName.replace(/\*/g, '');
                                         var itemstatusname = item.itemstatusname;
-                                        if (itemstatusname.includes(statusName)) {
-                                            if (processingStatusList.indexOf(item.processingstatus) !== -1) {
-
-                                                requestItem.flag = true;
-                                                requestItem.item = item;
-                                                i = locationInfoArray.length;
-
-                                                console.log('*** statusName ***');
-                                                console.log(statusName);
-                                                console.log(item.processingstatus);
-                                            }
+                                        if (itemstatusname.includes(statusName) && processingStatusList.indexOf(item.processingstatus) !== -1) {
+                                            requestItem.flag = true;
+                                            requestItem.item = item;
+                                            i = locationInfoArray.length;
+                                        }
+                                    }
+                                }
+                            } else if (itemCategoryCodeList[0] === '*') {
+                                // compare if item category code is asterisk
+                                if (itemStatusNameList.indexOf(item.itemstatusname) !== -1 && processingStatusList.indexOf(item.processingstatus) !== -1) {
+                                    requestItem.flag = true;
+                                    requestItem.item = item;
+                                    i = locationInfoArray.length;
+                                } else if (itemStatusNameList.length > 0) {
+                                    // remove asterisk and find word in the array list
+                                    for (var k = 0; k < itemStatusNameList.length; k++) {
+                                        var statusName = itemStatusNameList[k];
+                                        statusName = statusName.replace(/\*/g, '');
+                                        var itemstatusname = item.itemstatusname;
+                                        if (itemstatusname.includes(statusName) && processingStatusList.indexOf(item.processingstatus) !== -1) {
+                                            requestItem.flag = true;
+                                            requestItem.item = item;
+                                            i = locationInfoArray.length;
                                         }
                                     }
                                 }
@@ -207,6 +208,9 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
 
 /**
  * Created by samsan on 7/18/17.
+ * This component is using to build Request Item, Scan & Delivery, and Schedule visit link.
+ * It pass the current location data to get a full list of current location with itemcategorycode.
+ * Then compare it with xml logic data file
  */
 angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customService', '$window', '$scope', function (customService, $window, $scope) {
     var vm = this;
@@ -220,7 +224,6 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
 
     // get item category code
     vm.getItemCategoryCodes = function () {
-        console.log('*** call getItemCategoryCodes ***');
         if (vm.parentData.opacService && vm.currLoc.location) {
             var url = vm.parentData.opacService.restBaseURLs.ILSServicesBaseURL + '/holdings';
             var jsonObj = {
@@ -248,7 +251,7 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
             sv.postAjax(url, jsonObj).then(function (result) {
                 if (result.data.locations) {
                     vm.itemsCategory = result.data.locations;
-                    vm.compare(vm.itemsCategory);
+                    vm.requestLinks = vm.compare(vm.itemsCategory);
                 }
             }, function (err) {
                 console.log(err);
@@ -258,26 +261,29 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
 
     // make comparison to see it is true so it can display the link
     vm.compare = function (itemsCategory) {
+        var requestLinks = [];
         // get requestItem
-        if (vm.locationInfo.requestItem) {
-            var dataList = sv.getRequestLinks(vm.locationInfo.requestItem[0].json, itemsCategory, 'requestItem', 'Request Item');
-            vm.requestLinks.push(dataList);
-        }
+        if (vm.locationInfo.requestItem) {}
+        // Todo
+        //var dataList=sv.getRequestLinks(vm.locationInfo.requestItem[0].json,itemsCategory,'requestItem','Request Item');
+        //requestLinks.push(dataList);
+
+        // get scan & deliver link
         if (vm.locationInfo.scanDeliver) {
             var dataList = sv.getRequestLinks(vm.locationInfo.scanDeliver[0].json, itemsCategory, 'scanDeliver', 'Scan & Deliver');
-            vm.requestLinks.push(dataList);
+            requestLinks.push(dataList);
         }
-
+        // get schedule visit link
         if (vm.locationInfo.aeonrequest) {
             var dataList = sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json, itemsCategory, 'aeonrequest', 'Schedule visit');
-            vm.requestLinks.push(dataList);
+            requestLinks.push(dataList);
         }
+        return requestLinks;
     };
 
     vm.$onInit = function () {
-        // watch for variable change
+        // watch for variable change, then call an ajax to get current location of itemcategorycode
         $scope.$watch('vm.currLoc', function () {
-            vm.requestLinks = [];
             vm.locationInfo = sv.getLocation(vm.currLoc);
             vm.parentData = sv.getParentData();
             vm.getItemCategoryCodes();
@@ -322,6 +328,8 @@ angular.module('viewCustom').component('prmLocationItemAfter', {
 });
 /**
  * Created by samsan on 7/18/17.
+ * This component read xml data from a file and store them into a service to use it prm-location-item-after component.
+ * When a user click on each item, it capture the each location and pass into a service component
  */
 angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customService', function (customService) {
     var vm = this;
@@ -355,6 +363,8 @@ angular.module('viewCustom').component('prmLocationItemsAfter', {
 });
 /**
  * Created by samsan on 7/18/17.
+ * This component is to capture parent-ctrl data so it can access Rest base url endpoint to use it an ajax call
+ *
  */
 
 angular.module('viewCustom').controller('prmLocationsAfterCtrl', ['customService', function (customService) {

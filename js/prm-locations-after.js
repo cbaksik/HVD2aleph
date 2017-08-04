@@ -1,6 +1,9 @@
 /**
  * Created by samsan on 7/18/17.
+ * This component is to capture parent-ctrl data so it can access Rest base url endpoint to use it an ajax call
+ *
  */
+
 
 angular.module('viewCustom')
     .controller('prmLocationsAfterCtrl',['customService',function (customService) {
@@ -11,8 +14,6 @@ angular.module('viewCustom')
             // capture restBaseUrl to use it in prm-location-item-after component
             sv.setParentData(vm.parentCtrl);
         };
-
-
 
 
     }]);

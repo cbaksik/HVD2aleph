@@ -1,5 +1,7 @@
 /**
  * Created by samsan on 7/18/17.
+ * This component read xml data from a file and store them into a service to use it prm-location-item-after component.
+ * When a user click on each item, it capture the each location and pass into a service component
  */
 angular.module('viewCustom')
     .controller('prmLocationItemsAfterCtrl',['customService',function (customService) {
