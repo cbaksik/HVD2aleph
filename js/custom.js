@@ -200,6 +200,7 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
                 }
             }
         }
+
         return requestItem;
     };
 

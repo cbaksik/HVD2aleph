@@ -194,8 +194,8 @@ angular.module('viewCustom')
 
                 }
             }
-            return requestItem;
 
+            return requestItem;
         };
 
 
