@@ -337,7 +337,7 @@ angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customSer
     vm.logicList = [];
     // get static xml data and convert to json
     vm.getLibData = function () {
-        sv.getAjax('/primo-explore/custom/HVD2/lib/requestLinkLogic.xml', {}, 'get').then(function (respone) {
+        sv.getAjax('/primo-explore/custom/HVD2/html/requestLinkLogic.html', {}, 'get').then(function (respone) {
             if (respone.status === 200) {
                 vm.logicList = sv.convertXML(respone.data);
                 sv.setLogicList(vm.logicList);

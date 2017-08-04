@@ -3,11 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="76e16762-c9c8-4efd-b26f-a22111731ef2" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/custom-service.js" afterPath="$PROJECT_DIR$/js/custom-service.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/custom.js" afterPath="$PROJECT_DIR$/js/custom.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-location-item-after.js" afterPath="$PROJECT_DIR$/js/prm-location-item-after.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-location-items-after.js" afterPath="$PROJECT_DIR$/js/prm-location-items-after.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-locations-after.js" afterPath="$PROJECT_DIR$/js/prm-locations-after.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -48,9 +45,9 @@
         <option value="$PROJECT_DIR$/html/prm-location-item-after.html" />
         <option value="$PROJECT_DIR$/css/prm-location-item-after.css" />
         <option value="$PROJECT_DIR$/js/custom-service.js" />
-        <option value="$PROJECT_DIR$/js/prm-location-items-after.js" />
         <option value="$PROJECT_DIR$/js/prm-locations-after.js" />
         <option value="$PROJECT_DIR$/js/prm-location-item-after.js" />
+        <option value="$PROJECT_DIR$/js/prm-location-items-after.js" />
       </list>
     </option>
   </component>
@@ -123,6 +120,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HVD2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HVD2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="html" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -238,12 +249,12 @@
       <workItem from="1501697650844" duration="8053000" />
       <workItem from="1501764806229" duration="11480000" />
       <workItem from="1501781464595" duration="4774000" />
-      <workItem from="1501851702650" duration="3515000" />
+      <workItem from="1501851702650" duration="3976000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="47160000" />
+    <option name="totallyTimeSpent" value="47621000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="709" extended-state="0" />
@@ -540,22 +551,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/prm-locations-after.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="8" lean-forward="false" selection-start-line="16" selection-start-column="8" selection-end-line="16" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/prm-location-items-after.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="97" lean-forward="false" selection-start-line="3" selection-start-column="97" selection-end-line="3" selection-end-column="97" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/custom-service.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -572,9 +567,25 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/js/prm-locations-after.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/prm-location-items-after.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="37" lean-forward="true" selection-start-line="19" selection-start-column="37" selection-end-line="19" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/js/prm-location-item-after.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="690">
+        <state relative-caret-position="623">
           <caret line="46" column="57" lean-forward="false" selection-start-line="46" selection-start-column="57" selection-end-line="46" selection-end-column="57" />
           <folding />
         </state>
