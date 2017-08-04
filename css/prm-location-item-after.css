@@ -1,8 +1,4 @@
-.requestLink {
-    margin-right: 5px;
-    list-style: none;
+.requestLinkSpace {
+    padding-top:20px;
 }
 
-.requestLink > li {
-    margin-bottom: 7px;
-}

@@ -1,6 +1,7 @@
 
-<ul>
-    <li ng-repeat="r in vm.requestLinks track by $index" ng-if="r.flag" class="requestLink">
-        <a ng-click="vm.goto(r)">{{r.text}}</a>
-    </li>
-</ul>
+<div class="requestLinkSpace">
+    <button aria-label="{{r.text}}" tabindex="0" ng-repeat="r in vm.requestLinks track by $index" ng-if="r.flag"
+            class="button-as-link md-button md-primoExplore-theme md-ink-ripple" ng-click="vm.goto(r)">
+        <span>{{r.text}}</span>
+    </button>
+</div>

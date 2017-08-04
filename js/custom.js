@@ -265,7 +265,7 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
         var requestLinks = [];
         // get requestItem
         if (vm.locationInfo.requestItem) {}
-        // Todo
+        // Todo -
         //var dataList=sv.getRequestLinks(vm.locationInfo.requestItem[0].json,itemsCategory,'requestItem','Request Item');
         //requestLinks.push(dataList);
 
