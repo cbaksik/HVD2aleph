@@ -85,10 +85,11 @@ angular.module('viewCustom')
 
         // locationInfoArray when the current Location is matched with xml location
         // itemsCategory is an ajax response with itemcategorycode when pass current location
-        serviceObj.getRequestLinks=function (locationInfoArray, itemsCategory, ItemType,TextDisplay) {
-            var requestItem={'flag':false,'item':{},'type':'','text':''};
+        serviceObj.getRequestLinks=function (locationInfoArray, itemsCategory, ItemType,TextDisplay, index, flagBoolean) {
+            var requestItem={'flag':false,'item':{},'type':'','text':'','displayflag':false};
             requestItem.type=ItemType; // requestItem, scanDeliver, aeonrequest
             requestItem.text=TextDisplay; // Request Item, Scan & Delivery, Schedule visit
+            requestItem.displayflag=flagBoolean;
 
             if(itemsCategory.length > 0 && locationInfoArray.length > 0) {
 
@@ -98,8 +99,8 @@ angular.module('viewCustom')
                     for (var j = 0; j < itemsCategory.length; j++) {
                         var itemCat = itemsCategory[j].items;
 
-                        for (var w = 0; w < itemCat.length; w++) {
-                            var item = itemCat[w];
+                        if (itemCat.length > 0) {
+                            var item = itemCat[index];
                             var itemCategoryCodeList = '';
                             if (json._attr.itemcategorycode) {
                                 itemCategoryCodeList = json._attr.itemcategorycode._value;
@@ -196,6 +197,15 @@ angular.module('viewCustom')
             }
 
             return requestItem;
+        };
+
+        serviceObj.auth={};
+        serviceObj.setAuth=function (data) {
+            serviceObj.auth=data;
+        };
+
+        serviceObj.getAuth=function () {
+           return serviceObj.auth;
         };
 
 

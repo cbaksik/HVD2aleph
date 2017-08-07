@@ -5,7 +5,7 @@
  * Then compare it with xml logic data file
  */
 angular.module('viewCustom')
-    .controller('prmLocationItemAfterCtrl',['customService','$window','$scope',function (customService, $window,$scope) {
+    .controller('prmLocationItemAfterCtrl',['customService','$window','$scope','$element',function (customService, $window, $scope, $element) {
         var vm=this;
         vm.currLoc={};
         vm.locationInfo={};
@@ -13,6 +13,7 @@ angular.module('viewCustom')
         vm.itemsCategory=[{'itemcategorycode':'02','itemstatusname':'Not checked out','processingstatus':'','queue':''}]; // json data object from getItemCategoryCodes ajax call
         vm.logicList=[]; // store logic list from the xml file
         vm.requestLinks=[];
+        vm.auth={};
         var sv=customService;
 
         // get item category code
@@ -57,21 +58,37 @@ angular.module('viewCustom')
 
         // make comparison to see it is true so it can display the link
         vm.compare=function (itemsCategory) {
+            // get the index of the element
+            var index=0;
+            var el=$element[0].previousSibling.parentNode;
+            var md_list = $element[0].parentNode.parentNode.children;
+            for(var i=0; i < md_list.length; i++) {
+                if(md_list[i].$$hashKey===el.$$hashKey) {
+                    index=i;
+                    i=md_list.length;
+                }
+            }
+
+
             var requestLinks=[];
             // get requestItem
             if(vm.locationInfo.requestItem) {
-                // Todo -
-               //var dataList=sv.getRequestLinks(vm.locationInfo.requestItem[0].json,itemsCategory,'requestItem','Request Item');
-               //requestLinks.push(dataList);
+                var flag=true;
+                var auth=sv.getAuth();
+                if(auth.isLoggedIn) {
+                    flag=false;
+                }
+               var dataList=sv.getRequestLinks(vm.locationInfo.requestItem[0].json,itemsCategory,'requestItem','Request Item',index, flag);
+               requestLinks.push(dataList);
             }
             // get scan & deliver link
             if(vm.locationInfo.scanDeliver) {
-                var dataList=sv.getRequestLinks(vm.locationInfo.scanDeliver[0].json,itemsCategory,'scanDeliver','Scan & Deliver');
+                var dataList=sv.getRequestLinks(vm.locationInfo.scanDeliver[0].json,itemsCategory,'scanDeliver','Scan & Deliver',index,true);
                 requestLinks.push(dataList);
             }
             // get schedule visit link
             if(vm.locationInfo.aeonrequest) {
-                var dataList=sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json,itemsCategory,'aeonrequest','Schedule visit');
+                var dataList=sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json,itemsCategory,'aeonrequest','Schedule visit',index,true);
                 requestLinks.push(dataList);
             }
             return requestLinks;
@@ -94,6 +111,15 @@ angular.module('viewCustom')
         vm.$onChanges=function (ev) {
             // list of logic xml data list that convert into json array
             vm.logicList = sv.getLogicList();
+            vm.auth = sv.getAuth();
+        };
+
+        vm.signIn=function () {
+            var auth=sv.getAuth();
+            var url='/primo-explore/login?from-new-ui=1&authenticationProfile='+auth.authenticationMethods[0].profileName+'&search_scope=default_scope&tab=default_tab';
+            url+='&Institute='+auth.authenticationService.userSessionManagerService.userInstitution+'&vid='+auth.authenticationService.userSessionManagerService.vid;
+            url+='&targetURL='+encodeURIComponent($window.location.href);
+            $window.location.href=url;
         };
 
         // link to other web sites
@@ -108,14 +134,20 @@ angular.module('viewCustom')
                     itemSequence=itemid.substring(itemid.length - 6,itemid.length)
                 }
             }
+
+
             if(data.type==='scanDeliver') {
                 url='http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:ILL&pid=DocNumber='+itemrecordid+',ItemSequence='+itemSequence+'&sfx.skip_augmentation=1';
+                console.log(url);
+                $window.open(url,'_blank');
             } else if(data.type==='aeonrequest') {
+                console.log(url);
                 url='http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:AEON&pid=DocNumber='+itemrecordid+',ItemSequence='+itemSequence+'&sfx.skip_augmentation=1';
-            } else if(data.type==='requestItem') {
-
+                $window.open(url,'_blank');
+            } else if(data.type==='requestItem' && vm.auth.isLoggedIn===false) {
+                // redirect to login for requestItem if a user is not login
+                vm.signIn();
             }
-            $window.open(url,'_blank');
         }
 
     }]);

@@ -9,6 +9,25 @@
 angular.module('viewCustom', ['angularLoad']);
 
 /**
+ * Created by samsan on 8/7/17.
+ */
+
+angular.module('viewCustom').service('customImagesService', [function () {
+    var serviceObj = {};
+
+    serviceObj.extractImageUrl = function (item, recordLinks) {
+        if (item.pnx.links) {
+            var lln02 = item.pnx.links.lln02;
+            for (var i = 0; i < lln02.length; i++) {
+                var patternUrl = /^(\$\$U)/;
+            }
+        }
+    };
+
+    return serviceObj;
+}]);
+
+/**
  * Created by samsan on 7/18/17.
  * This is a service component and use to store data, get data, ajax call, compare any logic.
  */
@@ -94,10 +113,11 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
 
     // locationInfoArray when the current Location is matched with xml location
     // itemsCategory is an ajax response with itemcategorycode when pass current location
-    serviceObj.getRequestLinks = function (locationInfoArray, itemsCategory, ItemType, TextDisplay) {
-        var requestItem = { 'flag': false, 'item': {}, 'type': '', 'text': '' };
+    serviceObj.getRequestLinks = function (locationInfoArray, itemsCategory, ItemType, TextDisplay, index, flagBoolean) {
+        var requestItem = { 'flag': false, 'item': {}, 'type': '', 'text': '', 'displayflag': false };
         requestItem.type = ItemType; // requestItem, scanDeliver, aeonrequest
         requestItem.text = TextDisplay; // Request Item, Scan & Delivery, Schedule visit
+        requestItem.displayflag = flagBoolean;
 
         if (itemsCategory.length > 0 && locationInfoArray.length > 0) {
 
@@ -107,8 +127,8 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
                 for (var j = 0; j < itemsCategory.length; j++) {
                     var itemCat = itemsCategory[j].items;
 
-                    for (var w = 0; w < itemCat.length; w++) {
-                        var item = itemCat[w];
+                    if (itemCat.length > 0) {
+                        var item = itemCat[index];
                         var itemCategoryCodeList = '';
                         if (json._attr.itemcategorycode) {
                             itemCategoryCodeList = json._attr.itemcategorycode._value;
@@ -204,8 +224,38 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
         return requestItem;
     };
 
+    serviceObj.auth = {};
+    serviceObj.setAuth = function (data) {
+        serviceObj.auth = data;
+    };
+
+    serviceObj.getAuth = function () {
+        return serviceObj.auth;
+    };
+
     return serviceObj;
 }]);
+
+/**
+ * Created by samsan on 8/7/17.
+ */
+
+angular.module('viewCustom').controller('prmAuthenticationAfterController', ['customService', function (customService) {
+    var vm = this;
+    // initialize custom service search
+    var sv = customService;
+    // check if a user login
+    vm.$onChanges = function () {
+        console.log('*** prm-authentication-after ***');
+        console.log(vm);
+        sv.setAuth(vm.parentCtrl);
+    };
+}]);
+
+angular.module('viewCustom').component('prmAuthenticationAfter', {
+    bindings: { parentCtrl: '<' },
+    controller: 'prmAuthenticationAfterController'
+});
 
 /**
  * Created by samsan on 7/18/17.
@@ -213,7 +263,7 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
  * It pass the current location data to get a full list of current location with itemcategorycode.
  * Then compare it with xml logic data file
  */
-angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customService', '$window', '$scope', function (customService, $window, $scope) {
+angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customService', '$window', '$scope', '$element', function (customService, $window, $scope, $element) {
     var vm = this;
     vm.currLoc = {};
     vm.locationInfo = {};
@@ -221,6 +271,7 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
     vm.itemsCategory = [{ 'itemcategorycode': '02', 'itemstatusname': 'Not checked out', 'processingstatus': '', 'queue': '' }]; // json data object from getItemCategoryCodes ajax call
     vm.logicList = []; // store logic list from the xml file
     vm.requestLinks = [];
+    vm.auth = {};
     var sv = customService;
 
     // get item category code
@@ -262,21 +313,36 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
 
     // make comparison to see it is true so it can display the link
     vm.compare = function (itemsCategory) {
+        // get the index of the element
+        var index = 0;
+        var el = $element[0].previousSibling.parentNode;
+        var md_list = $element[0].parentNode.parentNode.children;
+        for (var i = 0; i < md_list.length; i++) {
+            if (md_list[i].$$hashKey === el.$$hashKey) {
+                index = i;
+                i = md_list.length;
+            }
+        }
+
         var requestLinks = [];
         // get requestItem
-        if (vm.locationInfo.requestItem) {}
-        // Todo -
-        //var dataList=sv.getRequestLinks(vm.locationInfo.requestItem[0].json,itemsCategory,'requestItem','Request Item');
-        //requestLinks.push(dataList);
-
+        if (vm.locationInfo.requestItem) {
+            var flag = true;
+            var auth = sv.getAuth();
+            if (auth.isLoggedIn) {
+                flag = false;
+            }
+            var dataList = sv.getRequestLinks(vm.locationInfo.requestItem[0].json, itemsCategory, 'requestItem', 'Request Item', index, flag);
+            requestLinks.push(dataList);
+        }
         // get scan & deliver link
         if (vm.locationInfo.scanDeliver) {
-            var dataList = sv.getRequestLinks(vm.locationInfo.scanDeliver[0].json, itemsCategory, 'scanDeliver', 'Scan & Deliver');
+            var dataList = sv.getRequestLinks(vm.locationInfo.scanDeliver[0].json, itemsCategory, 'scanDeliver', 'Scan & Deliver', index, true);
             requestLinks.push(dataList);
         }
         // get schedule visit link
         if (vm.locationInfo.aeonrequest) {
-            var dataList = sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json, itemsCategory, 'aeonrequest', 'Schedule visit');
+            var dataList = sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json, itemsCategory, 'aeonrequest', 'Schedule visit', index, true);
             requestLinks.push(dataList);
         }
         return requestLinks;
@@ -299,6 +365,15 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
     vm.$onChanges = function (ev) {
         // list of logic xml data list that convert into json array
         vm.logicList = sv.getLogicList();
+        vm.auth = sv.getAuth();
+    };
+
+    vm.signIn = function () {
+        var auth = sv.getAuth();
+        var url = '/primo-explore/login?from-new-ui=1&authenticationProfile=' + auth.authenticationMethods[0].profileName + '&search_scope=default_scope&tab=default_tab';
+        url += '&Institute=' + auth.authenticationService.userSessionManagerService.userInstitution + '&vid=' + auth.authenticationService.userSessionManagerService.vid;
+        url += '&targetURL=' + encodeURIComponent($window.location.href);
+        $window.location.href = url;
     };
 
     // link to other web sites
@@ -313,12 +388,19 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
                 itemSequence = itemid.substring(itemid.length - 6, itemid.length);
             }
         }
+
         if (data.type === 'scanDeliver') {
             url = 'http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:ILL&pid=DocNumber=' + itemrecordid + ',ItemSequence=' + itemSequence + '&sfx.skip_augmentation=1';
+            console.log(url);
+            $window.open(url, '_blank');
         } else if (data.type === 'aeonrequest') {
+            console.log(url);
             url = 'http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:AEON&pid=DocNumber=' + itemrecordid + ',ItemSequence=' + itemSequence + '&sfx.skip_augmentation=1';
-        } else if (data.type === 'requestItem') {}
-        $window.open(url, '_blank');
+            $window.open(url, '_blank');
+        } else if (data.type === 'requestItem' && vm.auth.isLoggedIn === false) {
+            // redirect to login for requestItem if a user is not login
+            vm.signIn();
+        }
     };
 }]);
 
@@ -382,6 +464,27 @@ angular.module('viewCustom').controller('prmLocationsAfterCtrl', ['customService
 angular.module('viewCustom').component('prmLocationsAfter', {
     bindings: { parentCtrl: '<' },
     controller: 'prmLocationsAfterCtrl',
+    controllerAs: 'vm'
+});
+
+/**
+ * Created by samsan on 8/7/17.
+ */
+
+angular.module('viewCustom').controller('prmServiceLinksAfterCtrl', ['customService', function (customService) {
+    var vm = this;
+    var sv = customService;
+
+    vm.$onChanges = function () {
+
+        console.log('*** prm-service-links-after ***');
+        console.log(vm);
+    };
+}]);
+
+angular.module('viewCustom').component('prmServiceLinksAfter', {
+    bindings: { parentCtrl: '<' },
+    controller: 'prmServiceLinksAfterCtrl',
     controllerAs: 'vm'
 });
 
