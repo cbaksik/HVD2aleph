@@ -100,20 +100,21 @@ angular.module('viewCustom')
         vm.goto=function (data) {
             var url='';
             var itemrecordid='';
+            var itemSequence='';
             if(data.item.itemrecordid) {
-                itemrecordid=data.item.itemrecordid;
-                if(itemrecordid.length > 14) {
-                    itemrecordid=itemrecordid.substring(5,14);
+                var itemid=data.item.itemrecordid;
+                if(itemid.length > 14) {
+                    itemrecordid=itemid.substring(5,14);
+                    itemSequence=itemid.substring(itemid.length - 6,itemid.length)
                 }
             }
             if(data.type==='scanDeliver') {
-                url='http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:ILL&pid=DocNumber='+itemrecordid+',ItemSequence=000020&sfx.skip_augmentation=1';
+                url='http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:ILL&pid=DocNumber='+itemrecordid+',ItemSequence='+itemSequence+'&sfx.skip_augmentation=1';
             } else if(data.type==='aeonrequest') {
-                url='http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:AEON&pid=DocNumber='+itemrecordid+',ItemSequence=000080&sfx.skip_augmentation=1';
+                url='http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:AEON&pid=DocNumber='+itemrecordid+',ItemSequence='+itemSequence+'&sfx.skip_augmentation=1';
             } else if(data.type==='requestItem') {
 
             }
-
             $window.open(url,'_blank');
         }
 
