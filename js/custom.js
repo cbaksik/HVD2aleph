@@ -12,16 +12,47 @@ angular.module('viewCustom', ['angularLoad']);
  * Created by samsan on 8/7/17.
  */
 
-angular.module('viewCustom').service('customImagesService', [function () {
+angular.module('viewCustom').service('customImagesService', ['$filter', function ($filter) {
     var serviceObj = {};
 
+    // validate url start with $$U and contain $$D, then return new item list
     serviceObj.extractImageUrl = function (item, recordLinks) {
+        var itemList = [];
         if (item.pnx.links) {
             var lln02 = item.pnx.links.lln02;
-            for (var i = 0; i < lln02.length; i++) {
-                var patternUrl = /^(\$\$U)/;
+            var k = 0;
+            if (lln02) {
+                for (var i = 0; i < lln02.length; i++) {
+                    var patternUrl = /^(\$\$U)/;
+                    var patternWord = /(\$\$D)/;
+                    var url = lln02[i];
+                    if (patternUrl.test(url) && patternWord.test(url)) {
+                        var newStr = url.split(' ');
+                        newStr = newStr[0];
+                        var newUrl = newStr.substring(3, newStr.length);
+
+                        for (var j = 0; j < recordLinks.length; j++) {
+                            var record = recordLinks[j];
+                            var linkURL = record.linkURL;
+                            if (linkURL) {
+                                linkURL = linkURL.trim(' ');
+                                newUrl = newUrl.trim(' ');
+                                if (newUrl === linkURL) {
+                                    // replace old url with word EBKPLL with EBKPLT
+                                    linkURL = linkURL.replace(/(EBKPLL)/, 'EBKPLT');
+                                    record.linkNewURL = linkURL + '?width=155&height=205';
+                                    itemList[k] = record;
+                                    k++;
+                                    j = recordLinks.length;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
+
+        return itemList;
     };
 
     return serviceObj;
@@ -246,8 +277,6 @@ angular.module('viewCustom').controller('prmAuthenticationAfterController', ['cu
     var sv = customService;
     // check if a user login
     vm.$onChanges = function () {
-        console.log('*** prm-authentication-after ***');
-        console.log(vm);
         sv.setAuth(vm.parentCtrl);
     };
 }]);
@@ -471,21 +500,50 @@ angular.module('viewCustom').component('prmLocationsAfter', {
  * Created by samsan on 8/7/17.
  */
 
-angular.module('viewCustom').controller('prmServiceLinksAfterCtrl', ['customService', function (customService) {
+angular.module('viewCustom').controller('prmServiceLinksAfterCtrl', ['customService', 'customImagesService', '$element', '$scope', '$timeout', function (customService, customImagesService, $element, $scope, $timeout) {
     var vm = this;
     var sv = customService;
+    var cisv = customImagesService;
+    vm.itemList = [];
 
-    vm.$onChanges = function () {
+    vm.$onInit = function () {
+        // watch for variable change from previous ajax call
+        $scope.$watch('vm.parentCtrl.recordLinks', function () {
+            vm.itemList = cisv.extractImageUrl(vm.parentCtrl.item, vm.parentCtrl.recordLinks);
 
-        console.log('*** prm-service-links-after ***');
-        console.log(vm);
+            // remove previous link dom
+            var el = $element[0].parentNode.children[0].children;
+            if (vm.itemList.length > 0 && el) {
+                $timeout(function () {
+                    for (var j = 0; j < el.length; j++) {
+                        var obj = el[j];
+                        var flag = false;
+                        for (var k = 0; k < vm.itemList.length; k++) {
+                            var displayLabel = vm.itemList[k].displayLabel;
+                            var title = obj.textContent;
+                            title = title.trim(' ');
+                            displayLabel = displayLabel.trim(' ');
+                            if (displayLabel === title) {
+                                flag = true;
+                                k = vm.itemList.length;
+                            }
+                        }
+                        if (flag) {
+                            // remove the top dom
+                            el[j].style.display = 'none';
+                        }
+                    }
+                }, 200);
+            }
+        });
     };
 }]);
 
 angular.module('viewCustom').component('prmServiceLinksAfter', {
     bindings: { parentCtrl: '<' },
     controller: 'prmServiceLinksAfterCtrl',
-    controllerAs: 'vm'
+    controllerAs: 'vm',
+    templateUrl: '/primo-explore/custom/HVD2/html/prm-service-links-after.html'
 });
 
 /* Copyright 2015 William Summers, MetaTribal LLC

@@ -9,8 +9,6 @@ angular.module('viewCustom')
         let sv=customService;
         // check if a user login
         vm.$onChanges=function(){
-            console.log('*** prm-authentication-after ***');
-            console.log(vm);
             sv.setAuth(vm.parentCtrl);
         };
 
