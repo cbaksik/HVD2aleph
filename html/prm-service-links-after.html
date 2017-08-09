@@ -1,5 +1,4 @@
 <ul class="serviceLink">
-
     <!-- items have image and matching with $$U and $$d -->
     <li ng-repeat="rec in vm.itemList track by $index">
         <md-card class="serviceLinkBox">
@@ -11,7 +10,7 @@
                 </a>
             </md-card-title-text>
             <md-card-title-media>
-                <div layout="row" layout-align="center center" class="md-media-md card-media">
+                <div layout="row" layout-align="start start" class="md-media-md card-media">
                     <a href="{{rec.linkURL}}" target="_blank" title="{{rec.displayLabel}}" class="serviceLinkImage">
                         <img src="{{rec.linkNewURL}}" alt="{{rec.displayLabel}}" class="serviceLinkPhoto"/>
                     </a>

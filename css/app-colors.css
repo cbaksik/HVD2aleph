@@ -214,10 +214,10 @@
 .prm-primary-color, .result-item-actions .custom-button, .result-item-actions .more-options-button, prm-add-query-to-saved-searches .custom-button, .md-autocomplete-suggestions .suggestion-scope, md-tabs md-tabs-wrapper md-tabs-canvas md-pagination-wrapper md-tab-item.md-active:not([disabled]), md-tabs md-tabs-wrapper md-tabs-canvas md-pagination-wrapper md-tab-item.md-focused:not([disabled]), md-tab-content .tab-content-header md-input-container md-select-value .md-text {
   color: #8996A0; }
 
-.prm-primary-bg, prm-spinner.overlay-cover.light-on-dark:after, prm-search-bar {
+.prm-primary-bg, prm-spinner.overlay-cover.light-on-dark:after {
   color: white;
   background-color: #8996A0; }
-  .prm-primary-bg.prm-hue1, prm-spinner.prm-hue1.overlay-cover.light-on-dark:after, prm-topbar .top-nav-bar, prm-search-bar.prm-hue1 {
+  .prm-primary-bg.prm-hue1, prm-spinner.prm-hue1.overlay-cover.light-on-dark:after,  .top-nav-bar, prm-search-bar.prm-hue1 {
     background-color: #818e99; }
   .prm-primary-bg.prm-hue2, prm-spinner.prm-hue2.overlay-cover.light-on-dark:after, prm-search-bar.prm-hue2, md-backdrop.md-opaque {
     background-color: #7b8995; }
@@ -235,11 +235,11 @@
   .prm-primary-border.prm-hue2 {
     border-color: #8996A0; }
 
-.prm-secondary-color, prm-search-bookmark-filter .md-button, prm-topbar .top-nav-bar {
+.prm-secondary-color, prm-search-bookmark-filter .md-button, .top-nav-bar {
   color: #A9CDD6; }
-  .prm-secondary-color.prm-hue1, .link-alt-color, .section-title prm-icon, .result-item-actions .custom-button.pin-button, prm-add-query-to-saved-searches .custom-button.pin-button, prm-search-bookmark-filter .prm-hue1.md-button, prm-topbar .prm-hue1.top-nav-bar, prm-recomendation-item .media-on-hover .pin-button {
+  .prm-secondary-color.prm-hue1, .link-alt-color, .section-title prm-icon, .result-item-actions .custom-button.pin-button, prm-add-query-to-saved-searches .custom-button.pin-button, prm-search-bookmark-filter .prm-hue1.md-button, .prm-hue1.top-nav-bar, prm-recomendation-item .media-on-hover .pin-button {
     color: #45aab4; }
-  .prm-secondary-color.prm-hue2, prm-search-bookmark-filter .prm-hue2.md-button, prm-topbar .prm-hue2.top-nav-bar {
+  .prm-secondary-color.prm-hue2, prm-search-bookmark-filter .prm-hue2.md-button, .prm-hue2.top-nav-bar {
     color: #64a5b5; }
 
 .prm-secondary-bg, md-progress-linear[md-mode=indeterminate].header-progress-bar .md-bar {

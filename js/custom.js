@@ -55,6 +55,30 @@ angular.module('viewCustom').service('customImagesService', ['$filter', function
         return itemList;
     };
 
+    // remove json object from json array
+    serviceObj.removeMatchItems = function (arrayList, targetList) {
+        var itemsList = [];
+        if (arrayList.length > 0 && targetList.length > 0) {
+            for (var i = 0; i < arrayList.length; i++) {
+                var arr = arrayList[i];
+                var flag = true;
+                // find item that match
+                for (var k = 0; k < targetList.length; k++) {
+                    var target = targetList[k];
+                    if (arr['@id'] === target['@id']) {
+                        flag = false;
+                        k = targetList.length;
+                    }
+                }
+                // push item into list if it is not match
+                if (flag) {
+                    itemsList.push(arr);
+                }
+            }
+        }
+        return itemsList;
+    };
+
     return serviceObj;
 }]);
 
@@ -374,11 +398,13 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
             var dataList = sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json, itemsCategory, 'aeonrequest', 'Schedule visit', index, true);
             requestLinks.push(dataList);
         }
+
         return requestLinks;
     };
 
     vm.$onInit = function () {
         // watch for variable change, then call an ajax to get current location of itemcategorycode
+        // it won't work on angular 2
         $scope.$watch('vm.currLoc', function () {
             vm.locationInfo = sv.getLocation(vm.currLoc);
             vm.parentData = sv.getParentData();
@@ -410,6 +436,7 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
         var url = '';
         var itemrecordid = '';
         var itemSequence = '';
+        // split itemrecordit to get docNumber and ItemSequence to build url
         if (data.item.itemrecordid) {
             var itemid = data.item.itemrecordid;
             if (itemid.length > 14) {
@@ -420,10 +447,8 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
 
         if (data.type === 'scanDeliver') {
             url = 'http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:ILL&pid=DocNumber=' + itemrecordid + ',ItemSequence=' + itemSequence + '&sfx.skip_augmentation=1';
-            console.log(url);
             $window.open(url, '_blank');
         } else if (data.type === 'aeonrequest') {
-            console.log(url);
             url = 'http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:AEON&pid=DocNumber=' + itemrecordid + ',ItemSequence=' + itemSequence + '&sfx.skip_augmentation=1';
             $window.open(url, '_blank');
         } else if (data.type === 'requestItem' && vm.auth.isLoggedIn === false) {
@@ -497,45 +522,54 @@ angular.module('viewCustom').component('prmLocationsAfter', {
 });
 
 /**
+ * Created by samsan on 8/9/17.
+ * It remove old logo and replace it with new logo
+ */
+
+angular.module('viewCustom').controller('prmLogoAfterCtrl', ['$element', function ($element) {
+    var vm = this;
+    vm.$onChanges = function () {
+        // remove image logo
+        var el = $element[0].parentNode.children[0];
+        el.remove();
+    };
+}]);
+
+angular.module('viewCustom').component('prmLogoAfter', {
+    bindings: { parentCtrl: '<' },
+    controller: 'prmLogoAfterCtrl',
+    controllerAs: 'vm',
+    templateUrl: '/primo-explore/custom/HVD2/html/prm-logo-after.html'
+});
+
+/**
  * Created by samsan on 8/7/17.
  */
 
-angular.module('viewCustom').controller('prmServiceLinksAfterCtrl', ['customService', 'customImagesService', '$element', '$scope', '$timeout', function (customService, customImagesService, $element, $scope, $timeout) {
+angular.module('viewCustom').controller('prmServiceLinksAfterCtrl', ['customService', 'customImagesService', '$timeout', function (customService, customImagesService, $timeout) {
     var vm = this;
     var sv = customService;
     var cisv = customImagesService;
     vm.itemList = [];
+    vm.recordLinks = []; // keep track the original vm.parentCtrl.recordLinks
 
-    vm.$onInit = function () {
-        // watch for variable change from previous ajax call
-        $scope.$watch('vm.parentCtrl.recordLinks', function () {
-            vm.itemList = cisv.extractImageUrl(vm.parentCtrl.item, vm.parentCtrl.recordLinks);
-
-            // remove previous link dom
-            var el = $element[0].parentNode.children[0].children;
-            if (vm.itemList.length > 0 && el) {
-                $timeout(function () {
-                    for (var j = 0; j < el.length; j++) {
-                        var obj = el[j];
-                        var flag = false;
-                        for (var k = 0; k < vm.itemList.length; k++) {
-                            var displayLabel = vm.itemList[k].displayLabel;
-                            var title = obj.textContent;
-                            title = title.trim(' ');
-                            displayLabel = displayLabel.trim(' ');
-                            if (displayLabel === title) {
-                                flag = true;
-                                k = vm.itemList.length;
-                            }
-                        }
-                        if (flag) {
-                            // remove the top dom
-                            el[j].style.display = 'none';
-                        }
-                    }
-                }, 200);
+    vm.getData = function () {
+        // make a copy to avoid data binding
+        vm.recordLinks = angular.copy(vm.parentCtrl.recordLinks);
+        // get items that have digital bookplates
+        vm.itemList = cisv.extractImageUrl(vm.parentCtrl.item, vm.recordLinks);
+        // delay data from parentCtrl
+        $timeout(function () {
+            vm.recordLinks = angular.copy(vm.parentCtrl.recordLinks);
+            vm.itemList = cisv.extractImageUrl(vm.parentCtrl.item, vm.recordLinks);
+            if (vm.recordLinks.length > 0 && vm.itemList.length > 0) {
+                vm.parentCtrl.recordLinks = cisv.removeMatchItems(vm.recordLinks, vm.itemList);
             }
-        });
+        }, 1500);
+    };
+
+    vm.$onChanges = function () {
+        vm.getData();
     };
 }]);
 
@@ -544,6 +578,42 @@ angular.module('viewCustom').component('prmServiceLinksAfter', {
     controller: 'prmServiceLinksAfterCtrl',
     controllerAs: 'vm',
     templateUrl: '/primo-explore/custom/HVD2/html/prm-service-links-after.html'
+});
+
+/**
+ * Created by samsan on 8/9/17.
+ *  This component is creating white top bar, link menu on the right, and remove some doms
+ */
+
+angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', '$timeout', function ($element, $timeout) {
+    var vm = this;
+
+    vm.topRightMenus = [{ 'title': 'Research Guides', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:portal_resguides', 'label': 'Go to Research guides' }, { 'title': 'Libraries / Hours', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:bannerfindlib', 'label': 'Go to Library hours' }, { 'title': 'All My Accounts', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:banneraccounts', 'label': 'Go to all my accounts' }];
+
+    vm.$onInit = function () {
+        // hide primo tab menu
+        vm.parentCtrl.showMainMenu = false;
+        // create new div for the top white menu
+        var el = $element[0].parentNode.parentNode.parentNode.parentNode.parentNode;
+        var div = document.createElement('div');
+        div.setAttribute('id', 'customTopMenu');
+        div.setAttribute('class', 'topMenu');
+        el.prepend(div);
+
+        var el2 = $element[0].parentNode.children[1].children;
+        if (el2) {
+            // remove menu
+            el2[2].remove();
+            el2[2].remove();
+        }
+    };
+}]);
+
+angular.module('viewCustom').component('prmTopbarAfter', {
+    bindings: { parentCtrl: '<' },
+    controller: 'prmTopbarAfterCtrl',
+    controllerAs: 'vm',
+    templateUrl: '/primo-explore/custom/HVD2/html/prm-topbar-after.html'
 });
 
 /* Copyright 2015 William Summers, MetaTribal LLC

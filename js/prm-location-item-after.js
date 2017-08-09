@@ -91,11 +91,13 @@ angular.module('viewCustom')
                 var dataList=sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json,itemsCategory,'aeonrequest','Schedule visit',index,true);
                 requestLinks.push(dataList);
             }
+
             return requestLinks;
         };
 
         vm.$onInit=function () {
             // watch for variable change, then call an ajax to get current location of itemcategorycode
+            // it won't work on angular 2
             $scope.$watch('vm.currLoc',function () {
                 vm.locationInfo=sv.getLocation(vm.currLoc);
                 vm.parentData=sv.getParentData();
@@ -127,6 +129,7 @@ angular.module('viewCustom')
             var url='';
             var itemrecordid='';
             var itemSequence='';
+            // split itemrecordit to get docNumber and ItemSequence to build url
             if(data.item.itemrecordid) {
                 var itemid=data.item.itemrecordid;
                 if(itemid.length > 14) {
@@ -138,10 +141,8 @@ angular.module('viewCustom')
 
             if(data.type==='scanDeliver') {
                 url='http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:ILL&pid=DocNumber='+itemrecordid+',ItemSequence='+itemSequence+'&sfx.skip_augmentation=1';
-                console.log(url);
                 $window.open(url,'_blank');
             } else if(data.type==='aeonrequest') {
-                console.log(url);
                 url='http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:AEON&pid=DocNumber='+itemrecordid+',ItemSequence='+itemSequence+'&sfx.skip_augmentation=1';
                 $window.open(url,'_blank');
             } else if(data.type==='requestItem' && vm.auth.isLoggedIn===false) {

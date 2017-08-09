@@ -46,6 +46,30 @@ angular.module('viewCustom')
             return itemList;
         };
 
+        // remove json object from json array
+        serviceObj.removeMatchItems=function (arrayList, targetList) {
+            var itemsList=[];
+            if(arrayList.length > 0 && targetList.length > 0) {
+                for (var i = 0; i < arrayList.length; i++) {
+                    var arr=arrayList[i];
+                    var flag=true;
+                    // find item that match
+                    for(var k=0; k < targetList.length; k++) {
+                        var target=targetList[k];
+                        if(arr['@id']===target['@id']) {
+                            flag=false;
+                            k=targetList.length;
+                        }
+                    }
+                    // push item into list if it is not match
+                    if(flag) {
+                        itemsList.push(arr);
+                    }
+                }
+            }
+            return itemsList;
+        };
+
         return serviceObj;
     }]);
 
