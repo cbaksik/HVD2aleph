@@ -513,6 +513,34 @@ div.hollis-logo a:hover {
 	box-shadow: inset 0 -1px 0 0 #fff;
 }
 	
+#briefResultAfter {
+    margin:0px;
+    padding:0px;
+    position: relative;
+    top:-10px;
+}
+
+#briefResultAfter > .layout-row > .flex-* {
+    padding:0px;
+    margin-top:0px;
+}
+
+#briefResultAfter > .md-button {
+    margin:0px !important;
+}
+
+#briefResultAfter:hover {
+
+}
+
+#briefResultAfter > .spaceLeft {
+    padding-left:5px;
+}
+
+#briefResultAfter > .folder {
+    font-size: 36px;
+    color: #7b8995;
+}
 .requestLinkSpace {
     padding-top:20px;
 }
