@@ -456,6 +456,13 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
             vm.signIn();
         }
     };
+
+    // add keypress on a link
+    vm.keypressGoto = function (e, data) {
+        if (e.which === 13) {
+            vm.goto(data);
+        }
+    };
 }]);
 
 angular.module('viewCustom').component('prmLocationItemAfter', {

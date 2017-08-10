@@ -149,7 +149,16 @@ angular.module('viewCustom')
                 // redirect to login for requestItem if a user is not login
                 vm.signIn();
             }
-        }
+        };
+
+        // add keypress on a link
+        vm.keypressGoto=function (e,data) {
+            if(e.which===13) {
+                vm.goto(data);
+            }
+
+        };
+
 
     }]);
 
