@@ -516,8 +516,7 @@ div.hollis-logo a:hover {
 #briefResultAfter {
     margin:0px;
     padding:0px;
-    position: relative;
-    top:-10px;
+    padding-bottom:10px;
 }
 
 #briefResultAfter > .layout-row > .flex-* {
@@ -537,6 +536,15 @@ div.hollis-logo a:hover {
     padding-left:5px;
 }
 
+#briefResultAfter > .marginLeftFindingAid {
+    padding-left:100px;
+}
+
+#briefResultAfter > .marginLeftFindingAid2 {
+    padding-left:140px;
+}
+
+
 #briefResultAfter > .spaceLeft40 {
     padding-left:45px;
 }
@@ -544,6 +552,14 @@ div.hollis-logo a:hover {
 #briefResultAfter > .folder {
     font-size: 36px;
     color: #7b8995;
+}
+
+.whitebg {
+    background:#ffffff;
+}
+
+prm-brief-result-container.list-item:hover {
+    background:#ffffff;
 }
 .requestLinkSpace {
     padding-top:20px;

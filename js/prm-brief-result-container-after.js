@@ -4,26 +4,39 @@
  */
 
 angular.module('viewCustom')
-    .controller('prmBriefResultContainerAfterCtrl',['$location',function ($location) {
+    .controller('prmBriefResultContainerAfterCtrl',['$location','$element',function ($location, $element) {
         var vm=this;
         var param=$location.search();
-        vm.cssClass='spaceLeft';
-        vm.findingAid={'displayLabel':'','linkURL':''};
+        vm.cssClass='marginLeftFindingAid';
+        vm.findingAid={'displayLabel':'','linkURL':'','newLinkURL':''};
         vm.$onChanges=function () {
             // find $$Elinktofa
             if(vm.parentCtrl.links) {
                 for(var i=0; i < vm.parentCtrl.links.length; i++) {
                     var linkItem=vm.parentCtrl.links[i];
+                    var seqment='';
                     if(linkItem.displayLabel==='$$Elinktofa') {
                         vm.findingAid=linkItem;
+                        if(linkItem.linkURL){
+                            var linkStr=linkItem.linkURL;
+                            linkStr=linkStr.split(':');
+                            if(linkStr.length > 0) {
+                                seqment=linkStr[linkStr.length - 1];
+                                seqment=seqment.trim(' ');
+                            }
+                        }
+                        vm.findingAid.newLinkURL='http://id.lib.harvard.edu/ead/'+seqment+'/catalog';
                         i=vm.parentCtrl.links.length;
                     }
                 }
             }
             // add more padding when it is full display page
             if(param.docid) {
-               vm.cssClass='spaceLeft40';
+                vm.cssClass='marginLeftFindingAid2';
             }
+
+            console.log('*** prm-brief-result-container-after ***');
+            console.log(vm);
 
         };
 

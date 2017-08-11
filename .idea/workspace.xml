@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="76e16762-c9c8-4efd-b26f-a22111731ef2" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/prm-logo-after.html" afterPath="$PROJECT_DIR$/html/prm-logo-after.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/prm-topbar-after.html" afterPath="$PROJECT_DIR$/html/prm-topbar-after.html" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/ic_folder_black_36px.svg" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/custom1.css" afterPath="$PROJECT_DIR$/css/custom1.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/prm-brief-result-container-after.css" afterPath="$PROJECT_DIR$/css/prm-brief-result-container-after.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/prm-brief-result-container-after.html" afterPath="$PROJECT_DIR$/html/prm-brief-result-container-after.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/custom.js" afterPath="$PROJECT_DIR$/js/custom.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-brief-result-container-after.js" afterPath="$PROJECT_DIR$/js/prm-brief-result-container-after.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -18,21 +23,31 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="prm-topbar-after.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/html/prm-topbar-after.html">
+      <file leaf-file-name="prm-brief-result-container-after.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/html/prm-brief-result-container-after.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="29" lean-forward="false" selection-start-line="3" selection-start-column="29" selection-end-line="3" selection-end-column="29" />
+            <state relative-caret-position="0">
+              <caret line="0" column="52" lean-forward="false" selection-start-line="0" selection-start-column="52" selection-end-line="0" selection-end-column="52" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="prm-logo-after.html" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/html/prm-logo-after.html">
+      <file leaf-file-name="prm-brief-result-container-after.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/css/prm-brief-result-container-after.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="7" lean-forward="true" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="7" />
+            <state relative-caret-position="0">
+              <caret line="0" column="19" lean-forward="true" selection-start-line="0" selection-start-column="19" selection-end-line="0" selection-end-column="19" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="prm-brief-result-container-after.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/js/prm-brief-result-container-after.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="361">
+              <caret line="28" column="53" lean-forward="false" selection-start-line="28" selection-start-column="53" selection-end-line="28" selection-end-column="53" />
               <folding />
             </state>
           </provider>
@@ -87,13 +102,13 @@
         <option value="$PROJECT_DIR$/html/prm-location-item-after.html" />
         <option value="$PROJECT_DIR$/js/prm-location-item-after.js" />
         <option value="$PROJECT_DIR$/img/ic_folder_black_36px.svg" />
-        <option value="$PROJECT_DIR$/html/prm-brief-result-container-after.html" />
-        <option value="$PROJECT_DIR$/css/prm-brief-result-container-after.css" />
-        <option value="$PROJECT_DIR$/js/prm-brief-result-container-after.js" />
         <option value="$PROJECT_DIR$/css/prm-topbar-after.css" />
         <option value="$PROJECT_DIR$/js/prm-topbar-after.js" />
         <option value="$PROJECT_DIR$/html/prm-topbar-after.html" />
         <option value="$PROJECT_DIR$/html/prm-logo-after.html" />
+        <option value="$PROJECT_DIR$/css/prm-brief-result-container-after.css" />
+        <option value="$PROJECT_DIR$/html/prm-brief-result-container-after.html" />
+        <option value="$PROJECT_DIR$/js/prm-brief-result-container-after.js" />
       </list>
     </option>
   </component>
@@ -110,7 +125,8 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="23" />
+    <option name="x" value="19" />
+    <option name="y" value="46" />
     <option name="width" value="1280" />
     <option name="height" value="726" />
   </component>
@@ -152,7 +168,21 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="html" />
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HVD2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HVD2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="css" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -282,15 +312,15 @@
       <workItem from="1502305065601" duration="3904000" />
       <workItem from="1502370697359" duration="2381000" />
       <workItem from="1502385004518" duration="7982000" />
-      <workItem from="1502453626027" duration="5735000" />
+      <workItem from="1502453626027" duration="10598000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="110619000" />
+    <option name="totallyTimeSpent" value="115482000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="726" extended-state="6" />
+    <frame x="19" y="46" width="1280" height="726" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -579,13 +609,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/prm-logo-after.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="35" lean-forward="true" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/img/ic_folder_black_36px.svg">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -601,32 +624,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/css/prm-brief-result-container-after.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" column="19" lean-forward="false" selection-start-line="25" selection-start-column="19" selection-end-line="25" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/prm-brief-result-container-after.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="48" lean-forward="false" selection-start-line="22" selection-start-column="48" selection-end-line="22" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/html/prm-brief-result-container-after.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="6" lean-forward="true" selection-start-line="8" selection-start-column="6" selection-end-line="8" selection-end-column="6" />
-          <folding>
-            <element signature="e#454#460#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/css/prm-topbar-after.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -635,10 +632,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/prm-topbar-after.js">
+    <entry file="file://$PROJECT_DIR$/html/prm-logo-after.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="32" column="12" lean-forward="false" selection-start-line="32" selection-start-column="12" selection-end-line="32" selection-end-column="12" />
+        <state relative-caret-position="60">
+          <caret line="4" column="7" lean-forward="true" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="7" />
           <folding />
         </state>
       </provider>
@@ -651,10 +648,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/html/prm-logo-after.html">
+    <entry file="file://$PROJECT_DIR$/js/prm-topbar-after.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="7" lean-forward="true" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="7" />
+        <state relative-caret-position="480">
+          <caret line="32" column="0" lean-forward="true" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/prm-logo-after.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="35" lean-forward="true" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/css/prm-brief-result-container-after.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="19" lean-forward="true" selection-start-line="0" selection-start-column="19" selection-end-line="0" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/html/prm-brief-result-container-after.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="52" lean-forward="false" selection-start-line="0" selection-start-column="52" selection-end-line="0" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/prm-brief-result-container-after.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="361">
+          <caret line="28" column="53" lean-forward="false" selection-start-line="28" selection-start-column="53" selection-end-line="28" selection-end-column="53" />
           <folding />
         </state>
       </provider>

@@ -1,9 +1,8 @@
-<div layout="row" id="briefResultAfter" ng-if="vm.findingAid.linkURL">
-    <div flex="10" class="hide-xs"></div>
-    <div flex="90" class="{{vm.cssClass}}">
-        <md-button tabindex="0" class="md-raised" aria-label="Finding Aid" href="{{vm.findingAid.linkURL}}" target="_blank">
-            <md-icon md-svg-src="/primo-explore/custom/HVD2/img/ic_folder_black_36px.svg" class="md-primoExplore-theme folder" aria-label="Find Aid"></md-icon>
-            &nbsp;<span>Finding Aid</span>
-        </md-button>
+<div id="briefResultAfter" ng-if="vm.findingAid.newLinkURL">
+    <div class="{{vm.cssClass}}">
+        <a tabindex="0" class="md-ink-ripple" aria-label="Finding Aid" href="{{vm.findingAid.newLinkURL}}" target="_blank">
+            <md-icon md-svg-src="/primo-explore/custom/HVD2/img/ic_folder_open_black_24px.svg" class="md-primoExplore-theme folder" aria-label="Find Aid"></md-icon>
+            &nbsp;<span>FINDING AID</span>
+        </a>
     </div>
 </div>
