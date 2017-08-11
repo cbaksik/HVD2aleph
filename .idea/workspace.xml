@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="76e16762-c9c8-4efd-b26f-a22111731ef2" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/custom1.css" afterPath="$PROJECT_DIR$/css/custom1.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/prm-topbar-after.css" afterPath="$PROJECT_DIR$/css/prm-topbar-after.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/prm-logo-after.html" afterPath="$PROJECT_DIR$/html/prm-logo-after.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/prm-topbar-after.html" afterPath="$PROJECT_DIR$/html/prm-topbar-after.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/custom.js" afterPath="$PROJECT_DIR$/js/custom.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-topbar-after.js" afterPath="$PROJECT_DIR$/js/prm-topbar-after.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -22,7 +17,28 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file leaf-file-name="prm-topbar-after.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/html/prm-topbar-after.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="45">
+              <caret line="3" column="29" lean-forward="false" selection-start-line="3" selection-start-column="29" selection-end-line="3" selection-end-column="29" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="prm-logo-after.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/html/prm-logo-after.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="4" column="7" lean-forward="true" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="7" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -74,10 +90,10 @@
         <option value="$PROJECT_DIR$/html/prm-brief-result-container-after.html" />
         <option value="$PROJECT_DIR$/css/prm-brief-result-container-after.css" />
         <option value="$PROJECT_DIR$/js/prm-brief-result-container-after.js" />
-        <option value="$PROJECT_DIR$/html/prm-logo-after.html" />
-        <option value="$PROJECT_DIR$/html/prm-topbar-after.html" />
         <option value="$PROJECT_DIR$/css/prm-topbar-after.css" />
         <option value="$PROJECT_DIR$/js/prm-topbar-after.js" />
+        <option value="$PROJECT_DIR$/html/prm-topbar-after.html" />
+        <option value="$PROJECT_DIR$/html/prm-logo-after.html" />
       </list>
     </option>
   </component>
@@ -123,6 +139,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="HVD2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HVD2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HVD2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="html" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -252,17 +282,18 @@
       <workItem from="1502305065601" duration="3904000" />
       <workItem from="1502370697359" duration="2381000" />
       <workItem from="1502385004518" duration="7982000" />
-      <workItem from="1502453626027" duration="4907000" />
+      <workItem from="1502453626027" duration="5735000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="109791000" />
+    <option name="totallyTimeSpent" value="110619000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="726" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -612,18 +643,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/html/prm-logo-after.html">
+    <entry file="file://$PROJECT_DIR$/html/prm-topbar-after.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="7" lean-forward="true" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+        <state relative-caret-position="45">
+          <caret line="3" column="29" lean-forward="false" selection-start-line="3" selection-start-column="29" selection-end-line="3" selection-end-column="29" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/html/prm-topbar-after.html">
+    <entry file="file://$PROJECT_DIR$/html/prm-logo-after.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
-          <caret line="4" column="96" lean-forward="false" selection-start-line="4" selection-start-column="96" selection-end-line="4" selection-end-column="96" />
+          <caret line="4" column="7" lean-forward="true" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="7" />
           <folding />
         </state>
       </provider>
