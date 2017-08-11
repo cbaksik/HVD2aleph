@@ -537,6 +537,10 @@ div.hollis-logo a:hover {
     padding-left:5px;
 }
 
+#briefResultAfter > .spaceLeft40 {
+    padding-left:45px;
+}
+
 #briefResultAfter > .folder {
     font-size: 36px;
     color: #7b8995;

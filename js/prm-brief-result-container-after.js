@@ -4,11 +4,27 @@
  */
 
 angular.module('viewCustom')
-    .controller('prmBriefResultContainerAfterCtrl',[function () {
+    .controller('prmBriefResultContainerAfterCtrl',['$location',function ($location) {
         var vm=this;
-        vm.item={};
+        var param=$location.search();
+        vm.cssClass='spaceLeft';
+        vm.findingAid={'displayLabel':'','linkURL':''};
         vm.$onChanges=function () {
-            vm.item=vm.parentCtrl.item;
+            // find $$Elinktofa
+            if(vm.parentCtrl.links) {
+                for(var i=0; i < vm.parentCtrl.links.length; i++) {
+                    var linkItem=vm.parentCtrl.links[i];
+                    if(linkItem.displayLabel==='$$Elinktofa') {
+                        vm.findingAid=linkItem;
+                        i=vm.parentCtrl.links.length;
+                    }
+                }
+            }
+            // add more padding when it is full display page
+            if(param.docid) {
+               vm.cssClass='spaceLeft40';
+            }
+
         };
 
     }]);
