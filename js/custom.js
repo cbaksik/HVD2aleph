@@ -640,8 +640,10 @@ angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', '$tim
         var div = document.createElement('div');
         div.setAttribute('id', 'customTopMenu');
         div.setAttribute('class', 'topMenu');
-        el.prepend(div);
-
+        // if the topMenu class does not exist, add it.
+        if (el.children[0].className !== 'topMenu') {
+            el.prepend(div);
+        }
         var el2 = $element[0].parentNode.children[1].children;
         if (el2) {
             // remove menu
