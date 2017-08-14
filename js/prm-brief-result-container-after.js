@@ -4,7 +4,7 @@
  */
 
 angular.module('viewCustom')
-    .controller('prmBriefResultContainerAfterCtrl',['$location','$element',function ($location, $element) {
+    .controller('prmBriefResultContainerAfterCtrl',['$location',function ($location) {
         var vm=this;
         var param=$location.search();
         vm.cssClass='marginLeftFindingAid';
@@ -34,9 +34,6 @@ angular.module('viewCustom')
             if(param.docid) {
                 vm.cssClass='marginLeftFindingAid2';
             }
-
-            console.log('*** prm-brief-result-container-after ***');
-            console.log(vm);
 
         };
 

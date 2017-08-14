@@ -9,7 +9,9 @@ angular.module('viewCustom')
         vm.$onChanges=function () {
             // remove image logo
             var el=$element[0].parentNode.children[0];
-            el.remove();
+            if(el) {
+                el.remove();
+            }
         };
 
     }]);

@@ -4,7 +4,7 @@
  */
 
 angular.module('viewCustom')
-    .controller('prmTopbarAfterCtrl',['$element','$timeout',function ($element, $timeout) {
+    .controller('prmTopbarAfterCtrl',['$element',function ($element) {
         var vm=this;
 
         vm.topRightMenus=[{'title':'Research Guides','url':'http://nrs.harvard.edu/urn-3:hul.ois:portal_resguides','label':'Go to Research guides'},
