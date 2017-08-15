@@ -27,9 +27,6 @@ angular.module('viewCustom')
            vm.item=itemData.item;
            vm.searchData=itemData.searchData;
 
-           console.log('*** online ***');
-           console.log(vm);
-
            if(vm.item && vm.item.pnx) {
                // show image if it is HVD_VIA
                if(vm.item.pnx.control.sourceid) {

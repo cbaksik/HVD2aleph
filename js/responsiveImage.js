@@ -66,7 +66,7 @@ angular.module('viewCustom')
             };
             // login
             vm.signIn=function () {
-                var auth=sv.getAuth();
+                var auth=cisv.getAuth();
                 var params={'vid':'','targetURL':''};
                 params.vid=vm.params.vid;
                 params.targetURL=$window.location.href;

@@ -761,9 +761,34 @@ angular.module('viewCustom').component('prmBriefResultContainerAfter', {
     templateUrl: '/primo-explore/custom/HVD2/html/prm-brief-result-container-after.html'
 });
 
+/* Author: Sam san
+   This component is to capture item data from the parentCtrl. Then pass it to prm-view-online-after component
+ */
 angular.module('viewCustom').controller('prmFullViewAfterCtrl', ['prmSearchService', function (prmSearchService) {
     var vm = this;
     var sv = prmSearchService;
+
+    vm.hideBrowseShelf = function () {
+        var hidebrowseshelfFlag = false;
+        var item = vm.parentCtrl.item;
+        if (item.pnx.control) {
+            var sourceid = item.pnx.control.sourceid;
+            // find if item is HVD_VIA
+            if (sourceid.indexOf('HVD_VIA') !== -1) {
+                hidebrowseshelfFlag = true;
+            }
+        }
+        // hide browse shelf if the item is HVD_VIA is true
+        if (hidebrowseshelfFlag) {
+            var services = vm.parentCtrl.services;
+            for (var i = 0; i < services.length; i++) {
+                if (services[i].serviceName === 'virtualBrowse') {
+                    services.splice(i, 1);
+                    i = services.length;
+                }
+            }
+        }
+    };
 
     vm.$onChanges = function () {
         var itemData = { 'item': {}, 'searchData': {} };
@@ -771,7 +796,10 @@ angular.module('viewCustom').controller('prmFullViewAfterCtrl', ['prmSearchServi
         if (vm.parentCtrl.searchService) {
             itemData.searchData = vm.parentCtrl.searchService.$stateParams;
         }
+        // pass this data to use for online section
         sv.setItem(itemData);
+        // hide browse shelf it is an image HVD_VIA
+        vm.hideBrowseShelf();
     };
 }]);
 
@@ -1597,9 +1625,6 @@ angular.module('viewCustom').controller('prmViewOnlineAfterController', ['prmSea
         vm.item = itemData.item;
         vm.searchData = itemData.searchData;
 
-        console.log('*** online ***');
-        console.log(vm);
-
         if (vm.item && vm.item.pnx) {
             // show image if it is HVD_VIA
             if (vm.item.pnx.control.sourceid) {
@@ -1764,7 +1789,7 @@ angular.module('viewCustom').component('responsiveImage', {
         };
         // login
         vm.signIn = function () {
-            var auth = sv.getAuth();
+            var auth = cisv.getAuth();
             var params = { 'vid': '', 'targetURL': '' };
             params.vid = vm.params.vid;
             params.targetURL = $window.location.href;
