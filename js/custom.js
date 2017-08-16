@@ -292,6 +292,30 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
 }]);
 
 /**
+ * Created by samsan on 8/16/17.
+ */
+
+angular.module('viewCustom').controller('customTextsmsCtrl', ['$element', '$compile', '$scope', '$sce', function ($element, $compile, $scope, $sce) {
+    var vm = this;
+
+    vm.$onChanges = function () {
+        console.log('*** custom-textsms ***');
+        console.log(vm);
+    };
+
+    vm.sendSMS = function () {
+        console.log('*** send sms ***');
+    };
+}]);
+
+angular.module('viewCustom').component('customTextsms', {
+    bindings: { parentCtrl: '<' },
+    controller: 'customTextsmsCtrl',
+    controllerAs: 'vm',
+    templateUrl: '/primo-explore/custom/HVD2/html/custom-textsms.html'
+});
+
+/**
  * Created by samsan on 5/23/17.
  * If image has height that is greater than 150 px, then it will resize it. Otherwise, it just display what it is.
  */
@@ -695,6 +719,68 @@ angular.module('viewCustom').filter('truncatefilter', function () {
 
         return newstr;
     };
+});
+
+/**
+ * Created by samsan on 8/15/17.
+ */
+
+angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['$element', function ($element) {
+    var vm = this;
+    vm.$onChanges = function () {
+
+        console.log('*** prm-action-container-after ***');
+        console.log(vm);
+    };
+}]);
+
+angular.module('viewCustom').component('prmActionContainerAfter', {
+    bindings: { parentCtrl: '<' },
+    controller: 'prmActionContainerAfterCtrl',
+    controllerAs: 'vm2'
+});
+
+/**
+ * Created by samsan on 8/15/17.
+ */
+
+angular.module('viewCustom').controller('prmActionListAfterCtrl', ['$element', '$compile', '$scope', '$sce', '$timeout', function ($element, $compile, $scope, $sce, $timeout) {
+    var vm = this;
+    vm.createTextIcon = function () {
+        var el = $element[0].parentNode.children[0].children[0].children[0].children[0].children[1];
+        console.log('*** el ****');
+        console.log(el);
+    };
+
+    vm.$onChanges = function () {
+
+        //vm.createTextIcon();
+
+        console.log('*** prm-action-list-after ***');
+        console.log(vm);
+
+        console.log($element);
+    };
+
+    vm.$postLink = function () {
+
+        $timeout(function () {
+            var el = $element[0].parentNode.children[0].children[0].children[0].children[0].children[1];
+            console.log('**** el ****');
+            console.log(el);
+
+            var textsms = document.createElement('custom-textsms');
+            //el.insertBefore(textsms,el.children[1]);
+            el.append(textsms);
+            $compile(el.children[5])($scope);
+        }, 300);
+    };
+}]);
+
+angular.module('viewCustom').component('prmActionListAfter', {
+    bindings: { parentCtrl: '<' },
+    controller: 'prmActionListAfterCtrl',
+    controllerAs: 'vm'
 });
 
 /**
