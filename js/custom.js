@@ -106,6 +106,25 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
         });
     };
 
+    // setter and getter for text msg data
+    serviceObj.textData = {};
+    serviceObj.setTextData = function (data) {
+        serviceObj.textData = data;
+    };
+
+    serviceObj.getTextData = function () {
+        return serviceObj.textData;
+    };
+
+    // action list selected
+    serviceObj.actionName = 'none';
+    serviceObj.setActionName = function (actionName) {
+        serviceObj.actionName = actionName;
+    };
+    serviceObj.getActionName = function () {
+        return serviceObj.actionName;
+    };
+
     // setter and getter
     serviceObj.items = {};
     serviceObj.setItems = function (data) {
@@ -295,16 +314,18 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
  * Created by samsan on 8/16/17.
  */
 
-angular.module('viewCustom').controller('customTextsmsCtrl', ['$element', '$compile', '$scope', '$sce', function ($element, $compile, $scope, $sce) {
+angular.module('viewCustom').controller('customTextsmsCtrl', ['customService', function (customService) {
+    var cisv = customService;
     var vm = this;
+    vm.availlibrary = [];
+    vm.locations = [];
 
-    vm.$onChanges = function () {
-        console.log('*** custom-textsms ***');
-        console.log(vm);
-    };
-
+    // when a user click on text call # icon
     vm.sendSMS = function () {
-        console.log('*** send sms ***');
+        var data = cisv.getItems();
+        vm.locations = data.currLoc.items;
+        vm.availlibrary = vm.parentCtrl.item.pnx.display.availlibrary;
+        cisv.setTextData(vm);
     };
 }]);
 
@@ -722,58 +743,99 @@ angular.module('viewCustom').filter('truncatefilter', function () {
 });
 
 /**
- * Created by samsan on 8/15/17.
+ * Created by samsan on 8/16/17.
  */
 
-angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['$element', function ($element) {
-    var vm = this;
-    vm.$onChanges = function () {
+angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customService', 'prmSearchService', function (customService, prmSearchService) {
 
-        console.log('*** prm-action-container-after ***');
+    var cisv = customService;
+    var cs = prmSearchService;
+    var vm = this;
+    vm.locations = [];
+    vm.form = { 'phone': '', 'deviceType': '', 'body': '', 'subject': 'SMS from Harvard Library', 'error': '', 'mobile': false };
+
+    vm.$onInit = function () {
+        // check if a user is using mobile phone or laptop browser
+        vm.form.deviceType = cs.getPlatform();
+        if (vm.form.deviceType) {
+            vm.form.mobile = true;
+        } else {
+            vm.form.deviceType = cs.getBrowserType();
+        }
+
+        console.log('*** prm-action-container-after  ***');
         console.log(vm);
+    };
+
+    vm.$doCheck = function () {
+        // get action name when a user click on each action list
+        var actionName = cisv.getActionName();
+        if (actionName) {
+            vm.parentCtrl.actionName = actionName;
+        }
+        var textData = cisv.getTextData();
+        if (textData.locations) {
+            vm.locations = textData.locations;
+        }
+        if (vm.form.phone) {
+            vm.form.error = '';
+        }
+        console.log(vm.form.phone);
+    };
+
+    // this function is trigger only if a user is using laptop computer
+    vm.sendText = function (loc) {
+        console.log(loc);
+        vm.form.body = loc.additionalData.mainlocationname + ' ' + loc.additionalData.callnumber;
+        console.log(vm.form);
+        vm.form.error = '';
+        if (!vm.form.phone) {
+            vm.form.error = 'Enter your phone number';
+        } else {
+            var url = 'http://localhost:8080/sendsms';
+            cisv.postAjax(url, vm.from).then(function (result) {
+                console.log('*** result ***');
+                console.log(result);
+            }, function (error) {
+                console.log(error);
+            });
+        }
     };
 }]);
 
 angular.module('viewCustom').component('prmActionContainerAfter', {
     bindings: { parentCtrl: '<' },
     controller: 'prmActionContainerAfterCtrl',
-    controllerAs: 'vm2'
+    controllerAs: 'vm',
+    templateUrl: '/primo-explore/custom/HVD2/html/prm-action-container-after.html'
 });
 
 /**
  * Created by samsan on 8/15/17.
+ * This component will insert custom-textsms component into action list
  */
 
-angular.module('viewCustom').controller('prmActionListAfterCtrl', ['$element', '$compile', '$scope', '$sce', '$timeout', function ($element, $compile, $scope, $sce, $timeout) {
+angular.module('viewCustom').controller('prmActionListAfterCtrl', ['$element', '$compile', '$scope', '$timeout', 'customService', function ($element, $compile, $scope, $timeout, customService) {
     var vm = this;
-    vm.createTextIcon = function () {
-        var el = $element[0].parentNode.children[0].children[0].children[0].children[0].children[1];
-        console.log('*** el ****');
-        console.log(el);
-    };
-
-    vm.$onChanges = function () {
-
-        //vm.createTextIcon();
-
-        console.log('*** prm-action-list-after ***');
-        console.log(vm);
-
-        console.log($element);
-    };
-
+    var cisv = customService;
     vm.$postLink = function () {
-
         $timeout(function () {
             var el = $element[0].parentNode.children[0].children[0].children[0].children[0].children[1];
-            console.log('**** el ****');
-            console.log(el);
-
-            var textsms = document.createElement('custom-textsms');
-            //el.insertBefore(textsms,el.children[1]);
-            el.append(textsms);
-            $compile(el.children[5])($scope);
+            if (el) {
+                // append dynamic component into action list
+                var textsms = document.createElement('custom-textsms');
+                textsms.setAttribute('parent-ctrl', "vm.parentCtrl");
+                el.append(textsms);
+                $compile(el.children[5])($scope);
+            }
         }, 300);
+    };
+
+    vm.$doCheck = function () {
+        // pass active action to prm-action-container-after
+        if (vm.parentCtrl.activeAction) {
+            cisv.setActionName(vm.parentCtrl.activeAction);
+        }
     };
 }]);
 
@@ -1144,8 +1206,29 @@ angular.module('viewCustom').component('prmLogoAfter', {
 angular.module('viewCustom').service('prmSearchService', ['$http', '$window', '$filter', function ($http, $window, $filter) {
     var serviceObj = {};
 
+    serviceObj.getPlatform = function () {
+        var userAgent = $window.navigator.userAgent;
+
+        console.log('*** userAgent ***');
+        console.log(userAgent);
+        console.log($window.navigator);
+
+        var browsers = { ios: /ios/i, android: /android/i, blackberry: /blackberry/i, tablet: /tablet/i, iphone: /iphone/i, ipad: /ipad/i, samsung: /samsung/i };
+        for (var key in browsers) {
+            if (browsers[key].test(userAgent)) {
+                return key;
+            }
+        };
+
+        return '';
+    };
+
     serviceObj.getBrowserType = function () {
         var userAgent = $window.navigator.userAgent;
+
+        console.log('*** userAgent ***');
+        console.log(userAgent);
+
         var browsers = { chrome: /chrome/i, safari: /safari/i, firefox: /firefox/i, ie: /internet explorer/i };
         for (var key in browsers) {
             if (browsers[key].test(userAgent)) {

@@ -1,0 +1,32 @@
+<md-card id="textsms" ng-if="vm.parentCtrl.actionName==='textsms'">
+    <md-card-title ng-if="vm.locations.length > 1">
+        Choose one
+    </md-card-title>
+    <md-card-content>
+
+        <div class="textsms-padding">
+        <md-input-container md-no-float class="underlined-input md-required md-primoExplore-theme md-input-invalid">
+            <md-icon md-svg-src="/primo-explore/custom/HVD2/img/ic_phone_black_24px.svg" aria-label="Phone number"></md-icon>
+            <input type="phone" ng-model="vm.form.phone" maxlength="10" placeholder="Phone number" title="Phone number"/>
+            <span ng-if="vm.form.error" class="textsms-alert">{{vm.form.error}}</span>
+        </md-input-container>
+        </div>
+
+        <md-list>
+            <md-list-item ng-repeat="loc in vm.locations track by $index" class="list-item-text textsms-row">
+                <div layout="row" flex ng-if="vm.form.mobile">
+                    <a class="textsms-link" href="sms://{{vm.form.phone}}?body={{loc.additionalData.mainlocationname}} {{loc.additionalData.callnumber}}" target="_blank">
+                        <span>{{loc.additionalData.mainlocationname}}</span>
+                        &nbsp;<span>{{loc.additionalData.callnumber}}</span>
+                    </a>
+                </div>
+                <div layout="row" flex ng-if="!vm.form.mobile">
+                    <a class="textsms-link" ng-click="vm.sendText(loc)">
+                        <span>{{loc.additionalData.mainlocationname}}</span>
+                        &nbsp;<span>{{loc.additionalData.callnumber}}</span>
+                    </a>
+                </div>
+            </md-list-item>
+        </md-list>
+    </md-card-content>
+</md-card>

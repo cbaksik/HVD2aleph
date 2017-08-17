@@ -4,17 +4,21 @@
 
 
 angular.module('viewCustom')
-    .controller('customTextsmsCtrl',['$element','$compile','$scope','$sce',function ($element,$compile,$scope,$sce) {
+    .controller('customTextsmsCtrl',['customService',function (customService) {
+        var cisv=customService;
         var vm=this;
+        vm.availlibrary=[];
+        vm.locations=[];
 
-        vm.$onChanges=function () {
-            console.log('*** custom-textsms ***');
-            console.log(vm);
-        };
-
+        // when a user click on text call # icon
         vm.sendSMS=function () {
-            console.log('*** send sms ***');
+            var data=cisv.getItems();
+            vm.locations=data.currLoc.items;
+            vm.availlibrary=vm.parentCtrl.item.pnx.display.availlibrary;
+            cisv.setTextData(vm);
+
         };
+
 
     }]);
 

@@ -23,6 +23,25 @@ angular.module('viewCustom')
             })
         };
 
+        // setter and getter for text msg data
+        serviceObj.textData={};
+        serviceObj.setTextData=function (data) {
+            serviceObj.textData=data;
+        };
+
+        serviceObj.getTextData=function () {
+            return serviceObj.textData;
+        };
+
+        // action list selected
+        serviceObj.actionName='none';
+        serviceObj.setActionName=function (actionName) {
+            serviceObj.actionName=actionName;
+        };
+        serviceObj.getActionName=function () {
+            return serviceObj.actionName;
+        };
+
         // setter and getter
         serviceObj.items={};
         serviceObj.setItems=function (data) {

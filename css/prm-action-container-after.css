@@ -1,0 +1,35 @@
+#textsms {
+    width:100%;
+    height: auto;
+    padding-top:0px;
+    padding-bottom:0px;
+}
+
+.textsms-row {
+    background:#f3f3f3 ;
+    margin-bottom:10px;
+    cursor: pointer;
+    font-size:110%;
+}
+
+.textsms-row:hover {
+    background: #86adcc;
+    color:#ffffff;
+}
+
+.textsms-padding {
+    padding:10px;
+}
+
+.textsms-link {
+    color:#000000;
+}
+
+.textsms-link:hover {
+    color:#ffffff;
+}
+
+.textsms-alert {
+    color:#ff0000;
+    padding:5px;
+}

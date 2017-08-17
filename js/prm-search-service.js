@@ -7,8 +7,29 @@ angular.module('viewCustom')
     .service('prmSearchService',['$http','$window','$filter',function ($http, $window, $filter) {
     let serviceObj={};
 
+    serviceObj.getPlatform=function () {
+        var userAgent=$window.navigator.userAgent;
+
+        console.log('*** userAgent ***');
+        console.log(userAgent);
+        console.log($window.navigator);
+
+        var browsers = {ios: /ios/i, android: /android/i, blackberry: /blackberry/i, tablet: /tablet/i,iphone:/iphone/i,ipad:/ipad/i,samsung:/samsung/i};
+        for(var key in browsers) {
+            if (browsers[key].test(userAgent)) {
+                return key;
+            }
+        };
+
+        return '';
+    };
+
     serviceObj.getBrowserType=function () {
         var userAgent=$window.navigator.userAgent;
+
+        console.log('*** userAgent ***');
+        console.log(userAgent);
+
         var browsers = {chrome: /chrome/i, safari: /safari/i, firefox: /firefox/i, ie: /internet explorer/i};
         for(var key in browsers) {
             if (browsers[key].test(userAgent)) {
