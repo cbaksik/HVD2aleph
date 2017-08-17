@@ -762,15 +762,14 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
         } else {
             vm.form.deviceType = cs.getBrowserType();
         }
-
-        console.log('*** prm-action-container-after  ***');
-        console.log(vm);
     };
 
     vm.$doCheck = function () {
         // get action name when a user click on each action list
         var actionName = cisv.getActionName();
-        if (actionName) {
+        if (actionName && vm.parentCtrl.actionName !== 'none') {
+            vm.parentCtrl.actionName = actionName;
+        } else if (actionName === 'textsms') {
             vm.parentCtrl.actionName = actionName;
         }
         var textData = cisv.getTextData();
@@ -780,7 +779,6 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
         if (vm.form.phone) {
             vm.form.error = '';
         }
-        console.log(vm.form.phone);
     };
 
     // this function is trigger only if a user is using laptop computer

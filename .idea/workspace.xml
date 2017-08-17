@@ -3,14 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="76e16762-c9c8-4efd-b26f-a22111731ef2" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/custom1.css" afterPath="$PROJECT_DIR$/css/custom1.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/custom-textsms.html" afterPath="$PROJECT_DIR$/html/custom-textsms.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/custom-service.js" afterPath="$PROJECT_DIR$/js/custom-service.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/custom-textsms.js" afterPath="$PROJECT_DIR$/js/custom-textsms.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/custom.js" afterPath="$PROJECT_DIR$/js/custom.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-action-container-after.js" afterPath="$PROJECT_DIR$/js/prm-action-container-after.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-action-list-after.js" afterPath="$PROJECT_DIR$/js/prm-action-list-after.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-search-service.js" afterPath="$PROJECT_DIR$/js/prm-search-service.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -28,18 +22,18 @@
       <file leaf-file-name="prm-action-container-after.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/prm-action-container-after.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="366">
-              <caret line="45" column="75" lean-forward="false" selection-start-line="45" selection-start-column="75" selection-end-line="45" selection-end-column="75" />
+            <state relative-caret-position="-230">
+              <caret line="21" column="13" lean-forward="false" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="custom-service.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/custom-service.js">
+      <file leaf-file-name="prm-action-list-after.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/prm-action-list-after.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="32" column="12" lean-forward="false" selection-start-line="32" selection-start-column="12" selection-end-line="32" selection-end-column="12" />
+            <state relative-caret-position="400">
+              <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -59,7 +53,7 @@
         <entry file="file://$PROJECT_DIR$/html/prm-action-container-after.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="405">
-              <caret line="27" column="22" lean-forward="true" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
+              <caret line="27" column="22" lean-forward="false" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
               <folding>
                 <element signature="e#1182#1188#0" expanded="true" />
                 <element signature="e#1521#1527#0" expanded="true" />
@@ -148,7 +142,6 @@
         <option value="$PROJECT_DIR$/js/custom-textsms-dialog.js" />
         <option value="$PROJECT_DIR$/html/custom-textsms-dialog.html" />
         <option value="$PROJECT_DIR$/css/custom-textsms-dialog.css" />
-        <option value="$PROJECT_DIR$/js/prm-action-list-after.js" />
         <option value="$PROJECT_DIR$/html/custom-textsms.html" />
         <option value="$PROJECT_DIR$/js/custom-service.js" />
         <option value="$PROJECT_DIR$/js/custom-textsms.js" />
@@ -156,6 +149,7 @@
         <option value="$PROJECT_DIR$/css/prm-action-container-after.css" />
         <option value="$PROJECT_DIR$/html/prm-action-container-after.html" />
         <option value="$PROJECT_DIR$/js/prm-action-container-after.js" />
+        <option value="$PROJECT_DIR$/js/prm-action-list-after.js" />
       </list>
     </option>
   </component>
@@ -172,10 +166,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1806" />
-    <option name="y" value="50" />
+    <option name="x" value="51" />
+    <option name="y" value="23" />
     <option name="width" value="1394" />
-    <option name="height" value="1045" />
+    <option name="height" value="729" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -192,6 +186,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -220,8 +216,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -356,14 +350,15 @@
       <workItem from="1502906139399" duration="7653000" />
       <workItem from="1502975709599" duration="9025000" />
       <workItem from="1502992294329" duration="2315000" />
+      <workItem from="1502998926154" duration="1134000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="162232000" />
+    <option name="totallyTimeSpent" value="163366000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1806" y="50" width="1394" height="1045" extended-state="0" />
+    <frame x="51" y="23" width="1394" height="729" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2374462" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -678,18 +673,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/prm-action-list-after.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" column="63" lean-forward="false" selection-start-line="25" selection-start-column="63" selection-end-line="25" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/prm-search-service.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="203">
           <caret line="16" column="151" lean-forward="false" selection-start-line="16" selection-start-column="151" selection-end-line="16" selection-end-column="151" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -712,7 +699,7 @@
     <entry file="file://$PROJECT_DIR$/html/prm-action-container-after.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="405">
-          <caret line="27" column="22" lean-forward="true" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
+          <caret line="27" column="22" lean-forward="false" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
           <folding>
             <element signature="e#1182#1188#0" expanded="true" />
             <element signature="e#1521#1527#0" expanded="true" />
@@ -720,10 +707,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/js/prm-action-list-after.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/js/prm-action-container-after.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="366">
-          <caret line="45" column="75" lean-forward="false" selection-start-line="45" selection-start-column="75" selection-end-line="45" selection-end-column="75" />
+        <state relative-caret-position="-230">
+          <caret line="21" column="13" lean-forward="false" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
           <folding />
         </state>
       </provider>
