@@ -15,7 +15,6 @@ angular.module('viewCustom')
             sv.setParentData(vm.parentCtrl);
         };
 
-
     }]);
 
 

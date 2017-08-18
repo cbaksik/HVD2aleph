@@ -14,16 +14,10 @@
 
         <md-list>
             <md-list-item ng-repeat="loc in vm.locations track by $index" class="list-item-text textsms-row">
-                <div layout="row" flex ng-if="vm.form.mobile">
-                    <a class="textsms-link" href="sms://{{vm.form.phone}}?body={{loc.additionalData.mainlocationname}} {{loc.additionalData.callnumber}}" target="_blank">
-                        <span>{{loc.additionalData.mainlocationname}}</span>
-                        &nbsp;<span>{{loc.additionalData.callnumber}}</span>
-                    </a>
-                </div>
-                <div layout="row" flex ng-if="!vm.form.mobile">
-                    <a class="textsms-link" ng-click="vm.sendText(loc)">
-                        <span>{{loc.additionalData.mainlocationname}}</span>
-                        &nbsp;<span>{{loc.additionalData.callnumber}}</span>
+                <div layout="row" flex ng-repeat="item in loc track by $index">
+                    <a ng-repeat="i in item.items track by $index" class="textsms-link" ng-click="vm.sendText(i)">
+                        <span>{{i.mainlocationname}}</span>
+                        &nbsp;<span>{{i.callnumber}}</span>
                     </a>
                 </div>
             </md-list-item>
