@@ -311,21 +311,6 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
 }]);
 
 /**
- * Created by samsan on 8/16/17.
- */
-
-angular.module('viewCustom').controller('customTextsmsCtrl', [function () {
-    var vm = this;
-}]);
-
-angular.module('viewCustom').component('customTextsms', {
-    bindings: { parentCtrl: '<' },
-    controller: 'customTextsmsCtrl',
-    controllerAs: 'vm',
-    templateUrl: '/primo-explore/custom/HVD2/html/custom-textsms.html'
-});
-
-/**
  * Created by samsan on 5/23/17.
  * If image has height that is greater than 150 px, then it will resize it. Otherwise, it just display what it is.
  */
@@ -633,29 +618,6 @@ angular.module('viewCustom').component('customViewComponent', {
 });
 
 /**
- * Created by samsan on 8/18/17.
- */
-
-angular.module('viewCustom').service('hvdLibraryCodes', [function () {
-    var svObj = {};
-    // add more library code and library name here
-    svObj.codes = [{ 'code': 'HVD_CAB', 'name': 'Cabot science' }, { 'code': 'HVD_MCZ', 'name': 'Museum Comp Zoology' }];
-
-    svObj.getLibraryName = function (code) {
-        var newCode = code;
-        for (var i = 0; i < svObj.codes.length; i++) {
-            if (code === svObj.codes[i].code) {
-                newCode = svObj.codes[i].name;
-                i = svObj.codes.length;
-            }
-        }
-        return newCode;
-    };
-
-    return svObj;
-}]);
-
-/**
  * Created by samsan on 5/23/17.
  * If image has height that is greater than 150 px, then it will resize it. Otherwise, it just display what it is.
  */
@@ -758,16 +720,15 @@ angular.module('viewCustom').filter('truncatefilter', function () {
  * Created by samsan on 8/16/17.
  */
 
-angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customService', 'prmSearchService', 'hvdLibraryCodes', '$window', '$q', function (customService, prmSearchService, hvdLibraryCodes, $window, $q) {
+angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customService', 'prmSearchService', '$window', '$q', function (customService, prmSearchService, $window, $q) {
 
     var cisv = customService;
     var cs = prmSearchService;
-    var hvdCS = hvdLibraryCodes;
     var vm = this;
     vm.parentData = {};
     vm.holding = [];
     vm.locations = [];
-    vm.form = { 'phone': '', 'deviceType': '', 'body': '', 'subject': 'SMS from Harvard Library', 'error': '', 'mobile': false };
+    vm.form = { 'phone': '', 'deviceType': '', 'body': '', 'subject': 'SMS from Harvard Library', 'error': '', 'mobile': false, 'msg': '' };
 
     vm.getLibraryNames = function () {
         var url = '';
@@ -818,7 +779,7 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
         vm.parentData = cisv.getParentData();
         vm.getLibraryNames();
 
-        console.log('**** prm-action-container-after ***');
+        console.log('*** prm-action-container-after ***');
         console.log(vm);
     };
 
@@ -830,32 +791,37 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
         } else if (actionName === 'textsms') {
             vm.parentCtrl.actionName = actionName;
         }
-
-        if (vm.form.phone) {
-            vm.form.error = '';
-        }
     };
 
     // this function is trigger only if a user is using laptop computer
     vm.sendText = function (loc) {
-        console.log(loc);
-        vm.form.body = hvdLibraryCodes.getLibraryName(loc.libraryCode) + ' ' + loc.callNumber;
-        console.log(vm.form);
         vm.form.error = '';
+        vm.form.msg = '';
+        var count = 0;
+        if (!vm.form.phone) {
+            vm.form.error = 'Enter your phone number';
+            count++;
+        } else if (isNaN(vm.form.phone) || vm.form.phone.length < 10) {
+            vm.form.error = 'Enter a valid phone number';
+            count++;
+        }
 
-        if (vm.form.mobile) {
-            var url = 'sms:' + vm.form.phone + '&body=' + vm.form.body;
-
-            console.log(url);
-            $window.open(url, '_blank');
-        } else {
-            if (!vm.form.phone) {
-                vm.form.error = 'Enter your phone number';
+        vm.form.body = loc.mainlocationname + ' ' + loc.callnumber;
+        if (count === 0) {
+            if (vm.form.mobile) {
+                var url = 'sms:' + vm.form.phone + '&body=' + vm.form.body;
+                $window.open(url, '_blank');
             } else {
+
                 var url = 'http://localhost:8080/sendsms';
-                cisv.postAjax(url, vm.from).then(function (result) {
+                cisv.postAjax(url, vm.form).then(function (result) {
                     console.log('*** result ***');
                     console.log(result);
+                    if (result.status === 200) {
+                        vm.form.msg = result.data.msg;
+                    } else {
+                        vm.form.msg = 'There is a technical issue with Text Message Server. Please try it later on.';
+                    }
                 }, function (error) {
                     console.log(error);
                 });
@@ -871,32 +837,38 @@ angular.module('viewCustom').component('prmActionContainerAfter', {
     templateUrl: '/primo-explore/custom/HVD2/html/prm-action-container-after.html'
 });
 
-// library code filter
-angular.module('viewCustom').filter('codefilter', ['hvdLibraryCodes', function (hvdLibraryCodes) {
-    return function (code) {
-        var hvdService = hvdLibraryCodes;
-        return hvdService.getLibraryName(code);
-    };
-}]);
 /**
  * Created by samsan on 8/15/17.
- * This component will insert custom-textsms component into action list
+ * This component will insert textsms and its icon into the action list
  */
 
 angular.module('viewCustom').controller('prmActionListAfterCtrl', ['$element', '$compile', '$scope', '$timeout', 'customService', function ($element, $compile, $scope, $timeout, customService) {
     var vm = this;
     var cisv = customService;
-    vm.$postLink = function () {
+    vm.$onInit = function () {
+        // insert  textsms into existing action list
+        vm.parentCtrl.actionLabelNamesMap.textsms = 'Text call #';
+        vm.parentCtrl.actionListService.actionsToIndex.textsms = 6;
+        if (vm.parentCtrl.actionListService.requiredActionsList.indexOf('textsms') === -1) {
+            vm.parentCtrl.actionListService.requiredActionsList.push('textsms');
+        }
+    };
+
+    vm.$onChanges = function () {
         $timeout(function () {
-            var el = $element[0].parentNode.children[0].children[0].children[0].children[0].children[1];
+            var el = document.getElementById('textsms');
             if (el) {
-                // append dynamic component into action list
-                var textsms = document.createElement('custom-textsms');
-                textsms.setAttribute('parent-ctrl', "vm.parentCtrl");
-                el.append(textsms);
-                $compile(el.children[5])($scope);
+                //remove prm-icon
+                var prmIcon = el.children[0].children[0].children[0].children[0];
+                prmIcon.remove();
+                // insert new icon
+                var childNode = el.children[0].children[0].children[0];
+                var mdIcon = document.createElement('md-icon');
+                mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/ic_textsms_black_24px.svg');
+                childNode.prepend(mdIcon);
+                $compile(childNode)($scope); // refresh the dom
             }
-        }, 300);
+        }, 2000);
     };
 
     vm.$doCheck = function () {

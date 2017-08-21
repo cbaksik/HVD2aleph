@@ -786,6 +786,15 @@ a.thumbnail > img:focus {
     color:#ff0000;
     padding:5px;
 }
+
+.textsms-iconColor {
+    color:#ffffff !important;
+    background:#e1e1e1 !important;
+}
+
+.textsms-info {
+    color: #5C92BD;
+}
 #briefResultAfter {
     margin:0px;
     padding:0px;

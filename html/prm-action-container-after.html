@@ -5,6 +5,9 @@
     <md-card-content>
 
         <div class="textsms-padding">
+
+            <p class="textsms-info" ng-if="vm.form.msg">{{vm.form.msg}}</p>
+
         <md-input-container md-no-float class="underlined-input md-required md-primoExplore-theme md-input-invalid">
             <md-icon md-svg-src="/primo-explore/custom/HVD2/img/ic_phone_black_24px.svg" aria-label="Phone number"></md-icon>
             <input type="phone" ng-model="vm.form.phone" maxlength="10" placeholder="Phone number" title="Phone number"/>

@@ -1,6 +1,6 @@
 /**
  * Created by samsan on 8/15/17.
- * This component will insert custom-textsms component into action list
+ * This component will insert textsms and its icon into the action list
  */
 
 
@@ -8,18 +8,33 @@ angular.module('viewCustom')
     .controller('prmActionListAfterCtrl',['$element','$compile','$scope','$timeout','customService',function ($element,$compile,$scope,$timeout, customService) {
         var vm=this;
         var cisv=customService;
-        vm.$postLink=function () {
+        vm.$onInit=function () {
+            // insert  textsms into existing action list
+            vm.parentCtrl.actionLabelNamesMap.textsms='Text call #';
+            vm.parentCtrl.actionListService.actionsToIndex.textsms=6;
+            if(vm.parentCtrl.actionListService.requiredActionsList.indexOf('textsms') === -1) {
+                vm.parentCtrl.actionListService.requiredActionsList.push('textsms');
+            }
+        };
+
+        vm.$onChanges=function() {
             $timeout(function () {
-                var el=$element[0].parentNode.children[0].children[0].children[0].children[0].children[1];
+                var el=document.getElementById('textsms');
                 if(el) {
-                    // append dynamic component into action list
-                    var textsms = document.createElement('custom-textsms');
-                    textsms.setAttribute('parent-ctrl',"vm.parentCtrl");
-                    el.append(textsms);
-                    $compile(el.children[5])($scope);
+                    //remove prm-icon
+                    var prmIcon=el.children[0].children[0].children[0].children[0];
+                    prmIcon.remove();
+                    // insert new icon
+                    var childNode=el.children[0].children[0].children[0];
+                    var mdIcon=document.createElement('md-icon');
+                    mdIcon.setAttribute('md-svg-src','/primo-explore/custom/HVD2/img/ic_textsms_black_24px.svg');
+                    childNode.prepend(mdIcon);
+                    $compile(childNode)($scope); // refresh the dom
                 }
 
-            },300)
+
+            },2000)
+
         };
 
         vm.$doCheck=function(){
@@ -27,8 +42,8 @@ angular.module('viewCustom')
             if(vm.parentCtrl.activeAction) {
                 cisv.setActionName(vm.parentCtrl.activeAction);
             }
+        };
 
-        }
 
     }]);
 

@@ -4,16 +4,15 @@
 
 
 angular.module('viewCustom')
-    .controller('prmActionContainerAfterCtrl',['customService','prmSearchService','hvdLibraryCodes','$window','$q',function (customService,prmSearchService,hvdLibraryCodes,$window,$q) {
+    .controller('prmActionContainerAfterCtrl',['customService','prmSearchService','$window','$q',function (customService,prmSearchService,$window,$q) {
 
         var cisv=customService;
         var cs=prmSearchService;
-        var hvdCS=hvdLibraryCodes;
         var vm=this;
         vm.parentData={};
         vm.holding=[];
         vm.locations=[];
-        vm.form={'phone':'','deviceType':'','body':'','subject':'SMS from Harvard Library','error':'','mobile':false};
+        vm.form={'phone':'','deviceType':'','body':'','subject':'SMS from Harvard Library','error':'','mobile':false,'msg':''};
 
         vm.getLibraryNames=function () {
             var url='';
@@ -69,11 +68,11 @@ angular.module('viewCustom')
             vm.parentData=cisv.getParentData();
             vm.getLibraryNames();
 
-            console.log('**** prm-action-container-after ***');
+            console.log('*** prm-action-container-after ***');
             console.log(vm);
 
         };
-        
+
         vm.$doCheck=function(){
             // get action name when a user click on each action list
             var actionName=cisv.getActionName();
@@ -83,37 +82,42 @@ angular.module('viewCustom')
                 vm.parentCtrl.actionName=actionName;
             }
 
-            if(vm.form.phone) {
-                vm.form.error='';
-            }
-
         };
 
         // this function is trigger only if a user is using laptop computer
         vm.sendText=function (loc) {
-            console.log(loc);
-            vm.form.body=hvdLibraryCodes.getLibraryName(loc.libraryCode) + ' ' + loc.callNumber;
-            console.log(vm.form);
             vm.form.error='';
+            vm.form.msg='';
+            var count=0;
+            if(!vm.form.phone) {
+                vm.form.error = 'Enter your phone number';
+                count++;
+            } else if(isNaN(vm.form.phone) || vm.form.phone.length < 10) {
+                vm.form.error = 'Enter a valid phone number';
+                count++;
+            }
 
-            if(vm.form.mobile) {
-                var url='sms:'+vm.form.phone+'&body='+vm.form.body;
-
-                console.log(url);
-                $window.open(url,'_blank');
-
-            } else {
-                if (!vm.form.phone) {
-                    vm.form.error = 'Enter your phone number';
+            vm.form.body=loc.mainlocationname + ' ' + loc.callnumber;
+            if(count===0) {
+                if (vm.form.mobile) {
+                    var url = 'sms:' + vm.form.phone + '&body=' + vm.form.body;
+                    $window.open(url, '_blank');
                 } else {
+
                     var url = 'http://localhost:8080/sendsms';
-                    cisv.postAjax(url, vm.from).then(function (result) {
+                    cisv.postAjax(url, vm.form).then(function (result) {
                             console.log('*** result ***');
                             console.log(result);
+                            if(result.status===200) {
+                               vm.form.msg=result.data.msg;
+                            } else {
+                                vm.form.msg='There is a technical issue with Text Message Server. Please try it later on.';
+                            }
                         }, function (error) {
                             console.log(error);
                         }
                     )
+
                 }
             }
         };
@@ -128,14 +132,3 @@ angular.module('viewCustom')
         controllerAs:'vm',
         templateUrl:'/primo-explore/custom/HVD2/html/prm-action-container-after.html'
     });
-
-
-
-// library code filter
-angular.module('viewCustom').filter('codefilter',['hvdLibraryCodes',function (hvdLibraryCodes) {
-    return function (code) {
-        var hvdService = hvdLibraryCodes;
-        return hvdService.getLibraryName(code);
-    }
-
-}]);
