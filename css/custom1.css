@@ -843,11 +843,20 @@ a.thumbnail > img:focus {
 prm-brief-result-container.list-item:hover {
     background:#ffffff;
 }
+.placeIcon {
+    position: absolute;
+    margin-left:200px;
+    cursor: pointer;
+}
 .requestLinkSpace {
     padding-top:20px;
 }
 
 
+/* hide request item above get it */
+prm-request-services {
+    display: none;
+}
 .serviceLinkBox {
     padding:0px;
     background: transparent !important;

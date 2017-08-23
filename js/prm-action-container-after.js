@@ -103,8 +103,6 @@ angular.module('viewCustom')
                     var url = 'sms:' + vm.form.phone + '&body=' + vm.form.body;
                     $window.open(url, '_blank');
                 } else {
-                    vm.textmsg.to='1'+vm.form.phone;
-                    vm.textmsg.text=vm.form.body;
                     var url = 'http://52.201.96.131:8080/sendsms';
                     //var url = 'http://localhost:8080/sendsms';
                     cisv.postAjax(url, vm.form).then(function (result) {

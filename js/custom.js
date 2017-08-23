@@ -812,8 +812,6 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
                 var url = 'sms:' + vm.form.phone + '&body=' + vm.form.body;
                 $window.open(url, '_blank');
             } else {
-                vm.textmsg.to = '1' + vm.form.phone;
-                vm.textmsg.text = vm.form.body;
                 var url = 'http://52.201.96.131:8080/sendsms';
                 //var url = 'http://localhost:8080/sendsms';
                 cisv.postAjax(url, vm.form).then(function (result) {
@@ -997,6 +995,41 @@ angular.module('viewCustom').component('prmFullViewAfter', {
     bindings: { parentCtrl: '<' },
     controller: 'prmFullViewAfterCtrl',
     controllerAs: 'vm'
+});
+
+/**
+ * Created by samsan on 8/23/17.
+ */
+
+angular.module('viewCustom').controller('prmLocationAfterCtrl', ['$element', '$compile', '$scope', '$timeout', '$window', function ($element, $compile, $scope, $timeout, $window) {
+    var vm = this;
+
+    vm.$onInit = function () {
+        $timeout(function () {
+            var mdIcon = document.createElement('md-icon');
+            mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
+            mdIcon.setAttribute('class', 'placeIcon');
+            mdIcon.setAttribute('ng-click', 'vm.goPlace(vm.parentCtrl.location,$event)');
+            var el = $element[0].parentNode.children[0].children[0].children[0].children[0];
+            if (el.className !== 'placeIcon') {
+                el.prepend(mdIcon);
+                $compile(el)($scope);
+            }
+        }, 500);
+    };
+
+    vm.goPlace = function (loc, e) {
+        e.stopPropagation();
+        var url = 'http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
+        window.open(url, '_blank');
+        return true;
+    };
+}]);
+
+angular.module('viewCustom').component('prmLocationAfter', {
+    bindings: { parentCtrl: '<' },
+    controllerAs: 'vm',
+    controller: 'prmLocationAfterCtrl'
 });
 
 /**
