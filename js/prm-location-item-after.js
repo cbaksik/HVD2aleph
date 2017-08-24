@@ -61,11 +61,13 @@ angular.module('viewCustom')
             // get the index of the element
             var index=0;
             var el=$element[0].previousSibling.parentNode;
-            var md_list = $element[0].parentNode.parentNode.children;
-            for(var i=0; i < md_list.length; i++) {
-                if(md_list[i].$$hashKey===el.$$hashKey) {
-                    index=i;
-                    i=md_list.length;
+            if($element[0].parentNode.parentNode) {
+                var md_list = $element[0].parentNode.parentNode.children;
+                for (var i = 0; i < md_list.length; i++) {
+                    if (md_list[i].$$hashKey === el.$$hashKey) {
+                        index = i;
+                        i = md_list.length;
+                    }
                 }
             }
 
