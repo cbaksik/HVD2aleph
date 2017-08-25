@@ -845,7 +845,6 @@ prm-brief-result-container.list-item:hover {
 }
 .placeIcon {
     position: absolute;
-    margin-left:200px;
     cursor: pointer;
 }
 .requestLinkSpace {
