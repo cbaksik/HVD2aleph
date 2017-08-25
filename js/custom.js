@@ -1001,32 +1001,36 @@ angular.module('viewCustom').component('prmFullViewAfter', {
  * Created by samsan on 8/23/17.
  */
 
-angular.module('viewCustom').controller('prmLocationAfterCtrl', ['$element', '$compile', '$scope', '$timeout', '$window', function ($element, $compile, $scope, $timeout, $window) {
+angular.module('viewCustom').controller('prmLocationAfterCtrl', ['$element', '$compile', '$scope', '$window', function ($element, $compile, $scope, $window) {
     var vm = this;
+    vm.libraryName = '';
 
-    vm.$onChanges = function () {
-        $timeout(function () {
-            // insert place icon and set align
-            var mdIcon = document.createElement('md-icon');
-            mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
-            mdIcon.setAttribute('class', 'placeIcon');
-            mdIcon.setAttribute('ng-click', 'vm.goPlace(vm.parentCtrl.location,$event)');
-            var el = $element[0].parentNode.children[0].children[0].children[0].children[0];
-            if (el.className !== 'placeIcon') {
+    //insert icon and copy the library name. Then format it.
+    vm.createIcon = function () {
+        // insert place icon and align it
+        var el = $element[0].parentNode.children[0].children[0].children[0].children[0];
+        if (el.children) {
+            if (el.children[0].tagName === 'H3' && !vm.libraryName) {
                 var text = el.children[0].innerText;
-                var w = text.length * 10;
-                if (text.length > 15 && text.length < 20) {
-                    w += 5;
-                } else if (text.length <= 8) {
-                    w += 12;
-                } else if (text.length > 25) {
-                    w = text.length * 8;
+                if (text) {
+                    el.children[0].remove();
+                    vm.libraryName = text;
+                    var h3 = document.createElement('h3');
+                    h3.innerText = text;
+                    var mdIcon = document.createElement('md-icon');
+                    mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
+                    mdIcon.setAttribute('class', 'placeIcon');
+                    mdIcon.setAttribute('ng-click', 'vm.goPlace(vm.parentCtrl.location,$event)');
+                    h3.appendChild(mdIcon);
+                    el.prepend(h3);
+                    $compile(el)($scope);
                 }
-                mdIcon.setAttribute('style', 'left:' + w + 'px');
-                el.prepend(mdIcon);
-                $compile(el)($scope);
             }
-        }, 500);
+        }
+    };
+
+    vm.$doCheck = function () {
+        vm.createIcon();
     };
 
     vm.goPlace = function (loc, e) {
@@ -1049,7 +1053,7 @@ angular.module('viewCustom').component('prmLocationAfter', {
  * It pass the current location data to get a full list of current location with itemcategorycode.
  * Then compare it with xml logic data file
  */
-angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customService', '$window', '$scope', '$element', function (customService, $window, $scope, $element) {
+angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customService', '$window', '$scope', '$element', '$compile', function (customService, $window, $scope, $element, $compile) {
     var vm = this;
     vm.currLoc = {};
     vm.locationInfo = {};
@@ -1137,6 +1141,38 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
         return requestLinks;
     };
 
+    // insert icon and copy library name. then format
+    vm.createIcon = function () {
+        // insert place icon and align it
+        var el = $element[0].parentNode.parentNode.parentNode.children[1].children[0];
+        if (el.children[0].tagName === 'H4' && !vm.libName) {
+            var text = el.children[0].innerText;
+            if (text) {
+                el.children[0].remove();
+                vm.libName = text;
+                var h4 = document.createElement('h4');
+                h4.setAttribute('class', 'md-title');
+                var span = document.createElement('span');
+                span.setAttribute('ng-bind-html', 'vm.currLoc.items[0].additionalData.mainlocationname');
+                h4.appendChild(span);
+                var mdIcon = document.createElement('md-icon');
+                mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
+                mdIcon.setAttribute('class', 'placeIcon');
+                mdIcon.setAttribute('ng-click', 'vm.goPlace(vm.currLoc.location,$event)');
+                h4.appendChild(mdIcon);
+                el.prepend(h4);
+                $compile(el)($scope);
+            }
+        }
+    };
+
+    vm.goPlace = function (loc, e) {
+        e.stopPropagation();
+        var url = 'http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
+        $window.open(url, '_blank');
+        return true;
+    };
+
     vm.$onInit = function () {
         // watch for variable change, then call an ajax to get current location of itemcategorycode
         // it won't work on angular 2
@@ -1150,6 +1186,7 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
     vm.$doCheck = function () {
         vm.data = sv.getItems();
         vm.currLoc = vm.data.currLoc;
+        vm.createIcon();
     };
 
     vm.$onChanges = function (ev) {
@@ -1214,7 +1251,7 @@ angular.module('viewCustom').component('prmLocationItemAfter', {
 angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customService', '$element', '$window', '$compile', '$scope', '$timeout', function (customService, $element, $window, $compile, $scope, $timeout) {
     var vm = this;
     var sv = customService;
-    vm.libraryName = '';
+    vm.libName = '';
     vm.logicList = [];
     // get static xml data and convert to json
     vm.getLibData = function () {
@@ -1228,24 +1265,6 @@ angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customSer
         });
     };
 
-    vm.$doCheck = function () {
-        // re-align place icon when a user click on location item
-        var el = $element[0].parentNode.children[1].children[0];
-        if (el) {
-            var child = el.children[0];
-            if (child && child.className.includes('placeIcon')) {
-                var text = el.children[1].innerText;
-                var width = text.length * 10;
-                if (text.length <= 8) {
-                    width += 10;
-                } else if (text.length > 25) {
-                    width = text.length * 8;
-                }
-                el.children[0].setAttribute('style', 'left:' + width + 'px');
-            }
-        }
-    };
-
     vm.$onInit = function () {
         vm.getLibData();
     };
@@ -1253,37 +1272,6 @@ angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customSer
     vm.$onChanges = function () {
         // capture data and use it in prm-location-item-after component
         sv.setItems(vm.parentCtrl);
-        // insert place icon and align it
-        if (vm.parentCtrl.locationsService.results) {
-            if (vm.parentCtrl.locationsService.results[0].length > 0) {
-                var el = $element[0].parentNode.children[1].children[0];
-                var mdIcon = document.createElement('md-icon');
-                mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
-                mdIcon.setAttribute('class', 'placeIcon');
-                mdIcon.setAttribute('ng-click', '$ctrl.goPlace($ctrl.parentCtrl.currLoc.location,$event)');
-                if (el.className !== 'placeIcon') {
-                    $timeout(function () {
-                        var text = el.children[0].innerText;
-                        var width = text.length * 10;
-                        if (text.length <= 8) {
-                            width += 10;
-                        } else if (text.length > 25) {
-                            width = text.length * 8;
-                        }
-                        mdIcon.setAttribute('style', 'left:' + width + 'px');
-                        el.prepend(mdIcon);
-                        $compile(el)($scope);
-                    }, 500);
-                }
-            }
-        }
-    };
-
-    vm.goPlace = function (loc, e) {
-        e.stopPropagation();
-        var url = 'http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
-        $window.open(url, '_blank');
-        return true;
     };
 }]);
 

@@ -3,36 +3,38 @@
  */
 
 angular.module('viewCustom')
-    .controller('prmLocationAfterCtrl',['$element','$compile','$scope','$timeout','$window',function ($element,$compile,$scope,$timeout, $window) {
+    .controller('prmLocationAfterCtrl',['$element','$compile','$scope','$window',function ($element,$compile,$scope, $window) {
         var vm=this;
+        vm.libraryName='';
 
-        vm.$onChanges=function() {
-            $timeout(function () {
-                // insert place icon and set align
-                var mdIcon=document.createElement('md-icon');
-                mdIcon.setAttribute('md-svg-src','/primo-explore/custom/HVD2/img/place.svg');
-                mdIcon.setAttribute('class','placeIcon');
-                mdIcon.setAttribute('ng-click','vm.goPlace(vm.parentCtrl.location,$event)');
-                var el=$element[0].parentNode.children[0].children[0].children[0].children[0];
-                if(el.className !== 'placeIcon') {
+        //insert icon and copy the library name. Then format it.
+        vm.createIcon=function () {
+            // insert place icon and align it
+            var el = $element[0].parentNode.children[0].children[0].children[0].children[0];
+            if(el.children) {
+                if (el.children[0].tagName === 'H3' && !vm.libraryName) {
                     var text = el.children[0].innerText;
-                    var w = text.length * 10;
-                    if(text.length > 15 && text.length < 20) {
-                        w+=5;
-                    } else if(text.length <= 8) {
-                        w+=12;
-                    } else if(text.length > 25) {
-                        w=text.length * 8;
+                    if (text) {
+                        el.children[0].remove();
+                        vm.libraryName = text;
+                        var h3 = document.createElement('h3');
+                        h3.innerText = text;
+                        var mdIcon = document.createElement('md-icon');
+                        mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
+                        mdIcon.setAttribute('class', 'placeIcon');
+                        mdIcon.setAttribute('ng-click', 'vm.goPlace(vm.parentCtrl.location,$event)');
+                        h3.appendChild(mdIcon);
+                        el.prepend(h3);
+                        $compile(el)($scope);
                     }
-                    mdIcon.setAttribute('style','left:'+ w +'px');
-                    el.prepend(mdIcon);
-                    $compile(el)($scope);
 
                 }
+            }
 
-            },500);
+        };
 
-
+        vm.$doCheck=function() {
+            vm.createIcon();
         };
 
         vm.goPlace=function (loc,e) {
@@ -41,9 +43,6 @@ angular.module('viewCustom')
             $window.open(url,'_blank');
             return true;
         }
-
-
-
 
     }]);
 

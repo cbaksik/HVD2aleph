@@ -5,7 +5,7 @@
  * Then compare it with xml logic data file
  */
 angular.module('viewCustom')
-    .controller('prmLocationItemAfterCtrl',['customService','$window','$scope','$element',function (customService, $window, $scope, $element) {
+    .controller('prmLocationItemAfterCtrl',['customService','$window','$scope','$element','$compile',function (customService, $window, $scope, $element, $compile) {
         var vm=this;
         vm.currLoc={};
         vm.locationInfo={};
@@ -97,6 +97,41 @@ angular.module('viewCustom')
             return requestLinks;
         };
 
+        // insert icon and copy library name. then format
+        vm.createIcon=function () {
+            // insert place icon and align it
+            var el = $element[0].parentNode.parentNode.parentNode.children[1].children[0];
+            if(el.children[0].tagName==='H4' && !vm.libName) {
+                var text = el.children[0].innerText;
+                if(text) {
+                    el.children[0].remove();
+                    vm.libName = text;
+                    var h4=document.createElement('h4');
+                    h4.setAttribute('class','md-title');
+                    var span=document.createElement('span');
+                    span.setAttribute('ng-bind-html','vm.currLoc.items[0].additionalData.mainlocationname');
+                    h4.appendChild(span);
+                    var mdIcon = document.createElement('md-icon');
+                    mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
+                    mdIcon.setAttribute('class', 'placeIcon');
+                    mdIcon.setAttribute('ng-click', 'vm.goPlace(vm.currLoc.location,$event)');
+                    h4.appendChild(mdIcon);
+                    el.prepend(h4);
+                    $compile(el)($scope);
+                }
+
+            }
+
+        };
+
+        vm.goPlace=function (loc,e) {
+            e.stopPropagation();
+            var url='http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
+            $window.open(url,'_blank');
+            return true;
+        };
+
+
         vm.$onInit=function () {
             // watch for variable change, then call an ajax to get current location of itemcategorycode
             // it won't work on angular 2
@@ -110,12 +145,14 @@ angular.module('viewCustom')
         vm.$doCheck=function () {
             vm.data=sv.getItems();
             vm.currLoc=vm.data.currLoc;
+            vm.createIcon();
         };
 
         vm.$onChanges=function (ev) {
             // list of logic xml data list that convert into json array
             vm.logicList = sv.getLogicList();
             vm.auth = sv.getAuth();
+
         };
 
         vm.signIn=function () {
