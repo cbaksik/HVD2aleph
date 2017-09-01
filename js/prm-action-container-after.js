@@ -17,7 +17,7 @@ angular.module('viewCustom')
 
         // get rest endpoint Url
         vm.getUrl=function () {
-            cisv.getAjax('/primo-explore/custom/HVD2/html/config.text','','get')
+            cisv.getAjax('/primo-explore/custom/HVD2/html/config.html','','get')
                 .then(function (res) {
                         vm.restsmsUrl=res.data.smsUrl;
                     },
