@@ -761,6 +761,7 @@ a.thumbnail > img:focus {
 .textsms-row {
     background:#f3f3f3 ;
     margin-bottom:10px;
+    padding-left:10px;
     cursor: pointer;
     font-size:110%;
 }
@@ -769,6 +770,13 @@ a.thumbnail > img:focus {
     background: #86adcc;
     color:#ffffff;
 }
+
+.textsms-row-visited {
+    background: #86adcc;
+    padding-left:10px;
+    color:#ffffff;
+}
+
 
 .textsms-padding {
     padding:10px;
@@ -781,6 +789,11 @@ a.thumbnail > img:focus {
 .textsms-link:hover {
     color:#ffffff;
 }
+
+.textsms-row-visited  a.textsms-link {
+    color: #ffffff;
+}
+
 
 .textsms-alert {
     color:#ff0000;

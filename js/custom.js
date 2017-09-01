@@ -725,12 +725,24 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
     var cisv = customService;
     var cs = prmSearchService;
     var vm = this;
+    vm.restsmsUrl = '';
     vm.parentData = {};
     vm.holding = [];
     vm.locations = [];
     vm.form = { 'phone': '', 'deviceType': '', 'body': '', 'subject': 'SMS from Harvard Library', 'error': '', 'mobile': false, 'msg': '' };
 
+    // get rest endpoint Url
+    vm.getUrl = function () {
+        cisv.getAjax('/primo-explore/custom/HVD2/html/config.text', '', 'get').then(function (res) {
+            vm.restsmsUrl = res.data.smsUrl;
+        }, function (error) {
+            console.log(error);
+        });
+    };
+
+    // get the library location name
     vm.getLibraryNames = function () {
+        vm.locations = [];
         var url = '';
         var qList = [];
         if (vm.parentData.opacService) {
@@ -757,7 +769,9 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
                 if (result) {
                     for (var i = 0; i < result.length; i++) {
                         var data = result[i].data;
-                        vm.locations.push(data.locations);
+                        var loc = data.locations[0];
+                        loc.cssClass = 'textsms-row';
+                        vm.locations.push(loc);
                     }
                 }
             }, function (error) {
@@ -767,6 +781,8 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
     };
 
     vm.$onInit = function () {
+        // get rest sms endpoint url from config.text file
+        vm.getUrl();
         // check if a user is using mobile phone or laptop browser
         vm.form.deviceType = cs.getPlatform();
         if (vm.form.deviceType) {
@@ -778,9 +794,6 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
         vm.holding = vm.parentCtrl.item.delivery.holding;
         vm.parentData = cisv.getParentData();
         vm.getLibraryNames();
-
-        console.log('*** prm-action-container-after ***');
-        console.log(vm);
     };
 
     vm.$doCheck = function () {
@@ -794,7 +807,14 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
     };
 
     // this function is trigger only if a user is using laptop computer
-    vm.sendText = function (loc) {
+    vm.sendText = function (k, loc) {
+        // reset the row css class
+        for (var i = 0; i < vm.locations.length; i++) {
+            vm.locations[i].cssClass = 'textsms-row';
+        }
+        // set select row highlite
+        vm.locations[k].cssClass = 'textsms-row-visited';
+
         vm.form.error = '';
         vm.form.msg = '';
         var count = 0;
@@ -812,13 +832,21 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
                 var url = 'sms:' + vm.form.phone + '&body=' + vm.form.body;
                 $window.open(url, '_blank');
             } else {
-                var url = 'http://52.201.96.131:8080/sendsms';
-                //var url = 'http://localhost:8080/sendsms';
-                cisv.postAjax(url, vm.form).then(function (result) {
-                    console.log('*** result ***');
+                cisv.postAjax(vm.restsmsUrl, vm.form).then(function (result) {
+                    console.log('**** result ***');
                     console.log(result);
+                    console.log(result.data);
+
                     if (result.status === 200) {
-                        vm.form.msg = result.data.msg;
+                        var data = JSON.parse(result.data.msg);
+                        data = data.data.message[0];
+                        if (data.accepted) {
+                            vm.form.msg = 'The message is sent to ' + data.to + '. Message Id: ' + data.apiMessageId;
+                        } else {
+                            vm.form.msg = result.data.msg;
+                        }
+                        console.log('*** msg ****');
+                        console.log(vm.form.msg);
                     } else {
                         vm.form.msg = 'There is a technical issue with Text Message Server. Please try it later on.';
                     }
