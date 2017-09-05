@@ -86,6 +86,7 @@ angular.module('viewCustom')
             vm.holding=vm.parentCtrl.item.delivery.holding;
             vm.parentData=cisv.getParentData();
             vm.getLibraryNames();
+
         };
 
         vm.$doCheck=function(){

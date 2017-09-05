@@ -83,6 +83,100 @@ angular.module('viewCustom').service('customImagesService', ['$filter', function
 }]);
 
 /**
+ * Created by samsan on 9/5/17.
+ */
+
+angular.module('viewCustom').controller('customPrintPageCtrl', ['$element', '$stateParams', 'customService', '$timeout', '$window', function ($element, $stateParams, customService, $timeout, $window) {
+    var vm = this;
+    vm.item = {};
+    var cs = customService;
+    // get item data to display on full view page
+    vm.getItem = function () {
+        var url = vm.parentCtrl.searchService.cheetah.restBaseURLs.pnxBaseURL + '/' + vm.context + '/' + vm.docid;
+        url += '?vid=' + vm.vid;
+        cs.getAjax(url, '', 'get').then(function (result) {
+            vm.item = result.data;
+        }, function (error) {
+            console.log(error);
+        });
+    };
+
+    vm.$onInit = function () {
+        vm.docid = $stateParams.docid;
+        vm.context = $stateParams.context;
+        vm.vid = $stateParams.vid;
+        console.log('**** custom-print-page ***');
+        console.log(vm);
+        vm.getItem();
+
+        $timeout(function () {
+            // remove top menu and search bar
+            var el = $element[0].parentNode.parentNode;
+            if (el) {
+                el.children[0].remove();
+            }
+
+            var topMenu = document.getElementById('customTopMenu');
+            if (topMenu) {
+                topMenu.remove();
+            }
+
+            // remove action list
+            var actionList = document.getElementById('action_list');
+            if (actionList) {
+                actionList.remove();
+            }
+            console.log('*** element ***');
+            console.log(actionList);
+        }, 500);
+    };
+
+    vm.$postLink = function () {
+        $timeout(function () {
+            $window.print();
+        }, 3000);
+    };
+}]);
+
+angular.module('viewCustom').component('customPrintPage', {
+    bindings: { parentCtrl: '<' },
+    controller: 'customPrintPageCtrl',
+    controllerAs: 'vm',
+    templateUrl: '/primo-explore/custom/HVD2/html/custom-print-page.html'
+});
+
+/**
+ * Created by samsan on 9/5/17.
+ */
+
+angular.module('viewCustom').controller('customPrintCtrl', ['$window', '$stateParams', function ($window, $stateParams) {
+    var vm = this;
+    var params = $stateParams;
+
+    vm.print = function () {
+        var url = '/primo-explore/printPage/' + vm.parentCtrl.context + '/' + vm.parentCtrl.pnx.control.recordid;
+        url += '?vid=' + params.vid;
+        $window.open(url, '_blank');
+    };
+}]);
+
+angular.module('viewCustom').config(function ($stateProvider) {
+    $stateProvider.state('exploreMain.printPage', {
+        url: '/printPage/:context/:docid',
+        views: {
+            '': {
+                template: '<custom-print-page parent-ctrl="$ctrl"></custom-print-page>'
+            }
+        }
+    });
+}).component('customPrint', {
+    bindings: { parentCtrl: '<' },
+    controller: 'customPrintCtrl',
+    controllerAs: 'vm',
+    templateUrl: '/primo-explore/custom/HVD2/html/custom-print.html'
+});
+
+/**
  * Created by samsan on 7/18/17.
  * This is a service component and use to store data, get data, ajax call, compare any logic.
  */
@@ -733,7 +827,7 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
 
     // get rest endpoint Url
     vm.getUrl = function () {
-        cisv.getAjax('/primo-explore/custom/HVD2/html/config.text', '', 'get').then(function (res) {
+        cisv.getAjax('/primo-explore/custom/HVD2/html/config.html', '', 'get').then(function (res) {
             vm.restsmsUrl = res.data.smsUrl;
         }, function (error) {
             console.log(error);
@@ -895,6 +989,15 @@ angular.module('viewCustom').controller('prmActionListAfterCtrl', ['$element', '
                 mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/ic_textsms_black_24px.svg');
                 childNode.prepend(mdIcon);
                 $compile(childNode)($scope); // refresh the dom
+            }
+
+            var printEl = document.getElementById('Print');
+            if (printEl) {
+                printEl.children[0].remove();
+                var printTag = document.createElement('custom-print');
+                printTag.setAttribute('parent-ctrl', 'vm.parentCtrl.item');
+                printEl.appendChild(printTag);
+                $compile(printEl.children[0])($scope);
             }
         }, 2000);
     };

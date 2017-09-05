@@ -32,8 +32,18 @@ angular.module('viewCustom')
                     $compile(childNode)($scope); // refresh the dom
                 }
 
+                var printEl=document.getElementById('Print');
+                if(printEl) {
+                    printEl.children[0].remove();
+                    var printTag=document.createElement('custom-print');
+                    printTag.setAttribute('parent-ctrl','vm.parentCtrl.item');
+                    printEl.appendChild(printTag);
+                    $compile(printEl.children[0])($scope);
+                }
 
-            },2000)
+
+            },2000);
+
 
         };
 
@@ -42,6 +52,7 @@ angular.module('viewCustom')
             if(vm.parentCtrl.activeAction) {
                 cisv.setActionName(vm.parentCtrl.activeAction);
             }
+
         };
 
 
