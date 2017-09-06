@@ -16,12 +16,13 @@
             Choose one
         </div>
 
-        <md-list>
-            <md-list-item ng-repeat="loc in vm.locations track by $index" class="list-item-text {{loc.cssClass}}" (click)="vm.sendText($index,loc.items[0])">
+        <md-list id="smsLocation">
+            <md-list-item ng-repeat="loc in vm.locations track by $index" class="list-item-text {{loc.cssClass}}" (click)="vm.sendText($index)">
                 <div layout="row" flex>
                     <a  class="textsms-link">
-                        <span>{{loc.items[0].mainlocationname}}</span>
-                        &nbsp;<span>{{loc.items[0].callnumber}}</span>
+                        <span translate="{{loc.libraryCode}}"></span>
+                        &nbsp;<span>{{loc.callNumber}}</span>
+
                     </a>
                 </div>
             </md-list-item>

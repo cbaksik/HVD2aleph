@@ -102,11 +102,10 @@ angular.module('viewCustom').controller('customPrintPageCtrl', ['$element', '$st
     };
 
     vm.$onInit = function () {
+        // capture the parameter from UI-Router
         vm.docid = $stateParams.docid;
         vm.context = $stateParams.context;
         vm.vid = $stateParams.vid;
-        console.log('**** custom-print-page ***');
-        console.log(vm);
         vm.getItem();
 
         $timeout(function () {
@@ -126,8 +125,6 @@ angular.module('viewCustom').controller('customPrintPageCtrl', ['$element', '$st
             if (actionList) {
                 actionList.remove();
             }
-            console.log('*** element ***');
-            console.log(actionList);
         }, 500);
     };
 
@@ -188,6 +185,7 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
         return $http({
             'method': methodType,
             'url': url,
+            'timeout': 5000,
             'params': param
         });
     };
@@ -196,6 +194,7 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
         return $http({
             'method': 'post',
             'url': url,
+            'timeout': 5000,
             'data': jsonObj
         });
     };
@@ -814,14 +813,12 @@ angular.module('viewCustom').filter('truncatefilter', function () {
  * Created by samsan on 8/16/17.
  */
 
-angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customService', 'prmSearchService', '$window', '$q', function (customService, prmSearchService, $window, $q) {
+angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customService', 'prmSearchService', '$window', function (customService, prmSearchService, $window) {
 
     var cisv = customService;
     var cs = prmSearchService;
     var vm = this;
     vm.restsmsUrl = '';
-    vm.parentData = {};
-    vm.holding = [];
     vm.locations = [];
     vm.form = { 'phone': '', 'deviceType': '', 'body': '', 'subject': 'SMS from Harvard Library', 'error': '', 'mobile': false, 'msg': '' };
 
@@ -832,46 +829,6 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
         }, function (error) {
             console.log(error);
         });
-    };
-
-    // get the library location name
-    vm.getLibraryNames = function () {
-        vm.locations = [];
-        var url = '';
-        var qList = [];
-        if (vm.parentData.opacService) {
-            url = vm.parentData.opacService.restBaseURLs.ILSServicesBaseURL + '/holdings';
-            var paramList = [];
-            for (var i = 0; i < vm.holding.length; i++) {
-                var params = { 'filters': { 'callnumber': '', 'collection': '', 'holid': '', 'vid': 'HVD2', 'sublibs': '', 'sublibrary': '',
-                        'ilsRecordList': [{ 'institution': 'HVD', 'recordId': '' }] }, 'locations': '' };
-                var data = vm.holding[i];
-                params.filters.holid = data.holdId;
-                params.filters.vid = data.organization;
-                params.filters.ilsRecordList[0].institution = data.organization;
-                params.filters.ilsRecordList[0].recordId = data.ilsApiId;
-                params.filters.sublibs = data.mainLocation;
-                params.filters.sublibrary = data.mainLocation;
-                params.locations = [data];
-
-                paramList[i] = params;
-                qList[i] = cisv.postAjax(url, paramList[i]);
-            }
-
-            var ajaxList = $q.all(qList);
-            ajaxList.then(function (result) {
-                if (result) {
-                    for (var i = 0; i < result.length; i++) {
-                        var data = result[i].data;
-                        var loc = data.locations[0];
-                        loc.cssClass = 'textsms-row';
-                        vm.locations.push(loc);
-                    }
-                }
-            }, function (error) {
-                console.log(error);
-            });
-        }
     };
 
     vm.$onInit = function () {
@@ -885,9 +842,10 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
             vm.form.deviceType = cs.getBrowserType();
         }
 
-        vm.holding = vm.parentCtrl.item.delivery.holding;
-        vm.parentData = cisv.getParentData();
-        vm.getLibraryNames();
+        vm.locations = vm.parentCtrl.item.delivery.holding;
+        for (var i = 0; i < vm.locations.length; i++) {
+            vm.locations[i].cssClass = 'textsms-row';
+        }
     };
 
     vm.$doCheck = function () {
@@ -901,7 +859,7 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
     };
 
     // this function is trigger only if a user is using laptop computer
-    vm.sendText = function (k, loc) {
+    vm.sendText = function (k) {
         // reset the row css class
         for (var i = 0; i < vm.locations.length; i++) {
             vm.locations[i].cssClass = 'textsms-row';
@@ -920,32 +878,51 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
             count++;
         }
 
-        vm.form.body = loc.mainlocationname + ' ' + loc.callnumber;
+        // get the library name and call number
+        var el = document.getElementById('smsLocation');
+        if (el) {
+            vm.form.body = el.children[k].innerText;
+        }
         if (count === 0) {
+            var title = '';
+            if (vm.parentCtrl.item.pnx.display.title) {
+                title = vm.parentCtrl.item.pnx.display.title[0];
+                var pattern = /[:]/;
+                if (pattern.test(title)) {
+                    var arr = title.split(':');
+                    title = arr[0];
+                    if (title.length > 30) {
+                        title = title.substring(0, 30);
+                    }
+                    title = title.trim();
+                    title += '... ';
+                } else if (title.length > 30) {
+                    title = title.substring(0, 30);
+                    title += '... ';
+                }
+
+                vm.form.body = title + vm.form.body;
+            }
+
             if (vm.form.mobile) {
                 var url = 'sms:' + vm.form.phone + '&body=' + vm.form.body;
                 $window.open(url, '_blank');
             } else {
                 cisv.postAjax(vm.restsmsUrl, vm.form).then(function (result) {
-                    console.log('**** result ***');
-                    console.log(result);
-                    console.log(result.data);
-
                     if (result.status === 200) {
                         var data = JSON.parse(result.data.msg);
                         data = data.data.message[0];
                         if (data.accepted) {
-                            vm.form.msg = 'The message is sent to ' + data.to + '. Message Id: ' + data.apiMessageId;
+                            vm.form.msg = 'The message has been sent to ' + data.to + '.';
                         } else {
                             vm.form.msg = result.data.msg;
                         }
-                        console.log('*** msg ****');
-                        console.log(vm.form.msg);
                     } else {
                         vm.form.msg = 'There is a technical issue with Text Message Server. Please try it later on.';
                     }
                 }, function (error) {
                     console.log(error);
+                    vm.form.msg = 'There is a technical issue with Text Message Server. The rest endpoint server may be down.';
                 });
             }
         }
@@ -968,29 +945,41 @@ angular.module('viewCustom').controller('prmActionListAfterCtrl', ['$element', '
     var vm = this;
     var cisv = customService;
     vm.$onInit = function () {
-        // insert  textsms into existing action list
-        vm.parentCtrl.actionLabelNamesMap.textsms = 'Text call #';
-        vm.parentCtrl.actionListService.actionsToIndex.textsms = 6;
-        if (vm.parentCtrl.actionListService.requiredActionsList.indexOf('textsms') === -1) {
-            vm.parentCtrl.actionListService.requiredActionsList.push('textsms');
+        // if holding location is existed, then insert Text call # into action list
+        if (vm.parentCtrl.item.delivery.holding.length > 0) {
+            // insert  textsms into existing action list
+            vm.parentCtrl.actionLabelNamesMap.textsms = 'Text call #';
+            vm.parentCtrl.actionListService.actionsToIndex.textsms = vm.parentCtrl.requiredActionsList.length + 1;
+            if (vm.parentCtrl.actionListService.requiredActionsList.indexOf('textsms') === -1) {
+                vm.parentCtrl.actionListService.requiredActionsList.push('textsms');
+            }
         }
     };
 
     vm.$onChanges = function () {
         $timeout(function () {
-            var el = document.getElementById('textsms');
-            if (el) {
-                //remove prm-icon
-                var prmIcon = el.children[0].children[0].children[0].children[0];
-                prmIcon.remove();
-                // insert new icon
-                var childNode = el.children[0].children[0].children[0];
-                var mdIcon = document.createElement('md-icon');
-                mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/ic_textsms_black_24px.svg');
-                childNode.prepend(mdIcon);
-                $compile(childNode)($scope); // refresh the dom
+            // if holding location is existed, then insert sms text call icon
+            if (vm.parentCtrl.item.delivery.holding.length > 0) {
+                var el = document.getElementById('textsms');
+                if (el) {
+                    //remove prm-icon
+                    var prmIcon = el.children[0].children[0].children[0].children[0];
+                    prmIcon.remove();
+                    // insert new icon
+                    var childNode = el.children[0].children[0].children[0];
+                    var mdIcon = document.createElement('md-icon');
+                    mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/ic_textsms_black_24px.svg');
+                    childNode.prepend(mdIcon);
+                    $compile(childNode)($scope); // refresh the dom
+                }
+            } else {
+                var el = document.getElementById('textsms');
+                if (el) {
+                    el.remove();
+                }
             }
 
+            // print
             var printEl = document.getElementById('Print');
             if (printEl) {
                 printEl.children[0].remove();
@@ -1466,11 +1455,6 @@ angular.module('viewCustom').service('prmSearchService', ['$http', '$window', '$
 
     serviceObj.getPlatform = function () {
         var userAgent = $window.navigator.userAgent;
-
-        console.log('*** userAgent ***');
-        console.log(userAgent);
-        console.log($window.navigator);
-
         var browsers = { ios: /ios/i, android: /android/i, blackberry: /blackberry/i, tablet: /tablet/i, iphone: /iphone/i, ipad: /ipad/i, samsung: /samsung/i };
         for (var key in browsers) {
             if (browsers[key].test(userAgent)) {
@@ -1483,10 +1467,6 @@ angular.module('viewCustom').service('prmSearchService', ['$http', '$window', '$
 
     serviceObj.getBrowserType = function () {
         var userAgent = $window.navigator.userAgent;
-
-        console.log('*** userAgent ***');
-        console.log(userAgent);
-
         var browsers = { chrome: /chrome/i, safari: /safari/i, firefox: /firefox/i, ie: /internet explorer/i };
         for (var key in browsers) {
             if (browsers[key].test(userAgent)) {
@@ -1991,29 +1971,30 @@ angular.module('viewCustom').component('prmServiceLinksAfter', {
  *  This component is creating white top bar, link menu on the right, and remove some doms
  */
 
-angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', function ($element) {
+angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', '$timeout', function ($element, $timeout) {
     var vm = this;
 
     vm.topRightMenus = [{ 'title': 'Research Guides', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:portal_resguides', 'label': 'Go to Research guides' }, { 'title': 'Libraries / Hours', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:bannerfindlib', 'label': 'Go to Library hours' }, { 'title': 'All My Accounts', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:banneraccounts', 'label': 'Go to all my accounts' }];
 
     vm.$onInit = function () {
-        // hide primo tab menu
-        vm.parentCtrl.showMainMenu = false;
-        // create new div for the top white menu
-        var el = $element[0].parentNode.parentNode.parentNode.parentNode.parentNode;
-        var div = document.createElement('div');
-        div.setAttribute('id', 'customTopMenu');
-        div.setAttribute('class', 'topMenu');
-        // if the topMenu class does not exist, add it.
-        if (el.children[0].className !== 'topMenu') {
-            el.prepend(div);
-        }
-        var el2 = $element[0].parentNode.children[1].children;
-        if (el2) {
-            // remove menu
-            el2[2].remove();
-            el2[2].remove();
-        }
+        $timeout(function () {
+            // create new div for the top white menu
+            var el = $element[0].parentNode.parentNode.parentNode.parentNode.parentNode;
+            var div = document.createElement('div');
+            div.setAttribute('id', 'customTopMenu');
+            div.setAttribute('class', 'topMenu');
+            // if the topMenu class does not exist, add it.
+            var topMenu = document.getElementById('customTopMenu');
+            if (topMenu === null) {
+                el.prepend(div);
+            }
+            var el2 = $element[0].parentNode.children[1].children;
+            if (el2) {
+                // remove menu
+                el2[2].remove();
+                el2[2].remove();
+            }
+        }, 500);
     };
 }]);
 

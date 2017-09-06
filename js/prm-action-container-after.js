@@ -4,14 +4,12 @@
 
 
 angular.module('viewCustom')
-    .controller('prmActionContainerAfterCtrl',['customService','prmSearchService','$window','$q',function (customService,prmSearchService,$window,$q) {
+    .controller('prmActionContainerAfterCtrl',['customService','prmSearchService','$window',function (customService,prmSearchService,$window) {
 
         var cisv=customService;
         var cs=prmSearchService;
         var vm=this;
         vm.restsmsUrl='';
-        vm.parentData={};
-        vm.holding=[];
         vm.locations=[];
         vm.form={'phone':'','deviceType':'','body':'','subject':'SMS from Harvard Library','error':'','mobile':false,'msg':''};
 
@@ -27,50 +25,6 @@ angular.module('viewCustom')
                 )
         };
 
-        // get the library location name
-        vm.getLibraryNames=function () {
-            vm.locations=[];
-            var url='';
-            var qList=[];
-            if(vm.parentData.opacService) {
-                url = vm.parentData.opacService.restBaseURLs.ILSServicesBaseURL+'/holdings';
-                var paramList=[];
-                for(var i=0; i < vm.holding.length; i++) {
-                    var params={'filters':{'callnumber':'','collection':'','holid':'','vid':'HVD2','sublibs':'','sublibrary':'',
-                        'ilsRecordList':[{'institution':'HVD','recordId':''}]},'locations':''};
-                    var data=vm.holding[i];
-                    params.filters.holid=data.holdId;
-                    params.filters.vid=data.organization;
-                    params.filters.ilsRecordList[0].institution=data.organization;
-                    params.filters.ilsRecordList[0].recordId=data.ilsApiId;
-                    params.filters.sublibs=data.mainLocation;
-                    params.filters.sublibrary=data.mainLocation;
-                    params.locations = [data];
-
-                    paramList[i]=params;
-                    qList[i]=cisv.postAjax(url,paramList[i]);
-
-                }
-
-                var ajaxList = $q.all(qList);
-                ajaxList.then(
-                    function (result) {
-                        if(result) {
-                            for (var i = 0; i < result.length; i++) {
-                                var data = result[i].data;
-                                var loc=data.locations[0];
-                                loc.cssClass='textsms-row';
-                                vm.locations.push(loc);
-                            }
-                        }
-                    },
-                    function (error) {
-                        console.log(error);
-                    }
-                )
-
-            }
-        };
 
         vm.$onInit=function() {
             // get rest sms endpoint url from config.text file
@@ -83,9 +37,10 @@ angular.module('viewCustom')
                 vm.form.deviceType=cs.getBrowserType();
             }
 
-            vm.holding=vm.parentCtrl.item.delivery.holding;
-            vm.parentData=cisv.getParentData();
-            vm.getLibraryNames();
+            vm.locations=vm.parentCtrl.item.delivery.holding;
+            for(let i=0; i < vm.locations.length; i++) {
+                vm.locations[i].cssClass='textsms-row';
+            }
 
         };
 
@@ -101,9 +56,9 @@ angular.module('viewCustom')
         };
 
         // this function is trigger only if a user is using laptop computer
-        vm.sendText=function (k,loc) {
+        vm.sendText=function (k) {
             // reset the row css class
-            for(var i=0; i < vm.locations.length; i++) {
+            for(let i=0; i < vm.locations.length; i++) {
                 vm.locations[i].cssClass='textsms-row';
             }
             // set select row highlite
@@ -120,33 +75,53 @@ angular.module('viewCustom')
                 count++;
             }
 
-            vm.form.body=loc.mainlocationname + ' ' + loc.callnumber;
+            // get the library name and call number
+            var el=document.getElementById('smsLocation');
+            if(el) {
+                vm.form.body = el.children[k].innerText;
+            }
             if(count===0) {
+                let title='';
+                if(vm.parentCtrl.item.pnx.display.title) {
+                    title = vm.parentCtrl.item.pnx.display.title[0];
+                    var pattern=/[:]/;
+                    if(pattern.test(title)) {
+                        let arr=title.split(':');
+                        title=arr[0];
+                        if(title.length > 30) {
+                            title=title.substring(0,30);
+                        }
+                        title=title.trim();
+                        title+='... ';
+                    } else if(title.length > 30) {
+                        title=title.substring(0,30);
+                        title+='... ';
+                    }
+
+                    vm.form.body=title+vm.form.body;
+
+                }
+
                 if (vm.form.mobile) {
                     var url = 'sms:' + vm.form.phone + '&body=' + vm.form.body;
                     $window.open(url, '_blank');
                 } else {
-                    cisv.postAjax( vm.restsmsUrl, vm.form).then(function (result) {
-                            console.log('**** result ***');
-                            console.log(result);
-                            console.log(result.data);
-
+                    cisv.postAjax(vm.restsmsUrl, vm.form).then(function (result) {
                             if(result.status===200) {
                                var data=JSON.parse(result.data.msg);
                                data=data.data.message[0];
                                if(data.accepted) {
-                                   vm.form.msg='The message is sent to '+ data.to +'. Message Id: ' + data.apiMessageId;
+                                   vm.form.msg='The message has been sent to '+ data.to +'.';
                                } else {
                                    vm.form.msg=result.data.msg;
                                }
-                               console.log('*** msg ****');
-                               console.log(vm.form.msg);
 
                             } else {
                                 vm.form.msg='There is a technical issue with Text Message Server. Please try it later on.';
                             }
                         }, function (error) {
                             console.log(error);
+                            vm.form.msg='There is a technical issue with Text Message Server. The rest endpoint server may be down.';
                         }
                     )
 

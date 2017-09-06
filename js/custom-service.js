@@ -11,6 +11,7 @@ angular.module('viewCustom')
             return $http({
                 'method':methodType,
                 'url':url,
+                'timeout':5000,
                 'params':param
             })
         };
@@ -19,6 +20,7 @@ angular.module('viewCustom')
             return $http({
                 'method':'post',
                 'url':url,
+                'timeout':5000,
                 'data':jsonObj
             })
         };

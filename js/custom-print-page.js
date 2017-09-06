@@ -24,11 +24,10 @@ angular.module('viewCustom')
 
 
         vm.$onInit=function () {
+            // capture the parameter from UI-Router
             vm.docid=$stateParams.docid;
             vm.context=$stateParams.context;
             vm.vid=$stateParams.vid;
-            console.log('**** custom-print-page ***');
-            console.log(vm);
             vm.getItem();
 
             $timeout(function () {
@@ -48,8 +47,6 @@ angular.module('viewCustom')
                 if(actionList) {
                     actionList.remove();
                 }
-                console.log('*** element ***');
-                console.log(actionList);
 
             },500)
         };
