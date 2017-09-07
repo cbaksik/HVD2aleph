@@ -174,6 +174,39 @@ angular.module('viewCustom').config(function ($stateProvider) {
 });
 
 /**
+ * Created by samsan on 9/7/17.
+ */
+
+angular.module('viewCustom').controller('customScannedKeyContentCtrl', [function () {
+    var vm = this;
+    vm.lds41 = [];
+
+    vm.$onChanges = function () {
+        // re-construct json obj if lds41 is existed
+        if (vm.item.pnx.display.lds41) {
+            var lds41 = vm.item.pnx.display.lds41;
+            for (var i = 0; i < lds41.length; i++) {
+                var str = lds41[i];
+                var arr = str.split('--');
+                if (arr.length > 0) {
+                    var obj = { 'title': '', 'url': '' };
+                    obj.title = arr[0];
+                    obj.url = arr[1];
+                    vm.lds41.push(obj);
+                }
+            }
+        }
+    };
+}]);
+
+angular.module('viewCustom').component('customScannedKeyContent', {
+    bindings: { item: '<' },
+    controllerAs: 'vm',
+    controller: 'customScannedKeyContentCtrl',
+    templateUrl: '/primo-explore/custom/HVD2/html/custom-scanned-key-content.html'
+});
+
+/**
  * Created by samsan on 7/18/17.
  * This is a service component and use to store data, get data, ajax call, compare any logic.
  */
@@ -1072,7 +1105,7 @@ angular.module('viewCustom').component('prmBriefResultContainerAfter', {
 /* Author: Sam san
    This component is to capture item data from the parentCtrl. Then pass it to prm-view-online-after component
  */
-angular.module('viewCustom').controller('prmFullViewAfterCtrl', ['prmSearchService', function (prmSearchService) {
+angular.module('viewCustom').controller('prmFullViewAfterCtrl', ['prmSearchService', '$timeout', function (prmSearchService, $timeout) {
     var vm = this;
     var sv = prmSearchService;
 
@@ -1108,6 +1141,24 @@ angular.module('viewCustom').controller('prmFullViewAfterCtrl', ['prmSearchServi
         sv.setItem(itemData);
         // hide browse shelf it is an image HVD_VIA
         vm.hideBrowseShelf();
+    };
+
+    vm.$onInit = function () {
+        // remove more section so the view online would show twice
+        $timeout(function () {
+            if (vm.parentCtrl.item.pnx.display.lds41) {
+                for (var i = 0; i < vm.parentCtrl.services.length; i++) {
+                    // remove More section
+                    if (vm.parentCtrl.services[i].scrollId === 'getit_link2') {
+                        vm.parentCtrl.services.splice(i, 1);
+                    }
+                    // remove any links under view online section
+                    if (vm.parentCtrl.services[i].scrollId === 'getit_link1_0') {
+                        vm.parentCtrl.services[i].linkElement = {};
+                    }
+                }
+            }
+        }, 500);
     };
 }]);
 
@@ -1531,8 +1582,25 @@ angular.module('viewCustom').service('prmSearchService', ['$http', '$window', '$
 
     //parse xml
     serviceObj.parseXml = function (str) {
+        var options = {
+            mergeCDATA: true, // extract cdata and merge with text nodes
+            grokAttr: true, // convert truthy attributes to boolean, etc
+            grokText: false, // convert truthy text/attr to boolean, etc
+            normalize: true, // collapse multiple spaces to single space
+            xmlns: true, // include namespaces as attributes in output
+            namespaceKey: '_ns', // tag name for namespace objects
+            textKey: '_text', // tag name for text nodes
+            valueKey: '_value', // tag name for attribute values
+            attrKey: '_attr', // tag for attr groups
+            cdataKey: '_cdata', // tag for cdata nodes (ignored if mergeCDATA is true)
+            attrsAsObject: true, // if false, key is used as prefix to name, set prefix to '' to merge children and attrs.
+            stripAttrPrefix: true, // remove namespace prefixes from attributes
+            stripElemPrefix: true, // for elements of same name in diff namespaces, you can enable namespaces and access the nskey property
+            childrenAsArray: true // force children into arrays
+        };
+
         str = serviceObj.removeInvalidString(str);
-        return xmlToJSON.parseString(str);
+        return xmlToJSON.parseString(str, options);
     };
 
     // maninpulate data and convert xml data to json
@@ -2085,6 +2153,12 @@ angular.module('viewCustom').controller('prmViewOnlineAfterController', ['prmSea
             }
         } else {
             vm.singleImageFlag = true;
+        }
+
+        // check to see if lds41 is exist
+        if (vm.item.pnx.display.lds41) {
+            vm.singleImageFlag = false;
+            vm.viewAllComponetMetadataFlag = false;
         }
     };
 

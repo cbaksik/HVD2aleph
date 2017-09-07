@@ -11,7 +11,7 @@
 
 .hvInline {list-style: none; margin-left:-45px; margin-top: -20px;}
 
-.hvInline > li { display: table-cell; text-align: left; cursor: pointer; display: -moz-inline-stack;
+.hvInline > li { display: inline-block; text-align: left; cursor: pointer; display: -moz-inline-stack;
     margin-bottom:5px; margin-right:10px; width: auto; vertical-align: top; padding:0px;}
 
 
@@ -206,4 +206,12 @@ a.thumbnail > img:focus {
     .hvInline > li { display: inline-table; text-align: left; cursor: pointer; display: -moz-inline-stack;
         margin-bottom:1px; margin-right:1px; width: auto; height:240px; vertical-align: top; padding:0px;}
 
+}
+
+
+@media print {
+    .hvInline {list-style: none; margin-left:-45px; margin-top: -20px;}
+
+    .hvInline > li { display:table-cell; text-align: left; cursor: pointer; display: -moz-inline-stack;
+        margin-bottom:5px; margin-right:10px; width: auto; vertical-align: top; padding:0px;}
 }

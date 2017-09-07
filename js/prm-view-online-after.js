@@ -84,6 +84,12 @@ angular.module('viewCustom')
                 vm.singleImageFlag=true;
             }
 
+            // check to see if lds41 is exist
+            if(vm.item.pnx.display.lds41) {
+               vm.singleImageFlag=false;
+               vm.viewAllComponetMetadataFlag=false;
+            }
+
         };
 
         // view all component metadata

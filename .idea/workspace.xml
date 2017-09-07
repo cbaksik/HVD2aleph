@@ -3,15 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="76e16762-c9c8-4efd-b26f-a22111731ef2" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/config.html" afterPath="$PROJECT_DIR$/html/config.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/prm-action-container-after.html" afterPath="$PROJECT_DIR$/html/prm-action-container-after.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/custom-print-page.js" afterPath="$PROJECT_DIR$/js/custom-print-page.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/custom-service.js" afterPath="$PROJECT_DIR$/js/custom-service.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/custom1.css" afterPath="$PROJECT_DIR$/css/custom1.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/multipleThumbnail.css" afterPath="$PROJECT_DIR$/css/multipleThumbnail.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/prm-view-online-after.html" afterPath="$PROJECT_DIR$/html/prm-view-online-after.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/custom.js" afterPath="$PROJECT_DIR$/js/custom.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-action-container-after.js" afterPath="$PROJECT_DIR$/js/prm-action-container-after.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-action-list-after.js" afterPath="$PROJECT_DIR$/js/prm-action-list-after.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-full-view-after.js" afterPath="$PROJECT_DIR$/js/prm-full-view-after.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-search-service.js" afterPath="$PROJECT_DIR$/js/prm-search-service.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-topbar-after.js" afterPath="$PROJECT_DIR$/js/prm-topbar-after.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-view-online-after.js" afterPath="$PROJECT_DIR$/js/prm-view-online-after.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -25,14 +23,25 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="config.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/html/config.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="45">
+              <caret line="3" column="1" lean-forward="true" selection-start-line="3" selection-start-column="1" selection-end-line="3" selection-end-column="1" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="CSS File" />
-        <option value="JavaScript File" />
         <option value="HTML File" />
+        <option value="JavaScript File" />
+        <option value="CSS File" />
       </list>
     </option>
   </component>
@@ -68,15 +77,10 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/js/prm-service-links-after.js" />
-        <option value="$PROJECT_DIR$/css/app-colors.css" />
-        <option value="$PROJECT_DIR$/html/prm-location-item-after.html" />
-        <option value="$PROJECT_DIR$/img/ic_folder_black_36px.svg" />
         <option value="$PROJECT_DIR$/html/prm-topbar-after.html" />
         <option value="$PROJECT_DIR$/html/prm-logo-after.html" />
         <option value="$PROJECT_DIR$/css/prm-brief-result-container-after.css" />
         <option value="$PROJECT_DIR$/css/prm-topbar-after.css" />
-        <option value="$PROJECT_DIR$/html/prm-view-online-after.html" />
         <option value="$PROJECT_DIR$/js/mutipleThumbnail.js" />
         <option value="$PROJECT_DIR$/css/custom-view-all-component-metadata.css" />
         <option value="$PROJECT_DIR$/js/custom-view-all-component-metadata.js" />
@@ -87,13 +91,11 @@
         <option value="$PROJECT_DIR$/js/custom-thumbnail.js" />
         <option value="$PROJECT_DIR$/js/responsiveImage.js" />
         <option value="$PROJECT_DIR$/html/prm-brief-result-container-after.html" />
-        <option value="$PROJECT_DIR$/js/prm-view-online-after.js" />
         <option value="$PROJECT_DIR$/html/prm-action-list-after.html" />
         <option value="$PROJECT_DIR$/js/custom-textsms-dialog.js" />
         <option value="$PROJECT_DIR$/html/custom-textsms-dialog.html" />
         <option value="$PROJECT_DIR$/css/custom-textsms-dialog.css" />
         <option value="$PROJECT_DIR$/js/prm-locations-after.js" />
-        <option value="$PROJECT_DIR$/js/prm-full-view-after.js" />
         <option value="$PROJECT_DIR$/js/hvd-library-codes.js" />
         <option value="$PROJECT_DIR$/html/custom-textsms.html" />
         <option value="$PROJECT_DIR$/js/custom-textsms.js" />
@@ -108,17 +110,24 @@
         <option value="$PROJECT_DIR$/html/config.text" />
         <option value="$PROJECT_DIR$/html/custom-print.html" />
         <option value="$PROJECT_DIR$/js/custom-print.js" />
-        <option value="$PROJECT_DIR$/css/multipleThumbnail.css" />
         <option value="$PROJECT_DIR$/html/custom-print-page.html" />
         <option value="$PROJECT_DIR$/js/prm-location-items-after.js" />
-        <option value="$PROJECT_DIR$/html/config.html" />
         <option value="$PROJECT_DIR$/html/prm-action-container-after.html" />
         <option value="$PROJECT_DIR$/js/custom-print-page.js" />
         <option value="$PROJECT_DIR$/js/custom-service.js" />
         <option value="$PROJECT_DIR$/js/prm-action-container-after.js" />
         <option value="$PROJECT_DIR$/js/prm-topbar-after.js" />
-        <option value="$PROJECT_DIR$/js/prm-search-service.js" />
         <option value="$PROJECT_DIR$/js/prm-action-list-after.js" />
+        <option value="$PROJECT_DIR$/js/prm-search-service.js" />
+        <option value="$PROJECT_DIR$/html/custom-scanned-key-content.html" />
+        <option value="$PROJECT_DIR$/html/prm-view-online-after.html" />
+        <option value="$PROJECT_DIR$/js/prm-full-view-after.js" />
+        <option value="$PROJECT_DIR$/css/custom-print.css" />
+        <option value="$PROJECT_DIR$/css/custom-scanned-key-content.css" />
+        <option value="$PROJECT_DIR$/css/multipleThumbnail.css" />
+        <option value="$PROJECT_DIR$/js/custom-scanned-key-content.js" />
+        <option value="$PROJECT_DIR$/js/prm-view-online-after.js" />
+        <option value="$PROJECT_DIR$/html/config.html" />
       </list>
     </option>
   </component>
@@ -137,7 +146,7 @@
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1280" />
-    <option name="height" value="728" />
+    <option name="height" value="709" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -154,7 +163,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -177,27 +186,13 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="HVD2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="HVD2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="html" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -355,16 +350,19 @@
       <workItem from="1504634022244" duration="6335000" />
       <workItem from="1504705694318" duration="10087000" />
       <workItem from="1504722590249" duration="4835000" />
+      <workItem from="1504791523721" duration="7980000" />
+      <workItem from="1504806373679" duration="16000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="266613000" />
+    <option name="totallyTimeSpent" value="274609000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="728" extended-state="6" />
+    <frame x="0" y="23" width="1280" height="709" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25546876" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25546876" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -393,36 +391,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/js/custom-thumbnail.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="61" lean-forward="false" selection-start-line="16" selection-start-column="61" selection-end-line="16" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/singleImage.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-462">
-          <caret line="30" column="39" lean-forward="false" selection-start-line="30" selection-start-column="39" selection-end-line="30" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/responsiveImage.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="68" column="40" lean-forward="false" selection-start-line="68" selection-start-column="40" selection-end-line="68" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/html/responsiveImage.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/html/prm-action-list-after.html" />
-    <entry file="file://$PROJECT_DIR$/css/custom-textsms-dialog.css" />
     <entry file="file://$PROJECT_DIR$/js/custom-textsms-dialog.js" />
     <entry file="file://$PROJECT_DIR$/html/custom-textsms-dialog.html" />
     <entry file="file://$PROJECT_DIR$/js/prm-brief-result-container-after.js">
@@ -469,13 +437,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
           <caret line="3" column="65" lean-forward="true" selection-start-line="3" selection-start-column="65" selection-end-line="3" selection-end-column="93" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/prm-full-view-after.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="40" column="33" lean-forward="false" selection-start-line="40" selection-start-column="33" selection-end-line="40" selection-end-column="33" />
         </state>
       </provider>
     </entry>
@@ -546,13 +507,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/html/prm-location-items-after.html" />
-    <entry file="file://$PROJECT_DIR$/js/prm-location-item-after.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="879">
-          <caret line="102" column="90" lean-forward="false" selection-start-line="102" selection-start-column="90" selection-end-line="102" selection-end-column="90" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/prm-location-after.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="259">
@@ -568,27 +522,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/html/config.text" />
-    <entry file="file://$PROJECT_DIR$/js/prm-view-online-after.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="102" column="29" lean-forward="true" selection-start-line="102" selection-start-column="22" selection-end-line="102" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/html/prm-view-online-after.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="122" lean-forward="false" selection-start-line="0" selection-start-column="122" selection-end-line="0" selection-end-column="122" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/css/multipleThumbnail.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="13" column="36" lean-forward="false" selection-start-line="13" selection-start-column="36" selection-end-line="13" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/html/multipleThumbnail.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -596,18 +529,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/prm-location-items-after.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="362">
-          <caret line="31" column="39" lean-forward="false" selection-start-line="31" selection-start-column="39" selection-end-line="31" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/html/custom-print-page.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
           <caret line="2" column="65" lean-forward="true" selection-start-line="2" selection-start-column="49" selection-end-line="2" selection-end-column="65" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -615,17 +540,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="15" column="8" lean-forward="true" selection-start-line="15" selection-start-column="8" selection-end-line="15" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#39#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/html/config.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="9" lean-forward="false" selection-start-line="1" selection-start-column="9" selection-end-line="1" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -633,7 +547,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
           <caret line="5" column="12" lean-forward="true" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="12" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -641,9 +554,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="405">
           <caret line="29" column="36" lean-forward="false" selection-start-line="29" selection-start-column="36" selection-end-line="29" selection-end-column="36" />
-          <folding>
-            <element signature="e#0#39#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -651,15 +561,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-326">
           <caret line="22" column="28" lean-forward="false" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/prm-search-service.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="50" lean-forward="false" selection-start-line="22" selection-start-column="50" selection-end-line="22" selection-end-column="50" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -667,7 +568,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="11" column="6" lean-forward="true" selection-start-line="11" selection-start-column="6" selection-end-line="11" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -675,7 +575,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
           <caret line="14" column="10" lean-forward="true" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -683,7 +582,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="275">
           <caret line="22" column="69" lean-forward="false" selection-start-line="22" selection-start-column="69" selection-end-line="22" selection-end-column="69" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -691,9 +589,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
           <caret line="19" column="141" lean-forward="false" selection-start-line="19" selection-start-column="141" selection-end-line="19" selection-end-column="141" />
-          <folding>
-            <element signature="e#1165#1171#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -701,7 +596,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="607">
           <caret line="56" column="20" lean-forward="false" selection-start-line="56" selection-start-column="20" selection-end-line="56" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -709,6 +603,98 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1420">
           <caret line="107" column="24" lean-forward="false" selection-start-line="107" selection-start-column="24" selection-end-line="107" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/prm-search-service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="105" column="51" lean-forward="true" selection-start-line="105" selection-start-column="51" selection-end-line="105" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/prm-location-item-after.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1281">
+          <caret line="102" column="90" lean-forward="false" selection-start-line="102" selection-start-column="90" selection-end-line="102" selection-end-column="90" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/prm-location-items-after.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="50" lean-forward="true" selection-start-line="11" selection-start-column="50" selection-end-line="11" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/html/responsiveImage.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/html/custom-thumbnail.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="10" lean-forward="true" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/html/prm-view-online-after.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="31" column="81" lean-forward="false" selection-start-line="31" selection-start-column="81" selection-end-line="31" selection-end-column="81" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/css/multipleThumbnail.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="472">
+          <caret line="214" column="39" lean-forward="false" selection-start-line="214" selection-start-column="39" selection-end-line="214" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/css/custom-scanned-key-content.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="112">
+          <caret line="29" column="39" lean-forward="true" selection-start-line="29" selection-start-column="39" selection-end-line="29" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/html/custom-scanned-key-content.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="53" lean-forward="false" selection-start-line="4" selection-start-column="53" selection-end-line="4" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/css/custom-print.css" />
+    <entry file="file://$PROJECT_DIR$/js/custom-scanned-key-content.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="24" column="12" lean-forward="false" selection-start-line="24" selection-start-column="12" selection-end-line="24" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/prm-view-online-after.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1365">
+          <caret line="91" column="12" lean-forward="false" selection-start-line="91" selection-start-column="12" selection-end-line="91" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/prm-full-view-after.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="840">
+          <caret line="58" column="16" lean-forward="false" selection-start-line="58" selection-start-column="16" selection-end-line="58" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/html/config.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="1" lean-forward="true" selection-start-line="3" selection-start-column="1" selection-end-line="3" selection-end-column="1" />
           <folding />
         </state>
       </provider>
