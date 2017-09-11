@@ -224,6 +224,9 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
     };
 
     serviceObj.postAjax = function (url, jsonObj) {
+        // pass primo token to header with value call token
+        $http.defaults.headers.common.token = jsonObj.token;
+        jsonObj.token = '';
         return $http({
             'method': 'post',
             'url': url,
@@ -853,7 +856,7 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
     var vm = this;
     vm.restsmsUrl = '';
     vm.locations = [];
-    vm.form = { 'phone': '', 'deviceType': '', 'body': '', 'subject': 'SMS from Harvard Library', 'error': '', 'mobile': false, 'msg': '' };
+    vm.form = { 'phone': '', 'deviceType': '', 'body': '', 'error': '', 'mobile': false, 'msg': '', 'token': '', 'ip': '', 'sessionToken': '', 'isLoggedIn': false, 'iat': '', 'inst': '', 'vid': '', 'exp': '', 'userName': '', 'iss': '', 'onCampus': false };
 
     // get rest endpoint Url
     vm.getUrl = function () {
@@ -862,6 +865,25 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
         }, function (error) {
             console.log(error);
         });
+    };
+
+    vm.$onChanges = function () {
+        vm.auth = cisv.getAuth();
+        if (vm.auth.primolyticsService.jwtUtilService) {
+            vm.form.token = vm.auth.primolyticsService.jwtUtilService.storageUtil.sessionStorage.primoExploreJwt;
+            vm.form.sessionToken = vm.auth.primolyticsService.jwtUtilService.storageUtil.localStorage.getJWTFromSessionStorage;
+            vm.form.isLoggedIn = vm.auth.isLoggedIn;
+            // decode JWT Token to see if it is a valid token
+            var obj = vm.auth.authenticationService.userSessionManagerService.jwtUtilService.jwtHelper.decodeToken(vm.form.token);
+            vm.form.ip = obj.ip;
+            vm.form.iss = obj.iss;
+            vm.form.userName = obj.userName;
+            vm.form.iat = obj.iat;
+            vm.form.exp = obj.exp;
+            vm.form.vid = obj.viewId;
+            vm.form.inst = obj.viewInstitutionCode;
+            vm.form.onCampus = obj.onCampus;
+        }
     };
 
     vm.$onInit = function () {
@@ -943,10 +965,14 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
             } else {
                 cisv.postAjax(vm.restsmsUrl, vm.form).then(function (result) {
                     if (result.status === 200) {
-                        var data = JSON.parse(result.data.msg);
-                        data = data.data.message[0];
-                        if (data.accepted) {
-                            vm.form.msg = 'The message has been sent to ' + data.to + '.';
+                        if (result.data.status) {
+                            var data = JSON.parse(result.data.msg);
+                            data = data.data.message[0];
+                            if (data.accepted) {
+                                vm.form.msg = 'The message has been sent to ' + data.to + '.';
+                            } else {
+                                vm.form.msg = 'The message did not send. The ClickAtell did not accept sms.';
+                            }
                         } else {
                             vm.form.msg = result.data.msg;
                         }

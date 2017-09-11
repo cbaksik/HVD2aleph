@@ -17,6 +17,9 @@ angular.module('viewCustom')
         };
 
         serviceObj.postAjax=function (url,jsonObj) {
+            // pass primo token to header with value call token
+            $http.defaults.headers.common.token=jsonObj.token;
+            jsonObj.token='';
             return $http({
                 'method':'post',
                 'url':url,

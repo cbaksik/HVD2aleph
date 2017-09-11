@@ -10,6 +10,7 @@ angular.module('viewCustom')
         // check if a user login
         vm.$onChanges=function(){
             sv.setAuth(vm.parentCtrl);
+
         };
 
     }]);
