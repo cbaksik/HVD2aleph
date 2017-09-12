@@ -1331,7 +1331,7 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
         }
         // get schedule visit link
         if (vm.locationInfo.aeonrequest) {
-            var dataList = sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json, itemsCategory, 'aeonrequest', 'Schedule visit', index, true);
+            var dataList = sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json, itemsCategory, 'aeonrequest', 'Request Item', index, true);
             requestLinks.push(dataList);
         }
 
