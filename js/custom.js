@@ -226,7 +226,6 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
     serviceObj.postAjax = function (url, jsonObj) {
         // pass primo token to header with value call token
         $http.defaults.headers.common.token = jsonObj.token;
-        jsonObj.token = '';
         return $http({
             'method': 'post',
             'url': url,
@@ -901,6 +900,9 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
         for (var i = 0; i < vm.locations.length; i++) {
             vm.locations[i].cssClass = 'textsms-row';
         }
+
+        console.log('*** prm-action-container-after ***');
+        console.log(vm.locations);
     };
 
     vm.$doCheck = function () {

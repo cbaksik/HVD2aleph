@@ -20,7 +20,8 @@
             <md-list-item ng-repeat="loc in vm.locations track by $index" class="list-item-text {{loc.cssClass}}" (click)="vm.sendText($index)">
                 <div layout="row" flex>
                     <a  class="textsms-link">
-                        <span translate="{{loc.libraryCode}}"></span>
+                        <span translate="{{loc.libraryCode}}"></span>&nbsp;
+                        <span ng-if="loc.subLocation">{{loc.subLocation}}</span>
                         &nbsp;<span>{{loc.callNumber}}</span>
 
                     </a>
