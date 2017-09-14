@@ -934,6 +934,20 @@ prm-brief-result-container.list-item:hover {
 prm-request-services {
     display: none;
 }
+.customMap {
+    height:200px;
+    width:auto;
+}
+
+.iconHome {
+    width:16pt;
+    height:16pt;
+}
+
+.iconMapFontSize {
+    font-size:16pt;
+    font-weight: bold;
+}
 .serviceLinkBox {
     padding:0px;
     background: transparent !important;

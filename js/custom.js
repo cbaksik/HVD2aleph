@@ -83,6 +83,61 @@ angular.module('viewCustom').service('customImagesService', ['$filter', function
 }]);
 
 /**
+ * Created by samsan on 9/13/17.
+ */
+
+angular.module('viewCustom').service('customMapService', [function () {
+    var serviceObj = {};
+    // mapbox public access token
+    serviceObj.token = 'pk.eyJ1Ijoia2htZXJlc2hvcCIsImEiOiJjajdqaHhrd3gyM3hpMndseHltbGNqZTZoIn0.BJUZyzD2jih3zRIjILTYOA';
+    serviceObj.getToken = function () {
+        return serviceObj.token;
+    };
+
+    serviceObj.getRegexMatches = function (string, regex, index) {
+        index || (index = 1); // default to the first capturing group
+        var matches = [];
+        var match;
+        while (match = regex.exec(string)) {
+            matches.push(match[index]);
+        }
+        return matches;
+    };
+
+    serviceObj.buildCoordinatesArray = function (inputString) {
+        var coordinates;
+        //Populate array with Minutes format converstion
+        if (RegExp(/\$\$D([a-zA-Z])/).test(inputString)) {
+            coordinates = serviceObj.getRegexMatches(inputString, /\$\$[DEFG](.{8})/g);
+            for (var i = 0; i < coordinates.length; i++) {
+                var hemisphere = coordinates[i].substr(0, 1);
+                var degrees = parseInt(coordinates[i].substr(1, 3));
+                var minutes = parseInt(coordinates[i].substr(4, 2));
+                var seconds = parseInt(coordinates[i].substr(6, 2));
+
+                var decimalValue;
+                if (hemisphere == "N" || hemisphere == "E") coordinates[i] = degrees + (minutes + seconds / 60) / 60;else coordinates[i] = 0 - (degrees + (minutes + seconds / 60) / 60);
+            }
+        }
+
+        //Populate array with Degrees values
+        else if (RegExp(/\$\$D(\d|-)/).test(inputString)) {
+                coordinates = serviceObj.getRegexMatches(inputString, /\$\$\w([\d\.-]+)/g);
+            }
+
+        //Round the numbers to 6 decimal points
+        if (coordinates) {
+            for (var i = 0; i < coordinates.length; i++) {
+                coordinates[i] = Math.round(coordinates[i] * 1000000) / 1000000;
+            }
+        }
+        return coordinates;
+    };
+
+    return serviceObj;
+}]);
+
+/**
  * Created by samsan on 9/5/17.
  */
 
@@ -900,9 +955,6 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
         for (var i = 0; i < vm.locations.length; i++) {
             vm.locations[i].cssClass = 'textsms-row';
         }
-
-        console.log('*** prm-action-container-after ***');
-        console.log(vm.locations);
     };
 
     vm.$doCheck = function () {
@@ -1187,6 +1239,9 @@ angular.module('viewCustom').controller('prmFullViewAfterCtrl', ['prmSearchServi
                 }
             }
         }, 500);
+
+        console.log('*** prm-full-view-after ****');
+        console.log(vm);
     };
 }]);
 
@@ -1293,6 +1348,9 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
                 if (result.data.locations) {
                     vm.itemsCategory = result.data.locations;
                     vm.requestLinks = vm.compare(vm.itemsCategory);
+
+                    console.log('*** locations ***');
+                    console.log(result.data.locations);
                 }
             }, function (err) {
                 console.log(err);
@@ -1308,7 +1366,7 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
         if ($element[0].parentNode.parentNode) {
             var md_list = $element[0].parentNode.parentNode.children;
             for (var i = 0; i < md_list.length; i++) {
-                if (md_list[i].$$hashKey === el.$$hashKey) {
+                if (md_list[i] === el) {
                     index = i;
                     i = md_list.length;
                 }
@@ -1522,6 +1580,175 @@ angular.module('viewCustom').component('prmLogoAfter', {
     controller: 'prmLogoAfterCtrl',
     controllerAs: 'vm',
     templateUrl: '/primo-explore/custom/HVD2/html/prm-logo-after.html'
+});
+
+/**
+ * Created by samsan on 9/13/17.
+ */
+
+angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtrl', ['customMapService', '$timeout', function (customMapService, $timeout) {
+    var vm = this;
+    var cs = customMapService;
+    vm.itemPNX = {};
+    var map;
+
+    //This function is used to center and zoom the map based on WKT POINT(x y)
+    vm.mapWKTPoint = function (map, wkt, popupText) {
+        if (popupText === "") {
+            popupText = "<b>Center of data set coverage area.</b>";
+        }
+
+        var y = wkt[0];
+        var x = wkt[2];
+
+        // create a marker symbol on the map
+        L.marker([x, y]).addTo(map).bindPopup(popupText);
+
+        // pan to the marker symbol
+        map.panTo(new L.LatLng(x, y));
+    };
+
+    //This function is used to center and zoom the map based on WKT BBOX(x1 y1, x2 y2)
+    vm.mapWKTBbox = function (map, wkt, popupText) {
+        if (popupText === "") {
+            popupText = "<b>Extent of data set.</b>";
+        }
+
+        // define rectangle geographical bounds
+        var bounds = [[wkt[2], wkt[0]], [wkt[3], wkt[1]]];
+
+        // create an orange rectangle
+        L.rectangle(bounds, {
+            color: "#ff7800",
+            weight: 1
+        }).addTo(map).bindPopup(popupText);
+
+        // zoom the map to the rectangle bounds
+        map.fitBounds(bounds, {
+            padding: [10, 10]
+        });
+    };
+
+    vm.$onInit = function () {
+        //mapbox.com public access token
+        vm.mapboxAccessToken = cs.getToken();
+        vm.itemPNX = vm.parentCtrl.result;
+        if (vm.itemPNX.pnx.display.lds40 && vm.parentCtrl.isFullView) {
+            $timeout(function () {
+                vm.coordinates = cs.buildCoordinatesArray(vm.itemPNX.pnx.display.lds40[0]);
+                vm.centerLongitude = (vm.coordinates[0] + vm.coordinates[1]) / 2;
+                vm.centerLatitude = (vm.coordinates[2] + vm.coordinates[3]) / 2;
+
+                var zoom = 13;
+                map = L.map('hglMap12', { center: [vm.centerLatitude, vm.centerLongitude],
+                    zoom: zoom, keyboard: true, tap: true, zoomControl: false });
+
+                L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=' + vm.mapboxAccessToken, {
+                    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+                    maxZoom: 20,
+                    id: 'mapbox.streets',
+                    accessToken: vm.mapboxAccessToken
+                }).addTo(map);
+
+                // start here
+
+                // custom zoom bar control that includes a Zoom Home function
+                L.Control.zoomHome = L.Control.extend({
+                    options: {
+                        position: 'topleft',
+                        zoomInText: '<i class="iconMapFontSize">+</i>',
+                        zoomInTitle: 'Zoom in',
+                        zoomOutText: '<i class="iconMapFontSize">-</i>',
+                        zoomOutTitle: 'Zoom out',
+                        zoomHomeText: '<img class="iconHome" src="/primo-explore/custom/HVD2/img/ic_home_black_18px.svg"/>',
+                        zoomHomeTitle: 'Zoom home'
+                    },
+
+                    onAdd: function onAdd(map) {
+                        var controlName = 'gin-control-zoom',
+                            container = L.DomUtil.create('div', controlName + ' leaflet-bar'),
+                            options = this.options;
+
+                        this._zoomInButton = this._createButton(options.zoomInText, options.zoomInTitle, controlName + '-in', container, this._zoomIn);
+                        this._zoomOutButton = this._createButton(options.zoomOutText, options.zoomOutTitle, controlName + '-out', container, this._zoomOut);
+
+                        this._zoomHomeButton = this._createButton(options.zoomHomeText, options.zoomHomeTitle, controlName + '-home', container, this._zoomHome);
+
+                        this._updateDisabled();
+                        map.on('zoomend zoomlevelschange', this._updateDisabled, this);
+
+                        return container;
+                    },
+
+                    onRemove: function onRemove(map) {
+                        map.off('zoomend zoomlevelschange', this._updateDisabled, this);
+                    },
+
+                    _zoomIn: function _zoomIn(e) {
+                        this._map.zoomIn(e.shiftKey ? 3 : 1);
+                    },
+
+                    _zoomOut: function _zoomOut(e) {
+                        this._map.zoomOut(e.shiftKey ? 3 : 1);
+                    },
+
+                    _zoomHome: function _zoomHome(e) {
+                        map.setView([vm.centerLatitude, vm.centerLongitude], zoom);
+
+                        if (vm.coordinates[0] == vm.coordinates[1] && vm.coordinates[2] == vm.coordinates[3]) {
+                            vm.mapWKTPoint(map, vm.coordinates, "Center of data set coverage area.");
+                        } else {
+                            vm.mapWKTBbox(map, vm.coordinates, "Extent of data set.");
+                        }
+                    },
+
+                    _createButton: function _createButton(html, title, className, container, fn) {
+                        var link = L.DomUtil.create('a', className, container);
+                        link.innerHTML = html;
+                        link.href = '#';
+                        link.title = title;
+
+                        L.DomEvent.on(link, 'mousedown dblclick', L.DomEvent.stopPropagation).on(link, 'click', L.DomEvent.stop).on(link, 'click', fn, this).on(link, 'click', this._refocusOnMap, this);
+
+                        return link;
+                    },
+
+                    _updateDisabled: function _updateDisabled() {
+                        var map = this._map,
+                            className = 'leaflet-disabled';
+
+                        L.DomUtil.removeClass(this._zoomInButton, className);
+                        L.DomUtil.removeClass(this._zoomOutButton, className);
+
+                        if (map._zoom === map.getMinZoom()) {
+                            L.DomUtil.addClass(this._zoomOutButton, className);
+                        }
+                        if (map._zoom === map.getMaxZoom()) {
+                            L.DomUtil.addClass(this._zoomInButton, className);
+                        }
+                    }
+                });
+
+                var zoomHome = new L.Control.zoomHome();
+                zoomHome.addTo(map);
+
+                // end here
+
+                if (vm.coordinates[0] == vm.coordinates[1] && vm.coordinates[2] == vm.coordinates[3]) {
+                    vm.mapWKTPoint(map, vm.coordinates, "Center of data set coverage area.");
+                } else {
+                    vm.mapWKTBbox(map, vm.coordinates, "Extent of data set.");
+                }
+            }, 1000);
+        }
+    };
+}]);
+
+angular.module('viewCustom').component('prmSearchResultAvailabilityLineAfter', {
+    bindings: { parentCtrl: '<' },
+    controller: 'prmSearchResultAvailabilityLineAfterCtrl',
+    controllerAs: 'vm',
+    templateUrl: '/primo-explore/custom/HVD2/html/prm-search-result-availability-line-after.html'
 });
 
 /**
@@ -2090,6 +2317,21 @@ angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', '$tim
                 el2[2].remove();
                 el2[2].remove();
             }
+
+            // create script tag link leafletJS.com to use openstreetmap.org
+            var bodyTag = document.getElementsByTagName('body')[0];
+            var scriptTag = document.createElement('script');
+            scriptTag.setAttribute('src', 'https://unpkg.com/leaflet@1.2.0/dist/leaflet.js');
+            scriptTag.setAttribute('integrity', 'sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==');
+            scriptTag.setAttribute('crossorigin', '');
+            bodyTag.append(scriptTag);
+            // create link tag
+            var linkTag = document.createElement('link');
+            linkTag.setAttribute('href', 'https://unpkg.com/leaflet@1.2.0/dist/leaflet.css');
+            linkTag.setAttribute('integrity', 'sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==');
+            linkTag.setAttribute('crossorigin', '');
+            linkTag.setAttribute('rel', 'stylesheet');
+            bodyTag.append(linkTag);
         }, 500);
     };
 }]);

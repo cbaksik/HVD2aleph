@@ -46,6 +46,9 @@ angular.module('viewCustom')
                        if (result.data.locations) {
                            vm.itemsCategory = result.data.locations;
                            vm.requestLinks=vm.compare(vm.itemsCategory);
+
+                           console.log('*** locations ***');
+                           console.log(result.data.locations);
                        }
                    },
                    function (err) {
@@ -64,13 +67,12 @@ angular.module('viewCustom')
             if($element[0].parentNode.parentNode) {
                 var md_list = $element[0].parentNode.parentNode.children;
                 for (var i = 0; i < md_list.length; i++) {
-                    if (md_list[i].$$hashKey === el.$$hashKey) {
+                    if (md_list[i] === el) {
                         index = i;
                         i = md_list.length;
                     }
                 }
             }
-
 
             var requestLinks=[];
             // get requestItem
@@ -152,7 +154,6 @@ angular.module('viewCustom')
             // list of logic xml data list that convert into json array
             vm.logicList = sv.getLogicList();
             vm.auth = sv.getAuth();
-
         };
 
         vm.signIn=function () {
@@ -176,7 +177,6 @@ angular.module('viewCustom')
                     itemSequence=itemid.substring(itemid.length - 6,itemid.length)
                 }
             }
-
 
             if(data.type==='scanDeliver') {
                 url='http://sfx.hul.harvard.edu/hvd?sid=HOLLIS:ILL&pid=DocNumber='+itemrecordid+',ItemSequence='+itemSequence+'&sfx.skip_augmentation=1';

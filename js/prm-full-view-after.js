@@ -58,6 +58,9 @@ angular.module('viewCustom')
                 }
             },500);
 
+            console.log('*** prm-full-view-after ****');
+            console.log(vm);
+
         };
 
     }]);
