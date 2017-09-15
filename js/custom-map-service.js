@@ -5,12 +5,6 @@
 angular.module('viewCustom')
     .service('customMapService',[function () {
         var serviceObj={};
-        // mapbox public access token
-        serviceObj.token='pk.eyJ1Ijoia2htZXJlc2hvcCIsImEiOiJjajdqaHhrd3gyM3hpMndseHltbGNqZTZoIn0.BJUZyzD2jih3zRIjILTYOA';
-        serviceObj.getToken=function () {
-          return serviceObj.token;
-        };
-
         serviceObj.getRegexMatches=function(string, regex, index) {
             index || (index = 1); // default to the first capturing group
             var matches = [];

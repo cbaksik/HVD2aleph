@@ -52,8 +52,7 @@ angular.module('viewCustom')
         };
 
         vm.$onInit=function() {
-            //mapbox.com public access token
-            vm.mapboxAccessToken=cs.getToken();
+
             vm.itemPNX=vm.parentCtrl.result;
             if(vm.itemPNX.pnx.display.lds40 && vm.parentCtrl.isFullView) {
                 $timeout(function () {
@@ -61,16 +60,19 @@ angular.module('viewCustom')
                     vm.centerLongitude = (vm.coordinates[0] + vm.coordinates[1]) / 2;
                     vm.centerLatitude = (vm.coordinates[2] + vm.coordinates[3]) / 2;
 
-                    var zoom=13
+                    var zoom=8;
                     map=L.map('hglMap12',{center:[vm.centerLatitude, vm.centerLongitude],
                     zoom:zoom,keyboard:true,tap:true,zoomControl: false});
 
-                    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token='+vm.mapboxAccessToken, {
-                        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-                        maxZoom: 20,
-                        id: 'mapbox.streets',
-                        accessToken: vm.mapboxAccessToken
-                    }).addTo(map);
+
+                    // create the tile layer with correct attribution
+                    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+                    var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+                    var osm = new L.TileLayer(osmUrl, {minZoom: zoom, maxZoom: 40, attribution: osmAttrib});
+
+                    map.setView([vm.centerLatitude, vm.centerLongitude],zoom);
+                    map.addLayer(osm);
+
 
                    // start here
 
