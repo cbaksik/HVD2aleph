@@ -46,9 +46,6 @@ angular.module('viewCustom')
                        if (result.data.locations) {
                            vm.itemsCategory = result.data.locations;
                            vm.requestLinks=vm.compare(vm.itemsCategory);
-
-                           console.log('*** locations ***');
-                           console.log(result.data.locations);
                        }
                    },
                    function (err) {
@@ -111,15 +108,18 @@ angular.module('viewCustom')
                     var h4=document.createElement('h4');
                     h4.setAttribute('class','md-title');
                     var span=document.createElement('span');
-                    span.setAttribute('ng-bind-html','vm.currLoc.items[0].additionalData.mainlocationname');
+                    span.innerText=vm.libName;
                     h4.appendChild(span);
                     var mdIcon = document.createElement('md-icon');
                     mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
                     mdIcon.setAttribute('class', 'placeIcon');
                     mdIcon.setAttribute('ng-click', 'vm.goPlace(vm.currLoc.location,$event)');
                     h4.appendChild(mdIcon);
-                    el.prepend(h4);
-                    $compile(el)($scope);
+                    if(el.children.length > 1) {
+                        el.insertBefore(h4,el.children[0]);
+                        $compile(el.children[0])($scope);
+                    }
+
                 }
 
             }
@@ -147,13 +147,14 @@ angular.module('viewCustom')
         vm.$doCheck=function () {
             vm.data=sv.getItems();
             vm.currLoc=vm.data.currLoc;
-            vm.createIcon();
         };
 
         vm.$onChanges=function (ev) {
             // list of logic xml data list that convert into json array
             vm.logicList = sv.getLogicList();
             vm.auth = sv.getAuth();
+
+            vm.createIcon();
         };
 
         vm.signIn=function () {
