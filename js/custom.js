@@ -1433,13 +1433,26 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
     vm.$doCheck = function () {
         vm.data = sv.getItems();
         vm.currLoc = vm.data.currLoc;
+
+        // remove bookingRequest and photocopy request
+        if (vm.currLoc.items) {
+            for (var k = 0; k < vm.currLoc.items.length; k++) {
+                if (vm.currLoc.items[k].listOfServices) {
+                    for (var i = 0; i < vm.currLoc.items[k].listOfServices.length; i++) {
+                        console.log(vm.currLoc.items[k].listOfServices[i]);
+                        if (vm.currLoc.items[k].listOfServices[i].type === 'BookingRequest' || vm.currLoc.items[k].listOfServices[i].type === 'PhotocopyRequest') {
+                            vm.currLoc.items[k].listOfServices.splice(i, 1);
+                        }
+                    }
+                }
+            }
+        }
     };
 
     vm.$onChanges = function (ev) {
         // list of logic xml data list that convert into json array
         vm.logicList = sv.getLogicList();
         vm.auth = sv.getAuth();
-
         vm.createIcon();
     };
 
