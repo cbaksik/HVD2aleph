@@ -55,6 +55,7 @@ angular.module('viewCustom')
 
 
             },2000);
+
         };
 
         vm.$doCheck=function(){
