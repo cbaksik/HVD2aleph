@@ -4,8 +4,24 @@
  */
 
 angular.module('viewCustom')
-    .controller('prmTopbarAfterCtrl',['$element','$timeout',function ($element,$timeout) {
+    .controller('prmTopbarAfterCtrl',['$element','$timeout','customService',function ($element,$timeout,customService) {
         var vm=this;
+        var cs=customService;
+        vm.api={};
+
+        // get rest endpoint Url
+        vm.getUrl=function () {
+            cs.getAjax('/primo-explore/custom/HVD2/html/config.html','','get')
+                .then(function (res) {
+                        vm.api=res.data;
+                        cs.setApi(vm.api);
+                    },
+                    function (error) {
+                        console.log(error);
+                    }
+                )
+        };
+
 
         vm.topRightMenus=[{'title':'Research Guides','url':'http://nrs.harvard.edu/urn-3:hul.ois:portal_resguides','label':'Go to Research guides'},
             {'title':'Libraries / Hours','url':'http://nrs.harvard.edu/urn-3:hul.ois:bannerfindlib','label':'Go to Library hours'},
@@ -13,6 +29,9 @@ angular.module('viewCustom')
         ];
 
         vm.$onInit=function() {
+            // pre-load config.html file
+            vm.getUrl();
+
             $timeout(function () {
                 // create new div for the top white menu
                 var el=$element[0].parentNode.parentNode.parentNode.parentNode.parentNode;

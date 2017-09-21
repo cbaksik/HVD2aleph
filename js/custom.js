@@ -9,6 +9,73 @@
 angular.module('viewCustom', ['angularLoad']);
 
 /**
+ * Created by samsan on 9/20/17.
+ */
+
+angular.module('viewCustom').service('customHathiTrustService', ['$http', function ($http) {
+    var serviceObj = {};
+
+    serviceObj.doGet = function (url, param) {
+        return $http({
+            'method': 'get',
+            'url': url,
+            'timeout': 5000,
+            'params': param
+        });
+    };
+
+    serviceObj.doPost = function (url, param) {
+        return $http({
+            'method': 'post',
+            'url': url,
+            'timeout': 5000,
+            'data': param
+        });
+    };
+
+    serviceObj.validateHathiTrust = function (pnxItem) {
+        var item = { 'flag': false, 'isbn': '', 'oclcid': '', 'data': {} };
+        if (pnxItem.pnx.control.sourceid && pnxItem.pnx.delivery.delcategory && pnxItem.pnx.addata) {
+            if (pnxItem.pnx.control.sourceid[0] === 'HVD_ALEPH' && pnxItem.pnx.delivery.delcategory[0] !== 'Online Resource') {
+                item.flag = true;
+                if (pnxItem.pnx.addata.oclcid) {
+                    item.oclcid = pnxItem.pnx.addata.oclcid[0];
+                } else if (pnxItem.pnx.addata.isbn) {
+                    item.isbn = pnxItem.pnx.addata.isbn[0];
+                }
+            }
+        }
+        return item;
+    };
+
+    // validate if orig data is harvard
+    serviceObj.validateHarvard = function (arrList) {
+        var item = {};
+        for (var i = 0; i < arrList.length; i++) {
+            if (arrList[i].orig === 'Harvard University' && arrList[i].usRightsString === 'Full view') {
+                item = arrList[i];
+                item.huflag = true;
+                item.fullview = true;
+                i = arrList.length;
+            } else if (arrList[i].usRightsString === 'Full view') {
+                item = arrList[i];
+                item.huflag = false;
+                item.fullview = true;
+                i = arrList.length;
+            } else if (arrList[i].usRightsString === 'Limited (search-only)') {
+                item = arrList[i];
+                item.huflag = false;
+                item.fullview = false;
+                i = arrList.length;
+            }
+        }
+        return item;
+    };
+
+    return serviceObj;
+}]);
+
+/**
  * Created by samsan on 8/7/17.
  */
 
@@ -484,6 +551,15 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
         return serviceObj.auth;
     };
 
+    serviceObj.api = {};
+    serviceObj.setApi = function (data) {
+        serviceObj.api = data;
+    };
+
+    serviceObj.getApi = function () {
+        return serviceObj.api;
+    };
+
     return serviceObj;
 }]);
 
@@ -906,15 +982,6 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
     vm.locations = [];
     vm.form = { 'phone': '', 'deviceType': '', 'body': '', 'error': '', 'mobile': false, 'msg': '', 'token': '', 'ip': '', 'sessionToken': '', 'isLoggedIn': false, 'iat': '', 'inst': '', 'vid': '', 'exp': '', 'userName': '', 'iss': '', 'onCampus': false };
 
-    // get rest endpoint Url
-    vm.getUrl = function () {
-        cisv.getAjax('/primo-explore/custom/HVD2/html/config.html', '', 'get').then(function (res) {
-            vm.restsmsUrl = res.data.smsUrl;
-        }, function (error) {
-            console.log(error);
-        });
-    };
-
     vm.$onChanges = function () {
         vm.auth = cisv.getAuth();
         if (vm.auth.primolyticsService.jwtUtilService) {
@@ -935,8 +1002,6 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
     };
 
     vm.$onInit = function () {
-        // get rest sms endpoint url from config.text file
-        vm.getUrl();
         // check if a user is using mobile phone or laptop browser
         vm.form.deviceType = cs.getPlatform();
         if (vm.form.deviceType) {
@@ -963,6 +1028,12 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
 
     // this function is trigger only if a user is using laptop computer
     vm.sendText = function (k) {
+        // get rest endpoint from config.html file. It's preload in prm-topbar-after.js
+        vm.api = cisv.getApi();
+        if (vm.api) {
+            vm.restsmsUrl = vm.api.smsUrl;
+        }
+
         // reset the row css class
         for (var i = 0; i < vm.locations.length; i++) {
             vm.locations[i].cssClass = 'textsms-row';
@@ -1439,7 +1510,6 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
             for (var k = 0; k < vm.currLoc.items.length; k++) {
                 if (vm.currLoc.items[k].listOfServices) {
                     for (var i = 0; i < vm.currLoc.items[k].listOfServices.length; i++) {
-                        console.log(vm.currLoc.items[k].listOfServices[i]);
                         if (vm.currLoc.items[k].listOfServices[i].type === 'BookingRequest' || vm.currLoc.items[k].listOfServices[i].type === 'PhotocopyRequest') {
                             vm.currLoc.items[k].listOfServices.splice(i, 1);
                         }
@@ -1614,10 +1684,13 @@ angular.module('viewCustom').component('prmPermalinkAfter', {
  * Created by samsan on 9/13/17.
  */
 
-angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtrl', ['customMapService', '$timeout', function (customMapService, $timeout) {
+angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtrl', ['customMapService', '$timeout', 'customHathiTrustService', 'customService', function (customMapService, $timeout, customHathiTrustService, customService) {
     var vm = this;
+    var custService = customService;
     var cs = customMapService;
+    var chts = customHathiTrustService;
     vm.itemPNX = {};
+    vm.hathiTrust = {};
     var map;
 
     //This function is used to center and zoom the map based on WKT POINT(x y)
@@ -1658,7 +1731,6 @@ angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtr
     };
 
     vm.$onInit = function () {
-
         vm.itemPNX = vm.parentCtrl.result;
         if (vm.itemPNX.pnx.display.lds40 && vm.parentCtrl.isFullView) {
             $timeout(function () {
@@ -1768,6 +1840,29 @@ angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtr
                     vm.mapWKTBbox(map, vm.coordinates, "Extent of data set.");
                 }
             }, 1000);
+        }
+
+        // validate Hathi Trust to see if it is existed
+        vm.hathiTrust = chts.validateHathiTrust(vm.itemPNX);
+        vm.api = {};
+        vm.hathiTrustItem = {};
+
+        vm.getHathiTrustData = function () {
+            if (vm.api.hathiTrustUrl) {
+                chts.doPost(vm.api.hathiTrustUrl, vm.hathiTrust).then(function (data) {
+                    if (data.data.items) {
+                        vm.hathiTrustItem = chts.validateHarvard(data.data.items);
+                    }
+                }, function (error) {
+                    console.log(error);
+                });
+            }
+        };
+
+        if (vm.hathiTrust.flag) {
+            // get rest endpoint url from config.html where it preload prm-tobar-after.js
+            vm.api = custService.getApi();
+            vm.getHathiTrustData();
         }
     };
 }]);
@@ -2322,12 +2417,27 @@ angular.module('viewCustom').component('prmServiceLinksAfter', {
  *  This component is creating white top bar, link menu on the right, and remove some doms
  */
 
-angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', '$timeout', function ($element, $timeout) {
+angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', '$timeout', 'customService', function ($element, $timeout, customService) {
     var vm = this;
+    var cs = customService;
+    vm.api = {};
+
+    // get rest endpoint Url
+    vm.getUrl = function () {
+        cs.getAjax('/primo-explore/custom/HVD2/html/config.html', '', 'get').then(function (res) {
+            vm.api = res.data;
+            cs.setApi(vm.api);
+        }, function (error) {
+            console.log(error);
+        });
+    };
 
     vm.topRightMenus = [{ 'title': 'Research Guides', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:portal_resguides', 'label': 'Go to Research guides' }, { 'title': 'Libraries / Hours', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:bannerfindlib', 'label': 'Go to Library hours' }, { 'title': 'All My Accounts', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:banneraccounts', 'label': 'Go to all my accounts' }];
 
     vm.$onInit = function () {
+        // pre-load config.html file
+        vm.getUrl();
+
         $timeout(function () {
             // create new div for the top white menu
             var el = $element[0].parentNode.parentNode.parentNode.parentNode.parentNode;

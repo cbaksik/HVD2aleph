@@ -13,18 +13,6 @@ angular.module('viewCustom')
         vm.locations=[];
         vm.form={'phone':'','deviceType':'','body':'','error':'','mobile':false,'msg':'','token':'','ip':'','sessionToken':'','isLoggedIn':false,'iat':'','inst':'','vid':'','exp':'','userName':'','iss':'','onCampus':false};
 
-        // get rest endpoint Url
-        vm.getUrl=function () {
-            cisv.getAjax('/primo-explore/custom/HVD2/html/config.html','','get')
-                .then(function (res) {
-                        vm.restsmsUrl=res.data.smsUrl;
-                    },
-                    function (error) {
-                        console.log(error);
-                    }
-                )
-        };
-
         vm.$onChanges=function(){
             vm.auth=cisv.getAuth();
             if(vm.auth.primolyticsService.jwtUtilService) {
@@ -47,8 +35,6 @@ angular.module('viewCustom')
 
 
         vm.$onInit=function() {
-            // get rest sms endpoint url from config.text file
-            vm.getUrl();
             // check if a user is using mobile phone or laptop browser
             vm.form.deviceType=cs.getPlatform();
             if(vm.form.deviceType) {
@@ -77,6 +63,12 @@ angular.module('viewCustom')
 
         // this function is trigger only if a user is using laptop computer
         vm.sendText=function (k) {
+            // get rest endpoint from config.html file. It's preload in prm-topbar-after.js
+            vm.api=cisv.getApi();
+            if(vm.api) {
+                vm.restsmsUrl=vm.api.smsUrl;
+            }
+
             // reset the row css class
             for(let i=0; i < vm.locations.length; i++) {
                 vm.locations[i].cssClass='textsms-row';

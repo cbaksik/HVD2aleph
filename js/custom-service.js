@@ -231,6 +231,15 @@ angular.module('viewCustom')
            return serviceObj.auth;
         };
 
+        serviceObj.api={};
+        serviceObj.setApi=function (data) {
+            serviceObj.api=data;
+        };
+
+        serviceObj.getApi=function () {
+            return serviceObj.api;
+        };
+
 
         return serviceObj;
     }]);

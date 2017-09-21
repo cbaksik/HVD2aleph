@@ -4,10 +4,13 @@
 
 
 angular.module('viewCustom')
-    .controller('prmSearchResultAvailabilityLineAfterCtrl',['customMapService','$timeout',function (customMapService,$timeout) {
+    .controller('prmSearchResultAvailabilityLineAfterCtrl',['customMapService','$timeout','customHathiTrustService','customService',function (customMapService,$timeout, customHathiTrustService,customService) {
         var vm=this;
+        var custService=customService;
         var cs=customMapService;
+        var chts=customHathiTrustService;
         vm.itemPNX={};
+        vm.hathiTrust={};
         var map;
 
         //This function is used to center and zoom the map based on WKT POINT(x y)
@@ -52,7 +55,6 @@ angular.module('viewCustom')
         };
 
         vm.$onInit=function() {
-
             vm.itemPNX=vm.parentCtrl.result;
             if(vm.itemPNX.pnx.display.lds40 && vm.parentCtrl.isFullView) {
                 $timeout(function () {
@@ -176,6 +178,33 @@ angular.module('viewCustom')
 
             }
 
+
+            // validate Hathi Trust to see if it is existed
+            vm.hathiTrust=chts.validateHathiTrust(vm.itemPNX);
+            vm.api={};
+            vm.hathiTrustItem={};
+
+            vm.getHathiTrustData=function () {
+                if(vm.api.hathiTrustUrl) {
+                    chts.doPost(vm.api.hathiTrustUrl, vm.hathiTrust)
+                        .then(function (data) {
+                                if (data.data.items) {
+                                    vm.hathiTrustItem = chts.validateHarvard(data.data.items);
+                                }
+                            },
+                            function (error) {
+                                console.log(error);
+                            }
+                        )
+                }
+            };
+
+            if(vm.hathiTrust.flag) {
+                // get rest endpoint url from config.html where it preload prm-tobar-after.js
+                vm.api=custService.getApi();
+                vm.getHathiTrustData();
+            }
+
         };
 
     }]);
@@ -188,4 +217,3 @@ angular.module('viewCustom')
         controllerAs:'vm',
         templateUrl:'/primo-explore/custom/HVD2/html/prm-search-result-availability-line-after.html'
     });
-

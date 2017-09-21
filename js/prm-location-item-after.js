@@ -153,7 +153,6 @@ angular.module('viewCustom')
                 for(var k=0; k < vm.currLoc.items.length; k++) {
                     if(vm.currLoc.items[k].listOfServices) {
                         for (var i = 0; i < vm.currLoc.items[k].listOfServices.length; i++) {
-                            console.log(vm.currLoc.items[k].listOfServices[i]);
                             if (vm.currLoc.items[k].listOfServices[i].type === 'BookingRequest' || vm.currLoc.items[k].listOfServices[i].type === 'PhotocopyRequest') {
                                 vm.currLoc.items[k].listOfServices.splice(i, 1);
                             }
