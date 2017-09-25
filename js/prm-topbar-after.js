@@ -4,9 +4,10 @@
  */
 
 angular.module('viewCustom')
-    .controller('prmTopbarAfterCtrl',['$element','$timeout','customService',function ($element,$timeout,customService) {
+    .controller('prmTopbarAfterCtrl',['$element','$timeout','customService','customGoogleAnalytic',function ($element,$timeout,customService, customGoogleAnalytic) {
         var vm=this;
         var cs=customService;
+        var cga=customGoogleAnalytic;
         vm.api={};
 
         // get rest endpoint Url
@@ -29,6 +30,9 @@ angular.module('viewCustom')
         ];
 
         vm.$onInit=function() {
+            // initialize google analytic
+            cga.init();
+
             // pre-load config.html file
             vm.getUrl();
 

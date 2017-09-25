@@ -4,8 +4,9 @@
 
 
 angular.module('viewCustom')
-    .controller('prmSearchResultAvailabilityLineAfterCtrl',['customMapService','$timeout','customHathiTrustService','customService',function (customMapService,$timeout, customHathiTrustService,customService) {
+    .controller('prmSearchResultAvailabilityLineAfterCtrl',['customMapService','$timeout','customHathiTrustService','customService','customGoogleAnalytic',function (customMapService,$timeout, customHathiTrustService,customService, customGoogleAnalytic) {
         var vm=this;
+        var cga=customGoogleAnalytic;
         var custService=customService;
         var cs=customMapService;
         var chts=customHathiTrustService;
@@ -119,6 +120,10 @@ angular.module('viewCustom')
 
                         _zoomOut: function (e) {
                             this._map.zoomOut(e.shiftKey ? 3 : 1);
+                            if(vm.itemPNX.pnx.display) {
+                                var title = 'zoom-out: ' + vm.itemPNX.pnx.display.title[0];
+                                cga.setPage('user-use-openMapStreet', title);
+                            }
                         },
 
                         _zoomHome: function (e) {

@@ -2,9 +2,10 @@
    This component is to capture item data from the parentCtrl. Then pass it to prm-view-online-after component
  */
 angular.module('viewCustom')
-    .controller('prmFullViewAfterCtrl',['prmSearchService','$timeout',function (prmSearchService,$timeout) {
+    .controller('prmFullViewAfterCtrl',['prmSearchService','$timeout','customGoogleAnalytic',function (prmSearchService,$timeout, customGoogleAnalytic) {
         var vm=this;
         var sv=prmSearchService;
+        var cga=customGoogleAnalytic;
 
         vm.hideBrowseShelf=function () {
             var hidebrowseshelfFlag=false;
@@ -56,8 +57,15 @@ angular.module('viewCustom')
                         }
                     }
                 }
-            },500);
 
+                // set up google analytic
+                if(vm.parentCtrl.item.pnx.display) {
+                    var title=vm.parentCtrl.item.pnx.display.title[0] + ' : ' + vm.parentCtrl.item.pnx.control.recordid[0];
+                    cga.setPage('/fulldisplay', title);
+                } else {
+                    cga.setPage('/fulldisplay', 'Full display page');
+                }
+            },500);
 
         };
 

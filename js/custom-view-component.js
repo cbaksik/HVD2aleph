@@ -4,8 +4,9 @@
  */
 
 angular.module('viewCustom')
-    .controller('customViewComponentController', [ '$sce','$mdMedia','prmSearchService','$location','$stateParams', '$element','$timeout','customService', function ($sce,$mdMedia,prmSearchService,$location,$stateParams, $element, $timeout,customService) {
+    .controller('customViewComponentController', [ '$sce','$mdMedia','prmSearchService','$location','$stateParams', '$element','$timeout','customService','customGoogleAnalytic', function ($sce,$mdMedia,prmSearchService,$location,$stateParams, $element, $timeout,customService,customGoogleAnalytic) {
 
+        let cga = customGoogleAnalytic;
         let vm = this;
         var sv=prmSearchService;
         var cisv=customService;
@@ -126,8 +127,8 @@ angular.module('viewCustom')
                     topbar.children[3].remove();
                 }
 
-
-            },300);
+                cga.setPage('/viewcomponent', vm.docid);
+            },500);
 
         };
 

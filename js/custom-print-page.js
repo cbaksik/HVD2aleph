@@ -3,8 +3,9 @@
  */
 
 angular.module('viewCustom')
-    .controller('customPrintPageCtrl',['$element','$stateParams','customService','$timeout','$window',function ($element,$stateParams,customService,$timeout,$window) {
+    .controller('customPrintPageCtrl',['$element','$stateParams','customService','$timeout','$window','customGoogleAnalytic',function ($element,$stateParams,customService,$timeout,$window,customGoogleAnalytic) {
         var vm=this;
+        var cga=customGoogleAnalytic;
         vm.item={};
         var cs=customService;
         // get item data to display on full view page
@@ -30,9 +31,13 @@ angular.module('viewCustom')
             vm.vid=$stateParams.vid;
             vm.getItem();
 
+            // initialize google analytic
+            cga.init();
+
             $timeout(function () {
                 // remove top menu and search bar
                 var el=$element[0].parentNode.parentNode;
+
                 if(el) {
                     el.children[0].remove();
                 }
@@ -48,7 +53,10 @@ angular.module('viewCustom')
                     actionList.remove();
                 }
 
-            },500)
+                // set google analytic page request statistic
+                cga.setPage('/printPage', vm.docid);
+
+            },1000)
         };
 
         vm.$postLink=function () {

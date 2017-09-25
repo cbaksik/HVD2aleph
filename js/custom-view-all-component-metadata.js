@@ -3,8 +3,9 @@
  */
 
 angular.module('viewCustom')
-    .controller('customViewAllComponentMetadataController', [ '$sce','$element','$location','prmSearchService','$window','$stateParams','$timeout', function ($sce, $element,$location, prmSearchService, $window, $stateParams, $timeout) {
+    .controller('customViewAllComponentMetadataController', [ '$sce','$element','$location','prmSearchService','$window','$stateParams','$timeout','customGoogleAnalytic', function ($sce, $element,$location, prmSearchService, $window, $stateParams, $timeout, customGoogleAnalytic) {
 
+        var cga = customGoogleAnalytic;
         var vm = this;
         var sv=prmSearchService;
         vm.params=$location.search();
@@ -66,13 +67,10 @@ angular.module('viewCustom')
                     // remove user login message
                     topbar.children[3].remove();
                 }
-            },300);
-
+                cga.setPage('/viewallcomponentmetadata', vm.docid);
+            },500);
 
             vm.getData();
-
-            console.log('*** custom-view-all-component-metadata ***');
-            console.log(vm);
 
         };
 

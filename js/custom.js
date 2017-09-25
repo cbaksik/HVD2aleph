@@ -9,6 +9,36 @@
 angular.module('viewCustom', ['angularLoad']);
 
 /**
+ * Created by samsan on 9/22/17.
+ */
+
+angular.module('viewCustom').service('customGoogleAnalytic', ['$timeout', function ($timeout) {
+    var svObj = {};
+    // initialize google analytic
+    svObj.init = function () {
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments);
+            }, i[r].l = 1 * new Date();a = s.createElement(o), m = s.getElementsByTagName(o)[0];a.async = 1;a.src = g;m.parentNode.insertBefore(a, m);
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-52592218-13', 'auto', 'HVD2');
+        ga('send', 'pageview');
+    };
+
+    // set up page
+    svObj.setPage = function (urlPath, title) {
+        $timeout(function () {
+            ga('HVD2.set', {
+                page: urlPath,
+                title: title
+            });
+        }, 500);
+    };
+
+    return svObj;
+}]);
+
+/**
  * Created by samsan on 9/20/17.
  */
 
@@ -202,8 +232,9 @@ angular.module('viewCustom').service('customMapService', [function () {
  * Created by samsan on 9/5/17.
  */
 
-angular.module('viewCustom').controller('customPrintPageCtrl', ['$element', '$stateParams', 'customService', '$timeout', '$window', function ($element, $stateParams, customService, $timeout, $window) {
+angular.module('viewCustom').controller('customPrintPageCtrl', ['$element', '$stateParams', 'customService', '$timeout', '$window', 'customGoogleAnalytic', function ($element, $stateParams, customService, $timeout, $window, customGoogleAnalytic) {
     var vm = this;
+    var cga = customGoogleAnalytic;
     vm.item = {};
     var cs = customService;
     // get item data to display on full view page
@@ -224,9 +255,13 @@ angular.module('viewCustom').controller('customPrintPageCtrl', ['$element', '$st
         vm.vid = $stateParams.vid;
         vm.getItem();
 
+        // initialize google analytic
+        cga.init();
+
         $timeout(function () {
             // remove top menu and search bar
             var el = $element[0].parentNode.parentNode;
+
             if (el) {
                 el.children[0].remove();
             }
@@ -241,7 +276,10 @@ angular.module('viewCustom').controller('customPrintPageCtrl', ['$element', '$st
             if (actionList) {
                 actionList.remove();
             }
-        }, 500);
+
+            // set google analytic page request statistic
+            cga.setPage('/printPage', vm.docid);
+        }, 1000);
     };
 
     vm.$postLink = function () {
@@ -638,8 +676,9 @@ angular.module('viewCustom').component('customThumbnail', {
  * Created by samsan on 7/17/17.
  */
 
-angular.module('viewCustom').controller('customViewAllComponentMetadataController', ['$sce', '$element', '$location', 'prmSearchService', '$window', '$stateParams', '$timeout', function ($sce, $element, $location, prmSearchService, $window, $stateParams, $timeout) {
+angular.module('viewCustom').controller('customViewAllComponentMetadataController', ['$sce', '$element', '$location', 'prmSearchService', '$window', '$stateParams', '$timeout', 'customGoogleAnalytic', function ($sce, $element, $location, prmSearchService, $window, $stateParams, $timeout, customGoogleAnalytic) {
 
+    var cga = customGoogleAnalytic;
     var vm = this;
     var sv = prmSearchService;
     vm.params = $location.search();
@@ -698,12 +737,10 @@ angular.module('viewCustom').controller('customViewAllComponentMetadataControlle
                 // remove user login message
                 topbar.children[3].remove();
             }
-        }, 300);
+            cga.setPage('/viewallcomponentmetadata', vm.docid);
+        }, 500);
 
         vm.getData();
-
-        console.log('*** custom-view-all-component-metadata ***');
-        console.log(vm);
     };
 }]);
 
@@ -719,8 +756,9 @@ angular.module('viewCustom').component('customViewAllComponentMetadata', {
  * This component is for a single image full display when a user click on thumbnail from a full display page
  */
 
-angular.module('viewCustom').controller('customViewComponentController', ['$sce', '$mdMedia', 'prmSearchService', '$location', '$stateParams', '$element', '$timeout', 'customService', function ($sce, $mdMedia, prmSearchService, $location, $stateParams, $element, $timeout, customService) {
+angular.module('viewCustom').controller('customViewComponentController', ['$sce', '$mdMedia', 'prmSearchService', '$location', '$stateParams', '$element', '$timeout', 'customService', 'customGoogleAnalytic', function ($sce, $mdMedia, prmSearchService, $location, $stateParams, $element, $timeout, customService, customGoogleAnalytic) {
 
+    var cga = customGoogleAnalytic;
     var vm = this;
     var sv = prmSearchService;
     var cisv = customService;
@@ -829,7 +867,9 @@ angular.module('viewCustom').controller('customViewComponentController', ['$sce'
                 // remove user login message
                 topbar.children[3].remove();
             }
-        }, 300);
+
+            cga.setPage('/viewcomponent', vm.docid);
+        }, 500);
     };
 
     // next photo
@@ -973,10 +1013,11 @@ angular.module('viewCustom').filter('truncatefilter', function () {
  * Created by samsan on 8/16/17.
  */
 
-angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customService', 'prmSearchService', '$window', function (customService, prmSearchService, $window) {
+angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customService', 'prmSearchService', '$window', 'customGoogleAnalytic', function (customService, prmSearchService, $window, customGoogleAnalytic) {
 
     var cisv = customService;
     var cs = prmSearchService;
+    var cga = customGoogleAnalytic;
     var vm = this;
     vm.restsmsUrl = '';
     vm.locations = [];
@@ -1076,6 +1117,9 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
                 }
 
                 vm.form.body = title + vm.form.body;
+
+                var sendTitle = vm.form.userName + ' : ' + vm.form.body;
+                cga.setPage('/sendsms', sendTitle);
             }
 
             if (vm.form.mobile) {
@@ -1250,9 +1294,10 @@ angular.module('viewCustom').component('prmBriefResultContainerAfter', {
 /* Author: Sam san
    This component is to capture item data from the parentCtrl. Then pass it to prm-view-online-after component
  */
-angular.module('viewCustom').controller('prmFullViewAfterCtrl', ['prmSearchService', '$timeout', function (prmSearchService, $timeout) {
+angular.module('viewCustom').controller('prmFullViewAfterCtrl', ['prmSearchService', '$timeout', 'customGoogleAnalytic', function (prmSearchService, $timeout, customGoogleAnalytic) {
     var vm = this;
     var sv = prmSearchService;
+    var cga = customGoogleAnalytic;
 
     vm.hideBrowseShelf = function () {
         var hidebrowseshelfFlag = false;
@@ -1302,6 +1347,14 @@ angular.module('viewCustom').controller('prmFullViewAfterCtrl', ['prmSearchServi
                         vm.parentCtrl.services[i].linkElement = {};
                     }
                 }
+            }
+
+            // set up google analytic
+            if (vm.parentCtrl.item.pnx.display) {
+                var title = vm.parentCtrl.item.pnx.display.title[0] + ' : ' + vm.parentCtrl.item.pnx.control.recordid[0];
+                cga.setPage('/fulldisplay', title);
+            } else {
+                cga.setPage('/fulldisplay', 'Full display page');
             }
         }, 500);
     };
@@ -1684,8 +1737,9 @@ angular.module('viewCustom').component('prmPermalinkAfter', {
  * Created by samsan on 9/13/17.
  */
 
-angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtrl', ['customMapService', '$timeout', 'customHathiTrustService', 'customService', function (customMapService, $timeout, customHathiTrustService, customService) {
+angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtrl', ['customMapService', '$timeout', 'customHathiTrustService', 'customService', 'customGoogleAnalytic', function (customMapService, $timeout, customHathiTrustService, customService, customGoogleAnalytic) {
     var vm = this;
+    var cga = customGoogleAnalytic;
     var custService = customService;
     var cs = customMapService;
     var chts = customHathiTrustService;
@@ -1790,6 +1844,10 @@ angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtr
 
                     _zoomOut: function _zoomOut(e) {
                         this._map.zoomOut(e.shiftKey ? 3 : 1);
+                        if (vm.itemPNX.pnx.display) {
+                            var title = 'zoom-out: ' + vm.itemPNX.pnx.display.title[0];
+                            cga.setPage('user-use-openMapStreet', title);
+                        }
                     },
 
                     _zoomHome: function _zoomHome(e) {
@@ -1872,6 +1930,25 @@ angular.module('viewCustom').component('prmSearchResultAvailabilityLineAfter', {
     controller: 'prmSearchResultAvailabilityLineAfterCtrl',
     controllerAs: 'vm',
     templateUrl: '/primo-explore/custom/HVD2/html/prm-search-result-availability-line-after.html'
+});
+
+/**
+ * Created by samsan on 9/25/17.
+ */
+
+angular.module('viewCustom').controller('prmSearchResultListAfterCtrl', ['customGoogleAnalytic', function (customGoogleAnalytic) {
+    var vm = this;
+    var cga = customGoogleAnalytic;
+    //capture search result and report to google analytic
+    vm.$onChanges = function () {
+        cga.setPage('/search', vm.parentCtrl.query);
+    };
+}]);
+
+angular.module('viewCustom').component('prmSearchResultListAfter', {
+    bindings: { parentCtrl: '<' },
+    controllerAs: 'vm',
+    controller: 'prmSearchResultListAfterCtrl'
 });
 
 /**
@@ -2417,9 +2494,10 @@ angular.module('viewCustom').component('prmServiceLinksAfter', {
  *  This component is creating white top bar, link menu on the right, and remove some doms
  */
 
-angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', '$timeout', 'customService', function ($element, $timeout, customService) {
+angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', '$timeout', 'customService', 'customGoogleAnalytic', function ($element, $timeout, customService, customGoogleAnalytic) {
     var vm = this;
     var cs = customService;
+    var cga = customGoogleAnalytic;
     vm.api = {};
 
     // get rest endpoint Url
@@ -2435,6 +2513,9 @@ angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', '$tim
     vm.topRightMenus = [{ 'title': 'Research Guides', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:portal_resguides', 'label': 'Go to Research guides' }, { 'title': 'Libraries / Hours', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:bannerfindlib', 'label': 'Go to Library hours' }, { 'title': 'All My Accounts', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:banneraccounts', 'label': 'Go to all my accounts' }];
 
     vm.$onInit = function () {
+        // initialize google analytic
+        cga.init();
+
         // pre-load config.html file
         vm.getUrl();
 
