@@ -19,10 +19,10 @@ angular.module('viewCustom')
         // set up page
         svObj.setPage=function (urlPath, title) {
             $timeout(function () {
-                ga('HVD2.set', {
-                    page: urlPath,
-                    title: title
-                });
+
+                var loc=window.location.href;
+                ga('create', 'UA-52592218-13', 'auto',title);
+                ga('send',{'hitType':'pageview','page':urlPath,'title':title,location:loc});
 
             },500);
 

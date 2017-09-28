@@ -28,10 +28,10 @@ angular.module('viewCustom').service('customGoogleAnalytic', ['$timeout', functi
     // set up page
     svObj.setPage = function (urlPath, title) {
         $timeout(function () {
-            ga('HVD2.set', {
-                page: urlPath,
-                title: title
-            });
+
+            var loc = window.location.href;
+            ga('create', 'UA-52592218-13', 'auto', title);
+            ga('send', { 'hitType': 'pageview', 'page': urlPath, 'title': title, location: loc });
         }, 500);
     };
 
@@ -1730,6 +1730,43 @@ angular.module('viewCustom').controller('prmPermalinkAfterCtrl', ['$scope', func
 angular.module('viewCustom').component('prmPermalinkAfter', {
     bindings: { parentCtrl: '<' },
     controller: 'prmPermalinkAfterCtrl',
+    controllerAs: 'vm'
+});
+
+/**
+ * Created by samsan on 9/25/17.
+ */
+
+angular.module('viewCustom').controller('prmSearchBarAfterCtrl', ['$element', '$location', '$compile', '$scope', '$mdMedia', function ($element, $location, $compile, $scope, $mdMedia) {
+    var vm = this;
+
+    vm.$onInit = function () {
+        var el = $element[0].parentNode.children[0].children[0].children[2];
+        var button = document.createElement('button');
+        button.setAttribute('id', 'browseButton');
+        button.setAttribute('class', 'md-button md-primoExplore-theme  browse-button');
+        button.setAttribute('ng-click', 'vm.gotoBrowse()');
+        var textNode = document.createTextNode('START WITH (BROWSE BY...)');
+        if ($mdMedia('xs') || $mdMedia('sm')) {
+            textNode = document.createTextNode('BROWSE');
+        }
+        button.appendChild(textNode);
+        var browseBtn = document.getElementById('browseButton');
+        // if browse button doesn't exist, add new one
+        if (!browseBtn) {
+            el.appendChild(button);
+            $compile(el)($scope);
+        }
+    };
+
+    vm.gotoBrowse = function () {
+        $location.path('/browse');
+    };
+}]);
+
+angular.module('viewCustom').component('prmSearchBarAfter', {
+    bindings: { parentCtrl: '<' },
+    controller: 'prmSearchBarAfterCtrl',
     controllerAs: 'vm'
 });
 

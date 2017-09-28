@@ -1,0 +1,27 @@
+.browse-button {
+    position: relative;
+    margin-top:20px;
+    color:#ffffff;
+    margin-left:0px;
+}
+
+.browse-button:hover {
+    color:#ffffff !important;
+}
+
+prm-browse-search-bar {
+    background-color:#383838;
+}
+
+/* magnify glass search in search box */
+#magnifying-glass {
+    color:#a51c30 !important;
+}
+
+
+@media only screen and (max-width: 800px) {
+    .browse-button {
+        margin-top:30px;
+    }
+
+}
