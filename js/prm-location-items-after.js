@@ -4,7 +4,7 @@
  * When a user click on each item, it capture the each location and pass into a service component
  */
 angular.module('viewCustom')
-    .controller('prmLocationItemsAfterCtrl',['customService','$element','$window','$compile','$scope','$timeout',function (customService,$element,$window,$compile,$scope, $timeout) {
+    .controller('prmLocationItemsAfterCtrl',['customService',function (customService) {
         var vm=this;
         var sv=customService;
         vm.libName='';

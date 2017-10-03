@@ -13,6 +13,10 @@ prm-browse-search-bar {
     background-color:#383838;
 }
 
+prm-browse-search-bar > button.submit-button {
+    color:#a51c30 !important;
+}
+
 /* magnify glass search in search box */
 #magnifying-glass {
     color:#a51c30 !important;

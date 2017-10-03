@@ -1379,27 +1379,40 @@ angular.module('viewCustom').controller('prmLocationAfterCtrl', ['$element', '$c
         // insert place icon and align it
         var el = $element[0].parentNode.children[0].children[0].children[0].children[0];
         if (el.children) {
-            if (el.children[0].tagName === 'H3' && !vm.libraryName) {
-                var text = el.children[0].innerText;
-                if (text) {
-                    el.children[0].remove();
-                    vm.libraryName = text;
-                    var h3 = document.createElement('h3');
-                    h3.innerText = text;
-                    var mdIcon = document.createElement('md-icon');
-                    mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
-                    mdIcon.setAttribute('class', 'placeIcon');
-                    mdIcon.setAttribute('ng-click', 'vm.goPlace(vm.parentCtrl.location,$event)');
-                    h3.appendChild(mdIcon);
-                    el.prepend(h3);
-                    $compile(el)($scope);
-                }
+            if (el.children[0].tagName === 'H3' && vm.libraryName) {
+                el.children[0].remove();
+                var h3 = document.createElement('h3');
+                h3.innerText = vm.libraryName;
+                var mdIcon = document.createElement('md-icon');
+                mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
+                mdIcon.setAttribute('class', 'placeIcon');
+                mdIcon.setAttribute('ng-click', 'vm.goPlace(vm.parentCtrl.location,$event)');
+                h3.appendChild(mdIcon);
+                el.prepend(h3);
+                $compile(el.children[0])($scope);
             }
         }
     };
 
     vm.$doCheck = function () {
-        vm.createIcon();
+        // insert place icon and align it
+        var el = $element[0].parentNode.children[0].children[0].children[0].children[0];
+        if (el.children) {
+            if (el.children[0].tagName === 'H3' && !vm.libraryName) {
+                var text = el.children[0].innerText;
+                if (text) {
+                    vm.libraryName = text;
+                }
+            }
+        }
+    };
+
+    vm.$onInit = function () {
+        $scope.$watch('vm.libraryName', function () {
+            if (vm.libraryName) {
+                vm.createIcon();
+            }
+        });
     };
 
     vm.goPlace = function (loc, e) {
@@ -1632,7 +1645,7 @@ angular.module('viewCustom').component('prmLocationItemAfter', {
  * This component read xml data from a file and store them into a service to use it prm-location-item-after component.
  * When a user click on each item, it capture the each location and pass into a service component
  */
-angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customService', '$element', '$window', '$compile', '$scope', '$timeout', function (customService, $element, $window, $compile, $scope, $timeout) {
+angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customService', function (customService) {
     var vm = this;
     var sv = customService;
     vm.libName = '';
