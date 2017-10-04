@@ -12,6 +12,12 @@ angular.module('viewCustom')
             if(el) {
                 el.remove();
             }
+
+            // remove skip link
+            var el2 = $element[0].parentNode.parentNode.children[0];
+            if(el2) {
+                el2.remove();
+            }
         };
 
     }]);

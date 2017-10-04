@@ -1,3 +1,10 @@
+<div ng-if="vm.TOC.display">
+    <a href="http://syndetics.com/index.aspx?isbn={{vm.TOC.isbn[0]}}/TOC.HTML&client=harvard&type=rn12" target="_blank">
+        <md-icon  icon-type="svg" md-svg-src="/primo-explore/custom/HVD2/img/ic_list_black_24px.svg"></md-icon>
+        <span>Table of Contents</span>
+        <prm-icon link-arrow icon-type="svg" svg-icon-set="primo-ui" icon-definition="chevron-right"></prm-icon>
+    </a>
+</div>
 
 <div ng-if="vm.hathiTrustItem.orig">
     <a href="{{vm.hathiTrustItem.itemURL}}" target="_blank">

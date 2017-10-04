@@ -1712,6 +1712,12 @@ angular.module('viewCustom').controller('prmLogoAfterCtrl', ['$element', functio
         if (el) {
             el.remove();
         }
+
+        // remove skip link
+        var el2 = $element[0].parentNode.parentNode.children[0];
+        if (el2) {
+            el2.remove();
+        }
     };
 }]);
 
@@ -1793,9 +1799,18 @@ angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtr
     var custService = customService;
     var cs = customMapService;
     var chts = customHathiTrustService;
+    vm.TOC = { 'type': 'HVD_ALEPH', 'isbn': [], 'display': false };
     vm.itemPNX = {};
     vm.hathiTrust = {};
     var map;
+
+    // find if pnx has table of content
+    vm.findTOC = function () {
+        if (vm.itemPNX.pnx.control.sourceid[0] === vm.TOC.type && vm.itemPNX.pnx.addata.isbn) {
+            vm.TOC.display = true;
+            vm.TOC.isbn = vm.itemPNX.pnx.addata.isbn;
+        }
+    };
 
     //This function is used to center and zoom the map based on WKT POINT(x y)
     vm.mapWKTPoint = function (map, wkt, popupText) {
@@ -1836,6 +1851,12 @@ angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtr
 
     vm.$onInit = function () {
         vm.itemPNX = vm.parentCtrl.result;
+        // get table of content
+        vm.findTOC();
+
+        console.log('**** prm-search-result-availability-line-after ****');
+        console.log(vm);
+
         if (vm.itemPNX.pnx.display.lds40 && vm.parentCtrl.isFullView) {
             $timeout(function () {
                 vm.coordinates = cs.buildCoordinatesArray(vm.itemPNX.pnx.display.lds40[0]);
@@ -1853,8 +1874,6 @@ angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtr
 
                 map.setView([vm.centerLatitude, vm.centerLongitude], zoom);
                 map.addLayer(osm);
-
-                // start here
 
                 // custom zoom bar control that includes a Zoom Home function
                 L.Control.zoomHome = L.Control.extend({
@@ -2560,7 +2579,7 @@ angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', '$tim
         });
     };
 
-    vm.topRightMenus = [{ 'title': 'Research Guides', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:portal_resguides', 'label': 'Go to Research guides' }, { 'title': 'Libraries / Hours', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:bannerfindlib', 'label': 'Go to Library hours' }, { 'title': 'All My Accounts', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:banneraccounts', 'label': 'Go to all my accounts' }];
+    vm.topRightMenus = [{ 'title': 'Research Guides', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:portal_resguides', 'label': 'Go to Research guides' }, { 'title': 'Libraries / Hours', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:bannerfindlib', 'label': 'Go to Library hours' }, { 'title': 'All My Accounts', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:banneraccounts', 'label': 'Go to all my accounts' }, { 'title': 'Feedback', 'url': 'http://nrs.harvard.edu/urn-3:HUL.ois:hollis-v2-feedback', 'label': 'Go to Feedback' }];
 
     vm.$onInit = function () {
         // initialize google analytic
