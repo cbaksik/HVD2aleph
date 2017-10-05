@@ -388,6 +388,15 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
         });
     };
 
+    serviceObj.postData = function (url, jsonObj) {
+        return $http({
+            'method': 'post',
+            'url': url,
+            'timeout': 5000,
+            'data': jsonObj
+        });
+    };
+
     // setter and getter for text msg data
     serviceObj.textData = {};
     serviceObj.setTextData = function (data) {
@@ -589,6 +598,7 @@ angular.module('viewCustom').service('customService', ['$http', function ($http)
         return serviceObj.auth;
     };
 
+    // get url api from config.html file
     serviceObj.api = {};
     serviceObj.setApi = function (data) {
         serviceObj.api = data;
@@ -1793,12 +1803,16 @@ angular.module('viewCustom').component('prmSearchBarAfter', {
  * Created by samsan on 9/13/17.
  */
 
-angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtrl', ['customMapService', '$timeout', 'customHathiTrustService', 'customService', 'customGoogleAnalytic', function (customMapService, $timeout, customHathiTrustService, customService, customGoogleAnalytic) {
+angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtrl', ['customMapService', '$timeout', 'customHathiTrustService', 'customService', 'customGoogleAnalytic', '$q', 'prmSearchService', function (customMapService, $timeout, customHathiTrustService, customService, customGoogleAnalytic, $q, prmSearchService) {
     var vm = this;
     var cga = customGoogleAnalytic;
     var custService = customService;
     var cs = customMapService;
     var chts = customHathiTrustService;
+    var prmsv = prmSearchService;
+    // get endpoint url from config.html file
+    vm.api = custService.getApi();
+    // display of table of content
     vm.TOC = { 'type': 'HVD_ALEPH', 'isbn': [], 'display': false };
     vm.itemPNX = {};
     vm.hathiTrust = {};
@@ -1807,8 +1821,41 @@ angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtr
     // find if pnx has table of content
     vm.findTOC = function () {
         if (vm.itemPNX.pnx.control.sourceid[0] === vm.TOC.type && vm.itemPNX.pnx.addata.isbn) {
-            vm.TOC.display = true;
-            vm.TOC.isbn = vm.itemPNX.pnx.addata.isbn;
+            if (vm.itemPNX.pnx.addata.isbn.length > 1) {
+                var listRequest = [];
+                for (var i = 0; i < vm.itemPNX.pnx.addata.isbn.length; i++) {
+                    var param = { 'isbn': '', 'hasData': false };
+                    param.isbn = vm.itemPNX.pnx.addata.isbn[i];
+                    var post = custService.postData(vm.api.tocUrl, param);
+                    listRequest.push(post);
+                }
+                // put everything into a list of queue call
+                var ajax = $q.all(listRequest);
+                ajax.then(function (response) {
+                    for (var k = 0; k < response.length; k++) {
+                        var data = response[k].data;
+                        var xmldata = prmsv.parseXml(data.result);
+                        if (xmldata.ssi) {
+                            // it has table of content
+                            if (xmldata.ssi[0].TOC[0]) {
+                                data.hasData = true;
+                                vm.TOC.display = data.hasData;
+                                vm.TOC.isbn = data.isbn;
+                                k = response.length;
+                            }
+                        } else {
+                            // it doesn't have table of content
+                            data.hasData = false;
+                            vm.TOC.display = data.hasData;
+                        }
+                    }
+                }, function (error) {
+                    console.log(error);
+                });
+            } else if (vm.itemPNX.pnx.addata.isbn) {
+                vm.TOC.display = true;
+                vm.TOC.isbn = vm.itemPNX.pnx.addata.isbn[0];
+            }
         }
     };
 
@@ -1853,10 +1900,6 @@ angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtr
         vm.itemPNX = vm.parentCtrl.result;
         // get table of content
         vm.findTOC();
-
-        console.log('**** prm-search-result-availability-line-after ****');
-        console.log(vm);
-
         if (vm.itemPNX.pnx.display.lds40 && vm.parentCtrl.isFullView) {
             $timeout(function () {
                 vm.coordinates = cs.buildCoordinatesArray(vm.itemPNX.pnx.display.lds40[0]);

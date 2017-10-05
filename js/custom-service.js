@@ -27,6 +27,15 @@ angular.module('viewCustom')
             })
         };
 
+        serviceObj.postData=function (url,jsonObj) {
+            return $http({
+                'method':'post',
+                'url':url,
+                'timeout':5000,
+                'data':jsonObj
+            })
+        };
+
         // setter and getter for text msg data
         serviceObj.textData={};
         serviceObj.setTextData=function (data) {
@@ -231,6 +240,7 @@ angular.module('viewCustom')
            return serviceObj.auth;
         };
 
+        // get url api from config.html file
         serviceObj.api={};
         serviceObj.setApi=function (data) {
             serviceObj.api=data;
