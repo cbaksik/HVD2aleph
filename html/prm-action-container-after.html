@@ -7,8 +7,9 @@
 
         <md-input-container md-no-float class="underlined-input md-required md-primoExplore-theme md-input-invalid">
             <md-icon md-svg-src="/primo-explore/custom/HVD2/img/ic_phone_black_24px.svg" aria-label="Phone number"></md-icon>
-            <input type="tel" ng-model="vm.form.phone" maxlength="10" placeholder="Phone number" title="Phone number"/>
+            <input type="tel" ng-model="vm.temp.phone" maxlength="13" placeholder="Phone number" title="Phone number" ng-keypress="vm.keyChange($event)"/>
             <span ng-if="vm.form.error" class="textsms-alert">{{vm.form.error}}</span>
+            <div>(###)###-####</div>
         </md-input-container>
         </div>
 

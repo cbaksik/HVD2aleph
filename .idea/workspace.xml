@@ -3,12 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="76e16762-c9c8-4efd-b26f-a22111731ef2" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/config.html" afterPath="$PROJECT_DIR$/html/config.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/prm-action-container-after.html" afterPath="$PROJECT_DIR$/html/prm-action-container-after.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/prm-search-result-availability-line-after.html" afterPath="$PROJECT_DIR$/html/prm-search-result-availability-line-after.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/custom-service.js" afterPath="$PROJECT_DIR$/js/custom-service.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/custom.js" afterPath="$PROJECT_DIR$/js/custom.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-search-result-availability-line-after.js" afterPath="$PROJECT_DIR$/js/prm-search-result-availability-line-after.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/prm-action-container-after.js" afterPath="$PROJECT_DIR$/js/prm-action-container-after.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -98,7 +95,6 @@
         <option value="$PROJECT_DIR$/js/custom-hathi-trust-service.js" />
         <option value="$PROJECT_DIR$/js/prm-location-item-after.js" />
         <option value="$PROJECT_DIR$/html/prm-topbar-after.html" />
-        <option value="$PROJECT_DIR$/js/prm-action-container-after.js" />
         <option value="$PROJECT_DIR$/js/custom-print-page.js" />
         <option value="$PROJECT_DIR$/js/prm-full-view-after.js" />
         <option value="$PROJECT_DIR$/js/custom-view-component.js" />
@@ -114,11 +110,12 @@
         <option value="$PROJECT_DIR$/css/prm-logo-after.css" />
         <option value="$PROJECT_DIR$/html/prm-logo-after.html" />
         <option value="$PROJECT_DIR$/js/prm-logo-after.js" />
-        <option value="$PROJECT_DIR$/html/prm-action-container-after.html" />
         <option value="$PROJECT_DIR$/html/prm-search-result-availability-line-after.html" />
         <option value="$PROJECT_DIR$/html/config.html" />
         <option value="$PROJECT_DIR$/js/prm-search-result-availability-line-after.js" />
         <option value="$PROJECT_DIR$/js/custom-service.js" />
+        <option value="$PROJECT_DIR$/html/prm-action-container-after.html" />
+        <option value="$PROJECT_DIR$/js/prm-action-container-after.js" />
       </list>
     </option>
   </component>
@@ -164,34 +161,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="HVD2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="HVD2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="HVD2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="HVD2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="HVD2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="html" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -381,15 +350,15 @@
       <workItem from="1506613628055" duration="853000" />
       <workItem from="1507039569155" duration="5554000" />
       <workItem from="1507125815120" duration="2894000" />
-      <workItem from="1507212960167" duration="4982000" />
+      <workItem from="1507212960167" duration="9692000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="371254000" />
+    <option name="totallyTimeSpent" value="375964000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="728" extended-state="6" />
+    <frame x="0" y="23" width="1280" height="728" extended-state="0" />
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23984376" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -710,22 +679,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/prm-action-container-after.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-175">
-          <caret line="116" column="55" lean-forward="false" selection-start-line="116" selection-start-column="55" selection-end-line="116" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/html/prm-action-container-after.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="32" column="0" lean-forward="false" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/prm-search-service.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -770,6 +723,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-467">
           <caret line="35" column="43" lean-forward="false" selection-start-line="35" selection-start-column="43" selection-end-line="35" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/prm-action-container-after.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2205">
+          <caret line="147" column="16" lean-forward="false" selection-start-line="147" selection-start-column="16" selection-end-line="147" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/html/prm-action-container-after.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="14" lean-forward="true" selection-start-line="13" selection-start-column="14" selection-end-line="13" selection-end-column="14" />
           <folding />
         </state>
       </provider>

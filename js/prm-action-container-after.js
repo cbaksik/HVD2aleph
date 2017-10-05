@@ -12,6 +12,7 @@ angular.module('viewCustom')
         var vm=this;
         vm.restsmsUrl='';
         vm.locations=[];
+        vm.temp = {'phone':''};
         vm.form={'phone':'','deviceType':'','body':'','error':'','mobile':false,'msg':'','token':'','ip':'','sessionToken':'','isLoggedIn':false,'iat':'','inst':'','vid':'','exp':'','userName':'','iss':'','onCampus':false};
 
         vm.$onChanges=function(){
@@ -31,6 +32,23 @@ angular.module('viewCustom')
                 vm.form.inst=obj.viewInstitutionCode;
                 vm.form.onCampus=obj.onCampus;
 
+            }
+        };
+
+        vm.keyChange=function (e) {
+            if(e.which > 47 && e.which < 58) {
+                vm.form.error = '';
+                var phone = angular.copy(vm.temp.phone);
+                phone = phone.replace(/[\(\)\-]/g, '');
+                if (phone.length > 2 && phone.length < 5) {
+                    vm.temp.phone = '(' + phone.substring(0, 3) + ')' + phone.substring(3, phone.length);
+                } else if (phone.length > 5 && phone.length < 14) {
+                    vm.temp.phone = '(' + phone.substring(0, 3) + ')' + phone.substring(3, 6) + '-' + phone.substring(6, phone.length);
+                }
+            } else if(e.which > 96 && e.which < 123) {
+                vm.form.error = 'Enter invalid phone number';
+            } else {
+                vm.form.error = 'Enter invalid phone number';
             }
         };
 
@@ -77,13 +95,20 @@ angular.module('viewCustom')
             // set select row highlite
             vm.locations[k].cssClass='textsms-row-visited';
 
-            vm.form.error='';
+            var phone = '';
+
+            if(vm.temp.phone.length > 0) {
+                phone = angular.copy(vm.temp.phone);
+                phone = phone.replace(/[\(\)\-]/g, '');
+            }
+
+            vm.form.error = '';
             vm.form.msg='';
             var count=0;
-            if(!vm.form.phone) {
+            if(!phone) {
                 vm.form.error = 'Enter your phone number';
                 count++;
-            } else if(isNaN(vm.form.phone) || vm.form.phone.length < 10) {
+            } else if(isNaN(phone) || phone.length < 10) {
                 vm.form.error = 'Enter a valid phone number';
                 count++;
             }
@@ -94,6 +119,7 @@ angular.module('viewCustom')
                 vm.form.body = el.children[k].innerText;
             }
             if(count===0) {
+                vm.form.phone = phone;
                 let title='';
                 if(vm.parentCtrl.item.pnx.display.title) {
                     title = vm.parentCtrl.item.pnx.display.title[0];
@@ -108,6 +134,8 @@ angular.module('viewCustom')
                         title+='... ';
                     } else if(title.length > 30) {
                         title=title.substring(0,30);
+                        title+='... ';
+                    } else {
                         title+='... ';
                     }
 
@@ -128,7 +156,7 @@ angular.module('viewCustom')
                                    var data = JSON.parse(result.data.msg);
                                    data = data.data.message[0];
                                    if (data.accepted) {
-                                       vm.form.msg = 'The message has been sent to ' + data.to + '.';
+                                       vm.form.msg = 'The message has been sent to ' + vm.temp.phone + '.';
                                    } else {
                                        vm.form.msg = 'The message did not send. The ClickAtell did not accept sms.';
                                    }
@@ -143,7 +171,6 @@ angular.module('viewCustom')
                             vm.form.msg='There is a technical issue with Text Message Server. The rest endpoint server may be down.';
                         }
                     )
-
 
                 }
             }
