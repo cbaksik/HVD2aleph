@@ -1483,7 +1483,6 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
     vm.requestLinks = [];
     vm.auth = {};
     var sv = customService;
-
     // get item category code
     vm.getItemCategoryCodes = function () {
         if (vm.parentData.opacService && vm.currLoc.location) {
@@ -1561,40 +1560,6 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
         return requestLinks;
     };
 
-    // insert icon and copy library name. then format
-    vm.createIcon = function () {
-        // insert place icon and align it
-        var el = $element[0].parentNode.parentNode.parentNode.children[1].children[0];
-        if (el.children[0].tagName === 'H4' && !vm.libName) {
-            var text = el.children[0].innerText;
-            if (text) {
-                el.children[0].remove();
-                vm.libName = text;
-                var h4 = document.createElement('h4');
-                h4.setAttribute('class', 'md-title');
-                var span = document.createElement('span');
-                span.innerText = vm.libName;
-                h4.appendChild(span);
-                var mdIcon = document.createElement('md-icon');
-                mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
-                mdIcon.setAttribute('class', 'placeIcon');
-                mdIcon.setAttribute('ng-click', 'vm.goPlace(vm.currLoc.location,$event)');
-                h4.appendChild(mdIcon);
-                if (el.children.length > 1) {
-                    el.insertBefore(h4, el.children[0]);
-                    $compile(el.children[0])($scope);
-                }
-            }
-        }
-    };
-
-    vm.goPlace = function (loc, e) {
-        e.stopPropagation();
-        var url = 'http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
-        $window.open(url, '_blank');
-        return true;
-    };
-
     vm.$onInit = function () {
         // watch for variable change, then call an ajax to get current location of itemcategorycode
         // it won't work on angular 2
@@ -1627,7 +1592,6 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
         // list of logic xml data list that convert into json array
         vm.logicList = sv.getLogicList();
         vm.auth = sv.getAuth();
-        vm.createIcon();
     };
 
     vm.signIn = function () {
@@ -1678,12 +1642,13 @@ angular.module('viewCustom').component('prmLocationItemAfter', {
     controllerAs: 'vm',
     templateUrl: '/primo-explore/custom/HVD2/html/prm-location-item-after.html'
 });
+
 /**
  * Created by samsan on 7/18/17.
  * This component read xml data from a file and store them into a service to use it prm-location-item-after component.
  * When a user click on each item, it capture the each location and pass into a service component
  */
-angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customService', function (customService) {
+angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customService', '$element', '$timeout', '$window', '$sce', function (customService, $element, $timeout, $window, $sce) {
     var vm = this;
     var sv = customService;
     vm.libName = '';
@@ -1700,8 +1665,21 @@ angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customSer
         });
     };
 
+    vm.goPlace = function (loc, e) {
+        e.stopPropagation();
+        var url = 'http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
+        $window.open(url, '_blank');
+        return true;
+    };
+
     vm.$onInit = function () {
         vm.getLibData();
+        $timeout(function () {
+            var pNode = $element[0].parentNode.children;
+            if (pNode) {
+                pNode[1].remove();
+            }
+        }, 1000);
     };
 
     vm.$onChanges = function () {
@@ -1712,9 +1690,39 @@ angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customSer
 
 angular.module('viewCustom').component('prmLocationItemsAfter', {
     bindings: { parentCtrl: '<' },
-    controller: 'prmLocationItemsAfterCtrl'
+    controller: 'prmLocationItemsAfterCtrl',
+    templateUrl: '/primo-explore/custom/HVD2/html/prm-location-items-after.html'
 });
 
+// create href link if there is url for online section
+angular.module('viewCustom').filter('urlFilter', ['$filter', function ($filter) {
+    return function (str, key) {
+        var newStr = '';
+        var translateKey = $filter('translate')(key);
+        if (translateKey.toLowerCase() === 'online:') {
+            var strList = str.split(';');
+            var pattern = /^(http:\/\/)/;
+            if (strList.length > 1) {
+                var str1 = strList[0];
+                var str2 = strList[1];
+                if (pattern.test(str2)) {
+                    newStr = str1 + '; <a href="' + str2 + '" target="_blank">' + str2 + '</a>';
+                } else {
+                    newStr = str;
+                }
+            } else {
+                if (pattern.test(str)) {
+                    newStr = '<a href="' + str + '" target="_blank">' + str + '</a>';
+                } else {
+                    newStr = str;
+                }
+            }
+        } else {
+            newStr = str;
+        }
+        return newStr;
+    };
+}]);
 /**
  * Created by samsan on 7/18/17.
  * This component is to capture parent-ctrl data so it can access Rest base url endpoint to use it an ajax call
@@ -1803,7 +1811,7 @@ angular.module('viewCustom').controller('prmSearchBarAfterCtrl', ['$element', '$
         button.setAttribute('id', 'browseButton');
         button.setAttribute('class', 'md-button md-primoExplore-theme  browse-button');
         button.setAttribute('ng-click', 'vm.gotoBrowse()');
-        var textNode = document.createTextNode('START WITH (BROWSE BY...)');
+        var textNode = document.createTextNode('STARTS WITH (BROWSE BY...)');
         if ($mdMedia('xs') || $mdMedia('sm')) {
             textNode = document.createTextNode('BROWSE');
         }

@@ -12,7 +12,7 @@ angular.module('viewCustom')
             button.setAttribute('id','browseButton');
             button.setAttribute('class','md-button md-primoExplore-theme  browse-button');
             button.setAttribute('ng-click','vm.gotoBrowse()');
-            var textNode=document.createTextNode('START WITH (BROWSE BY...)');
+            var textNode=document.createTextNode('STARTS WITH (BROWSE BY...)');
             if($mdMedia('xs') || $mdMedia('sm')) {
                 textNode=document.createTextNode('BROWSE');
             }

@@ -955,9 +955,13 @@ prm-request-services {
 }
 .browse-button {
     position: relative;
-    margin-top:20px;
+    margin-top:22px;
     color:#ffffff;
     margin-left:0px;
+}
+
+prm-search-bar {
+    padding:10px !important;
 }
 
 .browse-button:hover {
@@ -966,10 +970,16 @@ prm-request-services {
 
 prm-browse-search-bar {
     background-color:#383838;
+    padding:10px !important;
 }
 
 prm-browse-search-bar > button.submit-button {
     color:#a51c30 !important;
+}
+
+
+.search-switch-buttons {
+    padding-top:0px !important;
 }
 
 /* magnify glass search in search box */

@@ -1,0 +1,19 @@
+
+<h4 class="md-title">
+    <span translate="{{$ctrl.parentCtrl.currLoc.location.libraryCode}}"></span>
+    <span (click)="$ctrl.goPlace($ctrl.parentCtrl.currLoc.location,$event)">
+        <md-icon md-svg-src="/primo-explore/custom/HVD2/img/place.svg" class="placeIcon md-primoExplore-theme"></md-icon>
+    </span>
+</h4>
+<p>
+    <span class="availability-status available">{{$ctrl.parentCtrl.currLoc.location.availabilityStatus}}</span>
+    <span>{{$ctrl.parentCtrl.currLoc.location.callNumber}}</span>
+</p>
+<div ng-repeat="line in $ctrl.parentCtrl.currLoc.summaryHoldings.allLines track by $index">
+    <div class="margin-top-small">
+        <span class="bold-text" translate="{{line.key}}"></span>
+        <span ng-repeat="lineItem in line.value track by $index">
+            <span ng-bind-html="lineItem|urlFilter:line.key"></span>
+        </span>
+    </div>
+</div>
