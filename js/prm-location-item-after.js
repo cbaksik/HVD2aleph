@@ -5,7 +5,7 @@
  * Then compare it with xml logic data file
  */
 angular.module('viewCustom')
-    .controller('prmLocationItemAfterCtrl',['customService','$window','$scope','$element','$compile',function (customService, $window, $scope, $element, $compile) {
+    .controller('prmLocationItemAfterCtrl',['customService','$window','$scope','$element','$compile','$timeout','$filter',function (customService, $window, $scope, $element, $compile, $timeout, $filter) {
         var vm=this;
         vm.currLoc={};
         vm.locationInfo={};
@@ -53,6 +53,37 @@ angular.module('viewCustom')
                );
            }
 
+        };
+
+        vm.createIcon=function () {
+            // insert place icon and align it
+            var el = $element[0].parentNode.parentNode.parentNode.children[1].children[0];
+            vm.libName = $filter('translate')(vm.currLoc.location.libraryCode);
+            if(el.children[0].tagName==='H4' && vm.libName && el) {
+                el.children[0].remove();
+                var h4=document.createElement('h4');
+                h4.setAttribute('class','md-title');
+                var span=document.createElement('span');
+                span.innerText=vm.libName;
+                h4.appendChild(span);
+                var mdIcon = document.createElement('md-icon');
+                mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
+                mdIcon.setAttribute('class', 'placeIcon');
+                mdIcon.setAttribute('ng-click', 'vm.goPlace(vm.currLoc.location,$event)');
+                h4.appendChild(mdIcon);
+                if(el.children.length > 0) {
+                    el.insertBefore(h4,el.children[0]);
+                    $compile(el.children[0])($scope);
+                }
+            }
+
+        };
+
+        vm.goPlace=function(loc,e){
+            e.stopPropagation();
+            var url='http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
+            $window.open(url,'_blank');
+            return true;
         };
 
         // make comparison to see it is true so it can display the link
@@ -103,13 +134,13 @@ angular.module('viewCustom')
                 vm.locationInfo=sv.getLocation(vm.currLoc);
                 vm.parentData=sv.getParentData();
                 vm.getItemCategoryCodes();
+                vm.createIcon();
             });
         };
 
         vm.$doCheck=function () {
             vm.data=sv.getItems();
             vm.currLoc=vm.data.currLoc;
-
             // remove bookingRequest and photocopy request
             if(vm.currLoc.items) {
                 for(var k=0; k < vm.currLoc.items.length; k++) {
@@ -123,13 +154,13 @@ angular.module('viewCustom')
                 }
             }
 
+
         };
 
         vm.$onChanges=function (ev) {
             // list of logic xml data list that convert into json array
             vm.logicList = sv.getLogicList();
             vm.auth = sv.getAuth();
-
         };
 
         vm.signIn=function () {

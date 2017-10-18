@@ -23,6 +23,19 @@ angular.module('viewCustom')
 
         };
 
+
+
+        // remove add note section native
+        vm.removeDom=function () {
+            var el=$element[0].parentNode.children[1].children[0].children;
+            if(el) {
+                if (el.length > 2) {
+                    el[2].remove();
+                }
+            }
+        };
+
+
         vm.goPlace=function(loc,e){
             e.stopPropagation();
             var url='http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
@@ -32,20 +45,16 @@ angular.module('viewCustom')
 
         vm.$onInit=function() {
            vm.getLibData();
-           $timeout(function () {
-               var pNode=$element[0].parentNode.children;
-               if(pNode) {
-                   pNode[1].remove();
-               }
-
-           },1000);
-
         };
 
-        vm.$onChanges=function () {
-            // capture data and use it in prm-location-item-after component
+        vm.$doCheck=function() {
+            if(vm.parentCtrl.loc) {
+                vm.parentCtrl.loc.locationNoItems=false;
+            }
+            vm.removeDom();
             sv.setItems(vm.parentCtrl);
-        };
+
+        }
 
 
     }]);
@@ -70,6 +79,8 @@ angular.module('viewCustom').filter('urlFilter',['$filter',function ($filter) {
                 var str2=strList[1];
                 if(pattern.test(str2)){
                     newStr=str1 + '; <a href="'+str2+'" target="_blank">'+str2+'</a>';
+                } else if(pattern.test(str1)) {
+                    newStr='<a href="'+str1+'" target="_blank">'+str1+'</a>' +'; ' + str2;
                 } else {
                     newStr=str;
                 }

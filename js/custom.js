@@ -1473,7 +1473,7 @@ angular.module('viewCustom').component('prmLocationAfter', {
  * It pass the current location data to get a full list of current location with itemcategorycode.
  * Then compare it with xml logic data file
  */
-angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customService', '$window', '$scope', '$element', '$compile', function (customService, $window, $scope, $element, $compile) {
+angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customService', '$window', '$scope', '$element', '$compile', '$timeout', '$filter', function (customService, $window, $scope, $element, $compile, $timeout, $filter) {
     var vm = this;
     vm.currLoc = {};
     vm.locationInfo = {};
@@ -1518,6 +1518,36 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
                 console.log(err);
             });
         }
+    };
+
+    vm.createIcon = function () {
+        // insert place icon and align it
+        var el = $element[0].parentNode.parentNode.parentNode.children[1].children[0];
+        vm.libName = $filter('translate')(vm.currLoc.location.libraryCode);
+        if (el.children[0].tagName === 'H4' && vm.libName && el) {
+            el.children[0].remove();
+            var h4 = document.createElement('h4');
+            h4.setAttribute('class', 'md-title');
+            var span = document.createElement('span');
+            span.innerText = vm.libName;
+            h4.appendChild(span);
+            var mdIcon = document.createElement('md-icon');
+            mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
+            mdIcon.setAttribute('class', 'placeIcon');
+            mdIcon.setAttribute('ng-click', 'vm.goPlace(vm.currLoc.location,$event)');
+            h4.appendChild(mdIcon);
+            if (el.children.length > 0) {
+                el.insertBefore(h4, el.children[0]);
+                $compile(el.children[0])($scope);
+            }
+        }
+    };
+
+    vm.goPlace = function (loc, e) {
+        e.stopPropagation();
+        var url = 'http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
+        $window.open(url, '_blank');
+        return true;
     };
 
     // make comparison to see it is true so it can display the link
@@ -1567,13 +1597,13 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
             vm.locationInfo = sv.getLocation(vm.currLoc);
             vm.parentData = sv.getParentData();
             vm.getItemCategoryCodes();
+            vm.createIcon();
         });
     };
 
     vm.$doCheck = function () {
         vm.data = sv.getItems();
         vm.currLoc = vm.data.currLoc;
-
         // remove bookingRequest and photocopy request
         if (vm.currLoc.items) {
             for (var k = 0; k < vm.currLoc.items.length; k++) {
@@ -1665,6 +1695,16 @@ angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customSer
         });
     };
 
+    // remove add note section native
+    vm.removeDom = function () {
+        var el = $element[0].parentNode.children[1].children[0].children;
+        if (el) {
+            if (el.length > 2) {
+                el[2].remove();
+            }
+        }
+    };
+
     vm.goPlace = function (loc, e) {
         e.stopPropagation();
         var url = 'http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
@@ -1674,16 +1714,13 @@ angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customSer
 
     vm.$onInit = function () {
         vm.getLibData();
-        $timeout(function () {
-            var pNode = $element[0].parentNode.children;
-            if (pNode) {
-                pNode[1].remove();
-            }
-        }, 1000);
     };
 
-    vm.$onChanges = function () {
-        // capture data and use it in prm-location-item-after component
+    vm.$doCheck = function () {
+        if (vm.parentCtrl.loc) {
+            vm.parentCtrl.loc.locationNoItems = false;
+        }
+        vm.removeDom();
         sv.setItems(vm.parentCtrl);
     };
 }]);
@@ -1707,6 +1744,8 @@ angular.module('viewCustom').filter('urlFilter', ['$filter', function ($filter) 
                 var str2 = strList[1];
                 if (pattern.test(str2)) {
                     newStr = str1 + '; <a href="' + str2 + '" target="_blank">' + str2 + '</a>';
+                } else if (pattern.test(str1)) {
+                    newStr = '<a href="' + str1 + '" target="_blank">' + str1 + '</a>' + '; ' + str2;
                 } else {
                     newStr = str;
                 }
@@ -1809,7 +1848,7 @@ angular.module('viewCustom').controller('prmSearchBarAfterCtrl', ['$element', '$
         var el = $element[0].parentNode.children[0].children[0].children[2];
         var button = document.createElement('button');
         button.setAttribute('id', 'browseButton');
-        button.setAttribute('class', 'md-button md-primoExplore-theme  browse-button');
+        button.setAttribute('class', 'md-button md-primoExplore-theme browse-button');
         button.setAttribute('ng-click', 'vm.gotoBrowse()');
         var textNode = document.createTextNode('STARTS WITH (BROWSE BY...)');
         if ($mdMedia('xs') || $mdMedia('sm')) {

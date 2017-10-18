@@ -960,9 +960,6 @@ prm-request-services {
     margin-left:0px;
 }
 
-prm-search-bar {
-    padding:10px !important;
-}
 
 .browse-button:hover {
     color:#ffffff !important;
@@ -970,7 +967,6 @@ prm-search-bar {
 
 prm-browse-search-bar {
     background-color:#383838;
-    padding:10px !important;
 }
 
 prm-browse-search-bar > button.submit-button {
@@ -988,7 +984,7 @@ prm-browse-search-bar > button.submit-button {
 }
 
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 900px) {
     .browse-button {
         margin-top:30px;
     }
