@@ -1683,6 +1683,7 @@ angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customSer
     var sv = customService;
     vm.libName = '';
     vm.logicList = [];
+    vm.removeFlag = true;
     // get static xml data and convert to json
     vm.getLibData = function () {
         sv.getAjax('/primo-explore/custom/HVD2/html/requestLinkLogic.html', {}, 'get').then(function (respone) {
@@ -1718,10 +1719,25 @@ angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customSer
 
     vm.$doCheck = function () {
         if (vm.parentCtrl.loc) {
-            vm.parentCtrl.loc.locationNoItems = false;
+            if (vm.parentCtrl.loc.locationNoItems && vm.removeFlag) {
+                var el = $element[0].parentNode.children;
+                if (el.length > 2) {
+                    el[2].remove();
+                    vm.removeFlag = false;
+                }
+            }
         }
         vm.removeDom();
         sv.setItems(vm.parentCtrl);
+
+        //remove network resource
+        if (vm.parentCtrl.locationsService.results) {
+            for (var i = 0; i < vm.parentCtrl.locationsService.results[0].length; i++) {
+                if (vm.parentCtrl.locationsService.results[0][i].location.libraryCode === 'HVD_NET') {
+                    vm.parentCtrl.locationsService.results[0].splice(i, 1);
+                }
+            }
+        }
     };
 }]);
 
