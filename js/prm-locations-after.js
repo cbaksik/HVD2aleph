@@ -10,10 +10,24 @@ angular.module('viewCustom')
         var vm=this;
         var sv=customService;
 
-        vm.$onChanges=function () {
+        vm.$doCheck=function () {
+            // remove network resource display from location
+            var results=vm.parentCtrl.getLocations();
+            var temp=[];
+            for(var i=0; i < results.length; i++) {
+                if(results[i].location.libraryCode!=='HVD_NET') {
+                    temp.push(results[i]);
+                }
+            }
+            if(temp.length > 0) {
+                // reset location
+                vm.parentCtrl.locations[0]=temp;
+            }
+
             // capture restBaseUrl to use it in prm-location-item-after component
             sv.setParentData(vm.parentCtrl);
         };
+
 
     }]);
 

@@ -9,7 +9,6 @@ angular.module('viewCustom')
         var sv=customService;
         vm.libName='';
         vm.logicList=[];
-        vm.removeFlag=true;
         // get static xml data and convert to json
         vm.getLibData=function () {
             sv.getAjax('/primo-explore/custom/HVD2/html/requestLinkLogic.html', {}, 'get')
@@ -24,7 +23,7 @@ angular.module('viewCustom')
 
         };
 
-        // remove add note section native
+        // remove add note section native above white box
         vm.removeDom=function () {
             var el=$element[0].parentNode.children[1].children[0].children;
             if(el) {
@@ -46,26 +45,31 @@ angular.module('viewCustom')
         };
 
         vm.$doCheck=function() {
+            // hide location that has no item text display
             if(vm.parentCtrl.loc) {
-                if (vm.parentCtrl.loc.locationNoItems && vm.removeFlag) {
+                if (vm.parentCtrl.loc.items.length===0) {
+                      if($element[0].parentNode) {
+                          var el = $element[0].parentNode.children;
+                          if(el) {
+                              if (el.length > 2) {
+                                  el[2].style.display='none';
+                              }
+                          }
+                      }
+
+
+                } else if($element[0].parentNode.children) {
                     var el = $element[0].parentNode.children;
-                    if (el.length > 2) {
-                        el[2].remove();
-                        vm.removeFlag=false;
+                    if(el) {
+                        if (el.length > 2) {
+                            el[2].style.display='block';
+                        }
                     }
                 }
             }
             vm.removeDom();
             sv.setItems(vm.parentCtrl);
 
-            //remove network resource
-            if(vm.parentCtrl.locationsService.results) {
-                for(var i=0; i < vm.parentCtrl.locationsService.results[0].length; i++) {
-                    if(vm.parentCtrl.locationsService.results[0][i].location.libraryCode==='HVD_NET') {
-                        vm.parentCtrl.locationsService.results[0].splice(i,1);
-                    }
-                }
-            }
         };
 
     }]);
