@@ -1387,6 +1387,16 @@ angular.module('viewCustom').controller('prmFullViewAfterCtrl', ['prmSearchServi
                 }
             }
 
+            // remove tags section
+            if (vm.parentCtrl.services) {
+                for (var _i = 0; _i < vm.parentCtrl.services.length; _i++) {
+                    // remove More section
+                    if (vm.parentCtrl.services[_i].scrollId === 'tags') {
+                        vm.parentCtrl.services.splice(_i, 1);
+                    }
+                }
+            }
+
             // set up google analytic
             if (vm.parentCtrl.item.pnx.display) {
                 var title = vm.parentCtrl.item.pnx.display.title[0] + ' : ' + vm.parentCtrl.item.pnx.control.recordid[0];
@@ -1841,6 +1851,52 @@ angular.module('viewCustom').component('prmLogoAfter', {
     controller: 'prmLogoAfterCtrl',
     controllerAs: 'vm',
     templateUrl: '/primo-explore/custom/HVD2/html/prm-logo-after.html'
+});
+
+/**
+ * Created by samsan on 10/19/17.
+ * Add BorrowDirect link on full display page under location items
+ */
+
+angular.module('viewCustom').controller('prmOpacAfterCtrl', [function () {
+    var vm = this;
+    vm.borrowInfo = { 'flag': false, 'journal': false, 'query': '' };
+
+    // validate to see if pnx data meet criteria
+    vm.validatePNX = function () {
+        if (vm.parentCtrl.item.pnx) {
+            var pnx = vm.parentCtrl.item.pnx.control.sourceid;
+            for (var i = 0; i < pnx.length; i++) {
+                if (pnx[i] === 'HVD_ALEPH') {
+                    vm.borrowInfo.flag = true;
+                    i = pnx.length;
+                }
+            }
+            var pnxTypes = vm.parentCtrl.item.pnx.display.type;
+            for (var _i2 = 0; _i2 < pnxTypes.length; _i2++) {
+                if (pnxTypes[_i2] === 'journal') {
+                    vm.borrowInfo.journal = true;
+                    _i2 = pnxTypes.length;
+                }
+            }
+            if (vm.parentCtrl.item.pnx.addata.isbn) {
+                vm.borrowInfo.query = 'isbn=' + vm.parentCtrl.item.pnx.addata.isbn[0];
+            } else if (vm.parentCtrl.item.pnx.display.title) {
+                vm.borrowInfo.query = vm.parentCtrl.item.pnx.display.title[0];
+            }
+        }
+    };
+
+    vm.$onInit = function () {
+        vm.validatePNX();
+    };
+}]);
+
+angular.module('viewCustom').component('prmOpacAfter', {
+    bindings: { parentCtrl: '<' },
+    controllerAs: 'vm',
+    controller: 'prmOpacAfterCtrl',
+    templateUrl: '/primo-explore/custom/HVD2/html/prm-opac-after.html'
 });
 
 /**
@@ -2727,7 +2783,7 @@ angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', '$tim
         });
     };
 
-    vm.topRightMenus = [{ 'title': 'Research Guides', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:portal_resguides', 'label': 'Go to Research guides' }, { 'title': 'Libraries / Hours', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:bannerfindlib', 'label': 'Go to Library hours' }, { 'title': 'All My Accounts', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:banneraccounts', 'label': 'Go to all my accounts' }, { 'title': 'Feedback', 'url': 'http://nrs.harvard.edu/urn-3:HUL.ois:hollis-v2-feedback', 'label': 'Go to Feedback' }];
+    vm.topRightMenus = [{ 'title': 'Research Guides', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:portal_resguides', 'label': 'Go to Research guides' }, { 'title': 'Libraries / Hours', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:bannerfindlib', 'label': 'Go to Library hours' }, { 'title': 'All My Accounts', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:banneraccounts', 'label': 'Go to all my accounts' }, { 'title': 'Feedback', 'url': 'http://nrs.harvard.edu/urn-3:HUL.ois:hollis-v2-feedback', 'label': 'Go to Feedback' }, { 'title': 'Ask Us', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:dsref', 'label': 'Go to Ask Us' }];
 
     vm.$onInit = function () {
         // initialize google analytic

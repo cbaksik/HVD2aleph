@@ -48,7 +48,8 @@ angular.module('viewCustom')
               if(vm.libraryName) {
                   vm.createIcon();
               }
-          })
+          });
+
         };
 
         vm.goPlace=function (loc,e) {

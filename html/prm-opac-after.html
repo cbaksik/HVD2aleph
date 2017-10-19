@@ -1,0 +1,10 @@
+<div ng-if="vm.borrowInfo.flag">
+    <h3>Not available at Harvard?</h3>
+    <p ng-if="vm.borrowInfo.journal">
+        Make an <a href="http://nrs.harvard.edu/urn-3:hul.eresource:illhulha" target="_blank">Interlibrary Loan request</a>
+    </p>
+    <p ng-if="!vm.borrowInfo.journal">
+        Check <a href="http://access.harvard.edu/access/servlet/access?__hulaccess_gateway=bdirect&__hulaccess_resource=&query={{vm.borrowInfo.query}}" target="_blank">Borrow Direct</a> for 4-day delivery availability. Or, see <a href="http://nrs.harvard.edu/urn-3:hul.eother:GetIt" target="_blank">Get It</a> for other options.
+    </p>
+</div>
+

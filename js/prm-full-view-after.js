@@ -58,6 +58,16 @@ angular.module('viewCustom')
                     }
                 }
 
+                // remove tags section
+                if(vm.parentCtrl.services) {
+                    for (let i = 0; i < vm.parentCtrl.services.length; i++) {
+                        // remove More section
+                        if (vm.parentCtrl.services[i].scrollId === 'tags') {
+                            vm.parentCtrl.services.splice(i, 1);
+                        }
+                    }
+                }
+
                 // set up google analytic
                 if(vm.parentCtrl.item.pnx.display) {
                     var title=vm.parentCtrl.item.pnx.display.title[0] + ' : ' + vm.parentCtrl.item.pnx.control.recordid[0];

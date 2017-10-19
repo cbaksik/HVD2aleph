@@ -27,7 +27,8 @@ angular.module('viewCustom')
         vm.topRightMenus=[{'title':'Research Guides','url':'http://nrs.harvard.edu/urn-3:hul.ois:portal_resguides','label':'Go to Research guides'},
             {'title':'Libraries / Hours','url':'http://nrs.harvard.edu/urn-3:hul.ois:bannerfindlib','label':'Go to Library hours'},
             {'title':'All My Accounts','url':'http://nrs.harvard.edu/urn-3:hul.ois:banneraccounts','label':'Go to all my accounts'},
-            {'title':'Feedback','url':'http://nrs.harvard.edu/urn-3:HUL.ois:hollis-v2-feedback','label':'Go to Feedback'}
+            {'title':'Feedback','url':'http://nrs.harvard.edu/urn-3:HUL.ois:hollis-v2-feedback','label':'Go to Feedback'},
+            {'title':'Ask Us','url':'http://nrs.harvard.edu/urn-3:hul.ois:dsref','label':'Go to Ask Us'}
         ];
 
         vm.$onInit=function() {
