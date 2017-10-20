@@ -949,6 +949,9 @@ prm-brief-result-container.list-item:hover {
     height:auto;
     padding-bottom:10px;
 }
+.highlite {
+    background: #FFFCC4;
+}
 /* hide request item above get it */
 prm-request-services {
     display: none;
