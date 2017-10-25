@@ -1,0 +1,3 @@
+<div ng-repeat="m in vm.mapLocData track by $index" ng-if="m.maplink">
+    <span>Map It:</span> <a href="{{m.maplink|mapFilterUrl}}" target="_blank">{{m.floor | mapFilter}} {{m.range}}</a>
+</div>

@@ -4,11 +4,12 @@
  * When a user click on each item, it capture the each location and pass into a service component
  */
 angular.module('viewCustom')
-    .controller('prmLocationItemsAfterCtrl',['customService','$element','$timeout','$window','$sce',function (customService, $element, $timeout, $window, $sce) {
+    .controller('prmLocationItemsAfterCtrl',['customService','$element','$sce',function (customService, $element, $sce) {
         var vm=this;
         var sv=customService;
         vm.libName='';
         vm.logicList=[];
+
         // get static xml data and convert to json
         vm.getLibData=function () {
             sv.getAjax('/primo-explore/custom/HVD2/html/requestLinkLogic.html', {}, 'get')
@@ -33,12 +34,6 @@ angular.module('viewCustom')
             }
         };
 
-        vm.goPlace=function(loc,e){
-            e.stopPropagation();
-            var url='http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
-            $window.open(url,'_blank');
-            return true;
-        };
 
         vm.$onInit=function() {
            vm.getLibData();
@@ -65,6 +60,7 @@ angular.module('viewCustom')
                             el[2].style.display='block';
                         }
                     }
+
                 }
             }
             vm.removeDom();

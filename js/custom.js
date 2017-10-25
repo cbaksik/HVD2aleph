@@ -180,6 +180,84 @@ angular.module('viewCustom').service('customImagesService', ['$filter', function
 }]);
 
 /**
+ * Created by samsan on 10/23/17.
+ */
+
+angular.module('viewCustom').controller('customLibraryMapCtrl', ['customService', function (customService) {
+    var vm = this;
+    var sv = customService;
+    vm.api = sv.getApi();
+    vm.mapLocData = {};
+
+    vm.getMapIt = function () {
+        if (vm.loc) {
+            var url = vm.api.mapUrl + '/' + vm.loc.mainLocation;
+            url += '/' + vm.loc.subLocationCode + '?callNumber=' + encodeURI(vm.loc.callNumber);
+            sv.getAjax(url, '', 'get').then(function (result) {
+                vm.mapLocData = result.data;
+            }, function (error) {
+                console.log(error);
+            });
+        }
+    };
+
+    vm.$onInit = function () {
+        vm.api = sv.getApi();
+        vm.getMapIt();
+    };
+}]);
+
+angular.module('viewCustom').component('customLibraryMap', {
+    bindings: { loc: '<' },
+    controller: 'customLibraryMapCtrl',
+    controllerAs: 'vm',
+    templateUrl: '/primo-explore/custom/HVD2/html/custom-library-map.html'
+});
+
+// map letter to specific word in floor
+angular.module('viewCustom').filter('mapFilter', [function () {
+    return function (str) {
+        var newStr = '';
+        if (str.length === 2) {
+            var loc = str.substring(0, 1);
+            var loc2 = str.substring(1, str.length);
+            newStr = 'Floor ' + loc;
+            if (loc2 === 'E') {
+                newStr += ' East Row ';
+            } else if (loc2 === 'W') {
+                newStr += ' West Row ';
+            } else if (loc2 === 'N') {
+                newStr += ' North Row ';
+            } else if (loc2 === 'S') {
+                newStr += ' South Row ';
+            }
+        } else if (str.length === 1) {
+            newStr = 'Floor ' + str;
+        } else {
+            newStr = str;
+        }
+        return newStr;
+    };
+}]);
+
+// remove 2 forward slash from the url
+angular.module('viewCustom').filter('mapFilterUrl', [function () {
+    return function (str) {
+        var newStr = '';
+        if (str) {
+            var urlList = str.split('//');
+            if (urlList.length > 2) {
+                newStr = urlList[0] + '//' + urlList[1] + '/' + urlList[2];
+            } else {
+                newStr = str;
+            }
+        } else {
+            newStr = str;
+        }
+        return newStr;
+    };
+}]);
+/**
  * Created by samsan on 9/13/17.
  */
 
@@ -365,7 +443,7 @@ angular.module('viewCustom').component('customScannedKeyContent', {
  * This is a service component and use to store data, get data, ajax call, compare any logic.
  */
 
-angular.module('viewCustom').service('customService', ['$http', function ($http) {
+angular.module('viewCustom').service('customService', ['$http', '$sce', function ($http, $sce) {
     var serviceObj = {};
 
     serviceObj.getAjax = function (url, param, methodType) {
@@ -1553,6 +1631,17 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
         }
     };
 
+    // create map it link to library
+    vm.createMapIt = function () {
+        var el = $element[0].parentNode.parentNode.parentNode.children[1].children[0];
+        if (el) {
+            var customLibraryMap = document.createElement('custom-library-map');
+            customLibraryMap.setAttribute('loc', 'vm.currLoc.location');
+            el.appendChild(customLibraryMap);
+            $compile(el)($scope);
+        }
+    };
+
     vm.goPlace = function (loc, e) {
         e.stopPropagation();
         var url = 'http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
@@ -1566,7 +1655,7 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
         var index = 0;
         var el = $element[0].previousSibling.parentNode;
         if ($element[0].parentNode.parentNode) {
-            var md_list = $element[0].parentNode.parentNode.children;
+            var md_list = $element[0].parentNode.parentNode.children[0];
             for (var i = 0; i < md_list.length; i++) {
                 if (md_list[i] === el) {
                     index = i;
@@ -1608,6 +1697,7 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
             vm.parentData = sv.getParentData();
             vm.getItemCategoryCodes();
             vm.createIcon();
+            vm.createMapIt();
         });
     };
 
@@ -1688,11 +1778,12 @@ angular.module('viewCustom').component('prmLocationItemAfter', {
  * This component read xml data from a file and store them into a service to use it prm-location-item-after component.
  * When a user click on each item, it capture the each location and pass into a service component
  */
-angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customService', '$element', '$timeout', '$window', '$sce', function (customService, $element, $timeout, $window, $sce) {
+angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customService', '$element', '$sce', function (customService, $element, $sce) {
     var vm = this;
     var sv = customService;
     vm.libName = '';
     vm.logicList = [];
+
     // get static xml data and convert to json
     vm.getLibData = function () {
         sv.getAjax('/primo-explore/custom/HVD2/html/requestLinkLogic.html', {}, 'get').then(function (respone) {
@@ -1713,13 +1804,6 @@ angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customSer
                 el[2].remove();
             }
         }
-    };
-
-    vm.goPlace = function (loc, e) {
-        e.stopPropagation();
-        var url = 'http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
-        $window.open(url, '_blank');
-        return true;
     };
 
     vm.$onInit = function () {

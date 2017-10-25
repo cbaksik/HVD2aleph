@@ -79,6 +79,18 @@ angular.module('viewCustom')
 
         };
 
+        // create map it link to library
+        vm.createMapIt=function () {
+            var el=$element[0].parentNode.parentNode.parentNode.children[1].children[0];
+            if(el) {
+                var customLibraryMap=document.createElement('custom-library-map');
+                customLibraryMap.setAttribute('loc','vm.currLoc.location');
+                el.appendChild(customLibraryMap);
+                $compile(el)($scope);
+            }
+        };
+
+
         vm.goPlace=function(loc,e){
             e.stopPropagation();
             var url='http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
@@ -92,7 +104,7 @@ angular.module('viewCustom')
             var index=0;
             var el=$element[0].previousSibling.parentNode;
             if($element[0].parentNode.parentNode) {
-                var md_list = $element[0].parentNode.parentNode.children;
+                var md_list = $element[0].parentNode.parentNode.children[0];
                 for (var i = 0; i < md_list.length; i++) {
                     if (md_list[i] === el) {
                         index = i;
@@ -135,6 +147,7 @@ angular.module('viewCustom')
                 vm.parentData=sv.getParentData();
                 vm.getItemCategoryCodes();
                 vm.createIcon();
+                vm.createMapIt();
             });
         };
 

@@ -4,7 +4,7 @@
  */
 
 angular.module('viewCustom')
-    .service('customService',['$http',function ($http) {
+    .service('customService',['$http','$sce',function ($http, $sce) {
         var serviceObj={};
 
         serviceObj.getAjax=function (url,param,methodType) {
