@@ -929,6 +929,10 @@ prm-brief-result-container.list-item:hover {
     padding-top:20px;
 }
 
+.capitalize {
+    text-transform: capitalize;
+}
+
 
 .hollisPlus {
     display: table-cell;

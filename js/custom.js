@@ -181,9 +181,10 @@ angular.module('viewCustom').service('customImagesService', ['$filter', function
 
 /**
  * Created by samsan on 10/23/17.
+ * Create Map it link, place icon, and display the library name
  */
 
-angular.module('viewCustom').controller('customLibraryMapCtrl', ['customService', function (customService) {
+angular.module('viewCustom').controller('customLibraryMapCtrl', ['customService', '$window', function (customService, $window) {
     var vm = this;
     var sv = customService;
     vm.api = sv.getApi();
@@ -205,6 +206,13 @@ angular.module('viewCustom').controller('customLibraryMapCtrl', ['customService'
         vm.api = sv.getApi();
         vm.getMapIt();
     };
+
+    vm.goPlace = function (loc, e) {
+        e.stopPropagation();
+        var url = 'http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
+        $window.open(url, '_blank');
+        return true;
+    };
 }]);
 
 angular.module('viewCustom').component('customLibraryMap', {
@@ -223,13 +231,13 @@ angular.module('viewCustom').filter('mapFilter', [function () {
             var loc2 = str.substring(1, str.length);
             newStr = 'Floor ' + loc;
             if (loc2 === 'E') {
-                newStr += ' East Row ';
+                newStr += ' East';
             } else if (loc2 === 'W') {
-                newStr += ' West Row ';
+                newStr += ' West';
             } else if (loc2 === 'N') {
-                newStr += ' North Row ';
+                newStr += ' North';
             } else if (loc2 === 'S') {
-                newStr += ' South Row ';
+                newStr += ' South';
             }
         } else if (str.length === 1) {
             newStr = 'Floor ' + str;
@@ -1608,45 +1616,17 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
         }
     };
 
-    vm.createIcon = function () {
-        // insert place icon and align it
-        var el = $element[0].parentNode.parentNode.parentNode.children[1].children[0];
-        vm.libName = $filter('translate')(vm.currLoc.location.libraryCode);
-        if (el.children[0].tagName === 'H4' && vm.libName && el) {
-            el.children[0].remove();
-            var h4 = document.createElement('h4');
-            h4.setAttribute('class', 'md-title');
-            var span = document.createElement('span');
-            span.innerText = vm.libName;
-            h4.appendChild(span);
-            var mdIcon = document.createElement('md-icon');
-            mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
-            mdIcon.setAttribute('class', 'placeIcon');
-            mdIcon.setAttribute('ng-click', 'vm.goPlace(vm.currLoc.location,$event)');
-            h4.appendChild(mdIcon);
-            if (el.children.length > 0) {
-                el.insertBefore(h4, el.children[0]);
-                $compile(el.children[0])($scope);
-            }
-        }
-    };
-
     // create map it link to library
     vm.createMapIt = function () {
         var el = $element[0].parentNode.parentNode.parentNode.children[1].children[0];
         if (el) {
+            // remove library name, use new component.
+            el.children[0].remove();
             var customLibraryMap = document.createElement('custom-library-map');
             customLibraryMap.setAttribute('loc', 'vm.currLoc.location');
             el.appendChild(customLibraryMap);
             $compile(el)($scope);
         }
-    };
-
-    vm.goPlace = function (loc, e) {
-        e.stopPropagation();
-        var url = 'http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
-        $window.open(url, '_blank');
-        return true;
     };
 
     // make comparison to see it is true so it can display the link
@@ -1696,7 +1676,6 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
             vm.locationInfo = sv.getLocation(vm.currLoc);
             vm.parentData = sv.getParentData();
             vm.getItemCategoryCodes();
-            vm.createIcon();
             vm.createMapIt();
         });
     };

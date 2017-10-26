@@ -1,9 +1,10 @@
 /**
  * Created by samsan on 10/23/17.
+ * Create Map it link, place icon, and display the library name
  */
 
 angular.module('viewCustom')
-    .controller('customLibraryMapCtrl',['customService',function (customService) {
+    .controller('customLibraryMapCtrl',['customService','$window',function (customService, $window) {
         var vm=this;
         var sv=customService;
         vm.api=sv.getApi();
@@ -28,6 +29,14 @@ angular.module('viewCustom')
            vm.api=sv.getApi();
            vm.getMapIt();
         };
+
+        vm.goPlace=function(loc,e){
+            e.stopPropagation();
+            var url='http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
+            $window.open(url,'_blank');
+            return true;
+        };
+
     }]);
 
 angular.module('viewCustom')
@@ -48,13 +57,13 @@ angular.module('viewCustom').filter('mapFilter',[function () {
             var loc2=str.substring(1,str.length);
             newStr='Floor ' + loc;
             if(loc2==='E') {
-                newStr+=' East Row ';
+                newStr+=' East';
             } else if(loc2==='W') {
-                newStr+=' West Row ';
+                newStr+=' West';
             } else if(loc2==='N') {
-                newStr+=' North Row ';
+                newStr+=' North';
             } else if(loc2==='S') {
-                newStr+=' South Row ';
+                newStr+=' South';
             }
         } else if(str.length===1) {
             newStr='Floor ' + str;

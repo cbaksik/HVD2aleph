@@ -55,34 +55,13 @@ angular.module('viewCustom')
 
         };
 
-        vm.createIcon=function () {
-            // insert place icon and align it
-            var el = $element[0].parentNode.parentNode.parentNode.children[1].children[0];
-            vm.libName = $filter('translate')(vm.currLoc.location.libraryCode);
-            if(el.children[0].tagName==='H4' && vm.libName && el) {
-                el.children[0].remove();
-                var h4=document.createElement('h4');
-                h4.setAttribute('class','md-title');
-                var span=document.createElement('span');
-                span.innerText=vm.libName;
-                h4.appendChild(span);
-                var mdIcon = document.createElement('md-icon');
-                mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/place.svg');
-                mdIcon.setAttribute('class', 'placeIcon');
-                mdIcon.setAttribute('ng-click', 'vm.goPlace(vm.currLoc.location,$event)');
-                h4.appendChild(mdIcon);
-                if(el.children.length > 0) {
-                    el.insertBefore(h4,el.children[0]);
-                    $compile(el.children[0])($scope);
-                }
-            }
-
-        };
 
         // create map it link to library
         vm.createMapIt=function () {
             var el=$element[0].parentNode.parentNode.parentNode.children[1].children[0];
             if(el) {
+                // remove library name, use new component.
+                el.children[0].remove();
                 var customLibraryMap=document.createElement('custom-library-map');
                 customLibraryMap.setAttribute('loc','vm.currLoc.location');
                 el.appendChild(customLibraryMap);
@@ -91,12 +70,6 @@ angular.module('viewCustom')
         };
 
 
-        vm.goPlace=function(loc,e){
-            e.stopPropagation();
-            var url='http://nrs.harvard.edu/urn-3:hul.ois:' + loc.mainLocation;
-            $window.open(url,'_blank');
-            return true;
-        };
 
         // make comparison to see it is true so it can display the link
         vm.compare=function (itemsCategory) {
@@ -146,7 +119,6 @@ angular.module('viewCustom')
                 vm.locationInfo=sv.getLocation(vm.currLoc);
                 vm.parentData=sv.getParentData();
                 vm.getItemCategoryCodes();
-                vm.createIcon();
                 vm.createMapIt();
             });
         };
