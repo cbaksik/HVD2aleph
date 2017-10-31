@@ -105,7 +105,23 @@ angular.module('viewCustom')
 
         };
 
+        vm.getHathiTrustData=function () {
+            if(vm.api.hathiTrustUrl) {
+                chts.doPost(vm.api.hathiTrustUrl, vm.hathiTrust)
+                    .then(function (data) {
+                            if (data.data.items) {
+                                vm.hathiTrustItem = chts.validateHarvard(data.data.items);
+                            }
+                        },
+                        function (error) {
+                            console.log(error);
+                        }
+                    )
+            }
+        };
+
         vm.$onInit=function() {
+            vm.api = custService.getApi();
             vm.itemPNX=vm.parentCtrl.result;
             // get table of content
             vm.findTOC();
@@ -118,7 +134,6 @@ angular.module('viewCustom')
                     var zoom=8;
                     map=L.map('hglMap12',{center:[vm.centerLatitude, vm.centerLongitude],
                     zoom:zoom,keyboard:true,tap:true,zoomControl: false});
-
 
                     // create the tile layer with correct attribution
                     var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -232,26 +247,9 @@ angular.module('viewCustom')
 
             }
 
-
             // validate Hathi Trust to see if it is existed
             vm.hathiTrust=chts.validateHathiTrust(vm.itemPNX);
-            vm.api={};
             vm.hathiTrustItem={};
-
-            vm.getHathiTrustData=function () {
-                if(vm.api.hathiTrustUrl) {
-                    chts.doPost(vm.api.hathiTrustUrl, vm.hathiTrust)
-                        .then(function (data) {
-                                if (data.data.items) {
-                                    vm.hathiTrustItem = chts.validateHarvard(data.data.items);
-                                }
-                            },
-                            function (error) {
-                                console.log(error);
-                            }
-                        )
-                }
-            };
 
             if(vm.hathiTrust.flag) {
                 // get rest endpoint url from config.html where it preload prm-tobar-after.js
