@@ -11,7 +11,7 @@ angular.module('viewCustom')
             // change perm a link to correct url
             $scope.$watch('vm.parentCtrl.permalink',function () {
                 if(vm.parentCtrl.item){
-                    if(vm.parentCtrl.item.pnx.display.lds03[0]) {
+                    if(vm.parentCtrl.item.pnx.display.lds03) {
                         vm.parentCtrl.permalink = vm.parentCtrl.item.pnx.display.lds03[0];
                     }
                 }

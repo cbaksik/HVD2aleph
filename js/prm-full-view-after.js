@@ -58,6 +58,14 @@ angular.module('viewCustom')
                     }
                 }
 
+                for(let i=0; i < vm.parentCtrl.services.length; i++) {
+                    // remove More section
+                    if(vm.parentCtrl.services[i].scrollId==='getit_link2') {
+                        vm.parentCtrl.services.splice(i,1);
+                    }
+                }
+
+
                 // remove tags section
                 if(vm.parentCtrl.services) {
                     for (let i = 0; i < vm.parentCtrl.services.length; i++) {
@@ -75,7 +83,7 @@ angular.module('viewCustom')
                 } else {
                     cga.setPage('/fulldisplay', 'Full display page');
                 }
-            },500);
+            },1000);
 
         };
 

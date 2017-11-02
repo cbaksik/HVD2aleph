@@ -16,7 +16,7 @@ angular.module('viewCustom')
         vm.form={'phone':'','deviceType':'','body':'','error':'','mobile':false,'msg':'','token':'','ip':'','sessionToken':'','isLoggedIn':false,'iat':'','inst':'','vid':'','exp':'','userName':'','iss':'','onCampus':false};
 
         vm.$onChanges=function(){
-            vm.auth=cisv.getAuth();
+            vm.auth=cs.getAuth();
             if(vm.auth.primolyticsService.jwtUtilService) {
                 vm.form.token=vm.auth.primolyticsService.jwtUtilService.storageUtil.sessionStorage.primoExploreJwt;
                 vm.form.sessionToken=vm.auth.primolyticsService.jwtUtilService.storageUtil.localStorage.getJWTFromSessionStorage;
@@ -83,7 +83,7 @@ angular.module('viewCustom')
         // this function is trigger only if a user is using laptop computer
         vm.sendText=function (k) {
             // get rest endpoint from config.html file. It's preload in prm-topbar-after.js
-            vm.api=cisv.getApi();
+            vm.api=cs.getApi();
             if(vm.api) {
                 vm.restsmsUrl=vm.api.smsUrl;
             }

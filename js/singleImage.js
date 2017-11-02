@@ -14,23 +14,23 @@ angular.module('viewCustom')
           jp2:'<'
         },
         controllerAs:'vm',
-        controller:['$element','$window','$location','prmSearchService','$timeout','$sce','customService',function ($element,$window,$location,prmSearchService, $timeout,$sce, customService) {
+        controller:['$element','$window','$location','prmSearchService','$timeout','$sce',function ($element,$window,$location,prmSearchService, $timeout,$sce) {
             var vm=this;
             var sv=prmSearchService;
-            var cisv=customService;
             // set up local scope variables
             vm.imageUrl='';
             vm.showImage=true;
             vm.params=$location.search();
             vm.localScope={'imgClass':'','loading':true,'hideLockIcon':false};
-            vm.auth=cisv.getAuth();
-            vm.isLoggedIn=vm.auth.isLoggedIn;
+            vm.isLoggedIn=sv.getLogInID();
+            vm.clientIp=sv.getClientIp();
 
             // check if image is not empty and it has width and height and greater than 150, then add css class
             vm.$onChanges=function () {
-                vm.auth=cisv.getAuth();
-                vm.isLoggedIn=vm.auth.isLoggedIn;
-                if(vm.restricted && !vm.isLoggedIn) {
+                vm.clientIp=sv.getClientIp();
+                vm.isLoggedIn=sv.getLogInID();
+
+                if(vm.restricted && !vm.isLoggedIn && !vm.clientIp.status) {
                     vm.showImage=false;
                 }
                 vm.localScope={'imgClass':'','loading':true,'hideLockIcon':false};
@@ -77,7 +77,7 @@ angular.module('viewCustom')
 
             // login
             vm.signIn=function () {
-                var auth=cisv.getAuth();
+                var auth=sv.getAuth();
                 var params={'vid':'','targetURL':''};
                 params.vid=vm.params.vid;
                 params.targetURL=$window.location.href;

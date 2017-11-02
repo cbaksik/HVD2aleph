@@ -13,21 +13,19 @@ angular.module('viewCustom')
           restricted:'<'
         },
         controllerAs:'vm',
-        controller:['$element','$window','$location','prmSearchService','$timeout','customService',function ($element,$window,$location,prmSearchService, $timeout,customService) {
+        controller:['$element','$window','$location','prmSearchService','$timeout',function ($element,$window,$location,prmSearchService, $timeout) {
             var vm=this;
             var sv=prmSearchService;
-            var cisv=customService;
-            var auth=cisv.getAuth();
             // set up local scope variables
             vm.showImage=true;
             vm.params=$location.search();
             vm.localScope={'imgClass':'','loading':true,'hideLockIcon':false};
-            vm.isLoggedIn=auth.isLoggedIn;
+            vm.isLoggedIn=sv.getLogInID();
 
             // check if image is not empty and it has width and height and greater than 150, then add css class
             vm.$onChanges=function () {
-                auth=cisv.getAuth();
-                vm.isLoggedIn=auth.isLoggedIn;
+
+                vm.isLoggedIn=sv.getLogInID();
                 if(vm.restricted && !vm.isLoggedIn) {
                     vm.showImage=false;
                 }
@@ -38,7 +36,7 @@ angular.module('viewCustom')
                         // use default image if it is a broken link image
                         var pattern = /^(onLoad\?)/; // the broken image start with onLoad
                         if(pattern.test(vm.src)) {
-                            img.src='/primo-explore/custom/HVD_IMAGES/img/icon_image.png';
+                            img.src='/primo-explore/custom/HVD2/img/icon_image.png';
                         }
                         img.onload=vm.callback;
                         if(img.width > 50) {
@@ -66,7 +64,7 @@ angular.module('viewCustom')
             };
             // login
             vm.signIn=function () {
-                var auth=cisv.getAuth();
+                var auth=sv.getAuth();
                 var params={'vid':'','targetURL':''};
                 params.vid=vm.params.vid;
                 params.targetURL=$window.location.href;

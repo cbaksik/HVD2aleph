@@ -4,15 +4,17 @@
  */
 
 angular.module('viewCustom')
-    .controller('prmTopbarAfterCtrl',['$element','$timeout','customService','customGoogleAnalytic',function ($element,$timeout,customService, customGoogleAnalytic) {
+    .controller('prmTopbarAfterCtrl',['$element','$timeout','customService','customGoogleAnalytic','prmSearchService',function ($element,$timeout,customService, customGoogleAnalytic, prmSearchService) {
         var vm=this;
         var cs=customService;
         var cga=customGoogleAnalytic;
+        var pcs=prmSearchService;
         vm.api={};
 
         // get rest endpoint Url
         vm.getUrl=function () {
-            cs.getAjax('/primo-explore/custom/HVD2/html/config.html','','get')
+            var configFile=pcs.getEnv();
+            cs.getAjax('/primo-explore/custom/HVD2/html/'+configFile,'','get')
                 .then(function (res) {
                         vm.api=res.data;
                         cs.setApi(vm.api);

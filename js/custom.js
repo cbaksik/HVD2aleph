@@ -2,6 +2,8 @@
 "use strict";
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 /**
  * Created by samsan on 7/18/17.
  */
@@ -309,6 +311,466 @@ angular.module('viewCustom').service('customMapService', [function () {
             }
         }
         return coordinates;
+    };
+
+    return serviceObj;
+}]);
+
+/**
+ * Created by samsan on 9/28/17.
+ */
+
+angular.module('viewCustom').service('customMapXmlKeys', [function () {
+    var serviceObj = {};
+
+    // filter the xml key node
+    serviceObj.keys = [{ 'lds01': 'HOLLIS Number' }, { 'lds04': 'Variant Title' }, { 'lds07': 'Publication Info' }, { 'lds08': 'Permalink' }, { 'lds13': 'Notes' }, { 'lds22': 'Style / Period' }, { 'lds23': 'Culture' }, { 'lds24': 'Related Work' }, { 'lds25': 'Related Information' }, { 'lds26': 'Repository' }, { 'lds27': 'Use Restrictions' }, { 'lds30': 'Form / Genre' }, { 'lds31': 'Place' }, { 'lds44': 'Associated Name' }, { 'associatedName': 'Associated Name' }, { 'creationdate': 'Creation Date' }, { 'creator': 'Author / Creator' }, { 'format': 'Description' }, { 'freeDate': 'Date' }, { 'itemIdentifier': 'Identifier' }, { 'placeName': 'Place' }, { 'production': 'Publication info' }, { 'relatedWork': 'Related Work' }, { 'relatedInformation': 'Related Information' }, { 'rights': 'Copyright' }, { 'state': 'Edition' }, { 'topic': 'Subject' }, { 'workType': 'Form / Genre' }, { 'useRestrictions': 'Use Restrictions' }, { 'hvd_associatedName': 'Image Associated Name' }, { 'hvd_classification': 'Image Classification' }, { 'hvd_copyright': 'Image Copyright' }, { 'hvd_creator': 'Image Creator' }, { 'hvd_culture': 'Image Culture' }, { 'hvd_description': 'Image Description' }, { 'hvd_dimensions': 'Image Dimensions' }, { 'hvd_freeDate': 'Image Date' }, { 'hvd_itemIdentifier': 'Image Identifier' }, { 'hvd_materials': 'Image Materials' }, { 'hvd_notes': 'Image Notes' }, { 'hvd_note': 'Image Notes' }, { 'hvd_placeName': 'Image Place' }, { 'hvd_production': 'Image Publication info' }, { 'hvd_relatedInformation': 'Image Related info' }, { 'hvd_relatedWork': 'Image Related Work' }, { 'hvd_repository': 'Harvard Repository' }, { 'hvd_state': 'Image Edition' }, { 'hvd_style': 'Image Style' }, { 'hvd_title': 'Image Title' }, { 'hvd_topic': 'Image Subject' }, { 'hvd_useRestrictions': 'Image Use Restrictions' }, { 'hvd_workType': 'Image Type' }, { '_attr': 'Image ID' }, { '_text': 'TEXT' }];
+
+    // remove hvd_ from the key
+    serviceObj.mapKey = function (key) {
+        var myKey = key;
+
+        for (var i = 0; i < serviceObj.keys.length; i++) {
+            var obj = serviceObj.keys[i];
+            if (Object.keys(obj)[0] === key) {
+                myKey = serviceObj.keys[i][key];
+            }
+        }
+
+        return myKey;
+    };
+
+    // do not show these items
+    serviceObj.removeList = ['lds03', 'lds08', 'lds20', 'lds37', 'structuredDate', 'image', 'source', 'altComponentID'];
+    serviceObj.getRemoveList = function () {
+        return serviceObj.removeList;
+    };
+
+    //re-arrange sorting order
+    serviceObj.order = ['title', 'lds04', 'creator', 'creationdate', 'edition', 'lds07', 'format', 'lds13', 'subject', 'lds31', 'lds23', 'lds22', 'lds30', 'identifier', 'lds44', 'lds24', 'lds25', 'lds27', 'rights', 'lds26', 'lds01'];
+
+    serviceObj.sort = function (listKey) {
+        var keys = [];
+        for (var i = 0; i < serviceObj.order.length; i++) {
+            var key = serviceObj.order[i];
+            var index = listKey.indexOf(key);
+            if (index !== -1) {
+                keys.push(key);
+            }
+        }
+
+        return keys;
+    };
+
+    // re-arrange sorting component order
+    serviceObj.orderList = ['title', 'creator', 'freeDate', 'state', 'production', 'description', 'physicalDescription', 'materials', 'dimensions', 'notes', 'note', 'topic', 'placeName', 'location', 'culture', 'style', 'workType', 'classification', 'itemIdentifier', 'associatedName', 'relatedWork', 'relatedInformation', 'useRestrictions', 'copyright', 'repository'];
+    serviceObj.getOrderList = function (listKey) {
+        var keys = [];
+        var hvdKeys = [];
+        var key = '';
+        var pattern = /^(hvd_)/i;
+        // find hvd key
+        for (var j = 0; j < listKey.length; j++) {
+            key = listKey[j];
+            if (pattern.test(key)) {
+                hvdKeys.push(key);
+            }
+        }
+
+        for (var i = 0; i < serviceObj.orderList.length; i++) {
+            key = serviceObj.orderList[i];
+            var index = listKey.indexOf(key);
+            if (index !== -1) {
+                keys.push(key);
+            }
+        }
+
+        if (hvdKeys.length > 0) {
+            for (var i = 0; i < serviceObj.orderList.length; i++) {
+                var keyMap = serviceObj.orderList[i];
+                key = 'hvd_' + keyMap;
+                var index = hvdKeys.indexOf(key);
+                if (index !== -1) {
+                    keys.push(key);
+                }
+            }
+        }
+        if (listKey.length > 0) {
+            var index = listKey.indexOf('_attr');
+            if (index !== -1) {
+                keys.push('_attr');
+            }
+        }
+
+        return keys;
+    };
+
+    return serviceObj;
+}]);
+
+/**
+ * Created by samsan on 10/13/17.
+ */
+angular.module('viewCustom').service('customMapXmlValues', [function () {
+    var serviceObj = {};
+
+    // get relatedInformation value
+    serviceObj.getRelatedInformation = function (nodeValue) {
+        var str = '';
+        var keys = Object.keys(nodeValue);
+        if (keys.length > 0) {
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                var values = nodeValue[key];
+                if (values) {
+                    var nodeKeys = Object.keys(values);
+                    var text = '';
+                    var url = '';
+                    var index = nodeKeys.indexOf('_text');
+                    if (index !== -1) {
+                        text = values['_text'];
+                    }
+                    var index2 = nodeKeys.indexOf('_attr');
+                    if (index2 !== -1) {
+                        url = values['_attr']['href']['_value'];
+                    }
+                    if (url && text) {
+                        str = '<a href="' + url + '" target="_blank">' + text + '</a><br/>';
+                    }
+                }
+            }
+        }
+        if (str) {
+            str = str.replace(/<br\/>$/, '');
+        }
+        return str;
+    };
+
+    // get associatedName value
+    serviceObj.getAssociatedName = function (nodeValue) {
+        var str = '';
+        var name = '';
+        var dates = '';
+        var role = '';
+        var keys = Object.keys(nodeValue);
+        for (var i = 0; i < keys.length; i++) {
+            var nodeKey = keys[i];
+            var values = nodeValue[nodeKey];
+            if (values) {
+                var nodeKeys = Object.keys(values);
+                var index = nodeKeys.indexOf('nameElement');
+                var index2 = nodeKeys.indexOf('dates');
+                var index3 = nodeKeys.indexOf('role');
+                if (index !== -1) {
+                    name = values['nameElement'];
+                    if (Array.isArray(name)) {
+                        name = name[0]['_text'];
+                    }
+                }
+
+                if (index2 !== -1) {
+                    dates = values['dates'];
+                    if (Array.isArray(dates)) {
+                        dates = dates[0]['_text'];
+                    }
+                    if (dates) {
+                        dates = ', ' + dates;
+                    }
+                }
+
+                if (index3 !== -1) {
+                    role = values['role'];
+                    if (Array.isArray(role)) {
+                        role = ' [' + role[0]['_text'] + ']';
+                    }
+                    str += name + dates + role + '<br/>';
+                } else {
+                    str += name + dates + '<br/>';
+                }
+            }
+        }
+        if (str) {
+            str = str.replace(/<br\/>$/, '');
+        }
+        return str;
+    };
+
+    // get image ID
+    serviceObj.getAttr = function (nodeValue) {
+        var str = '';
+        var keys = Object.keys(nodeValue);
+        if (keys.length > 0) {
+            var index = keys.indexOf('componentID');
+            if (index !== -1) {
+                var componentID = nodeValue['componentID'];
+                if ((typeof componentID === 'undefined' ? 'undefined' : _typeof(componentID)) === 'object') {
+                    componentID = componentID['_value'];
+                }
+                str = componentID;
+            }
+        }
+        return str;
+    };
+
+    // get relatedWork
+    serviceObj.getTopic = function (nodeValue) {
+        var str = '';
+        var keys = Object.keys(nodeValue);
+        if (keys.length > 0) {
+            for (var i = 0; i < keys.length; i++) {
+                var nodeKey = keys[i];
+                var values = nodeValue[nodeKey];
+                if ((typeof values === 'undefined' ? 'undefined' : _typeof(values)) === 'object') {
+                    var nodeKeys2 = Object.keys(values);
+                    for (var k = 0; k < nodeKeys2.length; k++) {
+                        var nodekey3 = nodeKeys2[k];
+                        if (nodekey3) {
+                            var values2 = values[nodekey3];
+                            if ((typeof values2 === 'undefined' ? 'undefined' : _typeof(values2)) === 'object') {
+                                var nodekeys4 = Object.keys(values2);
+                                if (nodekeys4) {
+                                    var values3 = values2[nodekeys4];
+                                    if ((typeof values3 === 'undefined' ? 'undefined' : _typeof(values3)) === 'object') {
+                                        var nodeKeys5 = Object.keys(values3);
+                                        for (var c = 0; c < nodeKeys5.length; c++) {
+                                            var nodekey5 = nodeKeys5[c];
+                                            str += values3[nodekey5] + ';&nbsp;';
+                                        }
+                                    } else {
+                                        str += values3 + ';&nbsp;';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    str += values;
+                }
+            }
+        }
+        if (str) {
+            str = str.replace(/;&nbsp;$/, '');
+        }
+        return str;
+    };
+
+    // get relatedWork
+    serviceObj.getRelatedWork = function (nodeValue) {
+        var str = '';
+        var keys = Object.keys(nodeValue);
+        if (keys.length > 0) {
+            for (var i = 0; i < keys.length; i++) {
+                var nodeKey = keys[i];
+                var values = nodeValue[nodeKey];
+                if (values) {
+                    var nodeKeys = Object.keys(values);
+                    if ((typeof nodeKeys === 'undefined' ? 'undefined' : _typeof(nodeKeys)) === 'object') {
+                        for (var k = 0; k < nodeKeys.length; k++) {
+                            var key2 = nodeKeys[k];
+                            if (key2) {
+                                var values2 = values[key2];
+                                if ((typeof values2 === 'undefined' ? 'undefined' : _typeof(values2)) === 'object') {
+                                    var nodeKeys2 = Object.keys(values2);
+                                    if ((typeof nodeKeys2 === 'undefined' ? 'undefined' : _typeof(nodeKeys2)) === 'object') {
+                                        for (var c = 0; c < nodeKeys2.length; c++) {
+                                            var key3 = nodeKeys2[c];
+                                            if (key3) {
+                                                var values3 = values2[key3];
+                                                if ((typeof values3 === 'undefined' ? 'undefined' : _typeof(values3)) === 'object') {
+                                                    var nodeKeys3 = Object.keys(values3);
+                                                    for (var j = 0; j < nodeKeys3.length; j++) {
+                                                        var key4 = nodeKeys3[j];
+                                                        var values4 = values3[key4];
+                                                        if (values4) {
+                                                            str += values4 + '<br/>';
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        str += values2[nodeKeys2] + '<br/>';
+                                    }
+                                } else {
+                                    str += values2 + '<br/>';
+                                }
+                            }
+                        }
+                    } else if (values) {
+                        str += values + '<br/>';
+                    }
+                }
+            }
+        }
+
+        if (str) {
+            str = str.replace(/<br\/>$/, '');
+        }
+        return str;
+    };
+
+    // get xml node value
+    serviceObj.getValue = function (values, key) {
+        var text = '';
+        if ((typeof values === 'undefined' ? 'undefined' : _typeof(values)) === 'object') {
+            switch (key) {
+                case 'hvd_relatedInformation':
+                case 'relatedInformation':
+                    text = serviceObj.getRelatedInformation(values);
+                    break;
+                case 'hvd_associatedName':
+                case 'associatedName':
+                    text = serviceObj.getAssociatedName(values);
+                    break;
+                case '_attr':
+                    text = serviceObj.getAttr(values);
+                    break;
+                case 'hvd_relatedWork':
+                case 'relatedWork':
+                    text = serviceObj.getRelatedWork(values);
+                    break;
+                case 'topic':
+                    text = serviceObj.getTopic(values);
+                    break;
+                default:
+                    text = serviceObj.getOtherValue(values, key);
+                    break;
+            }
+        } else {
+            text = values;
+        }
+        return text;
+    };
+
+    // get json value base on dynamic key
+    serviceObj.getOtherValue = function (obj, key) {
+        var text = '';
+        if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
+            if (Array.isArray(obj)) {
+                obj = obj[0];
+            }
+            var keys = Object.keys(obj);
+
+            for (var k = 0; k < keys.length; k++) {
+                var nodeKey = keys[k];
+                if (nodeKey) {
+                    var nodeValue = obj[nodeKey];
+                    if (Array.isArray(nodeValue)) {
+                        nodeValue = nodeValue[0];
+                    }
+
+                    if ((typeof nodeValue === 'undefined' ? 'undefined' : _typeof(nodeValue)) === 'object') {
+                        if (Array.isArray(nodeValue)) {
+                            for (var i = 0; i < nodeValue.length; i++) {
+                                var data = nodeValue[i];
+                                if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object') {
+                                    if (Array.isArray(data)) {
+                                        for (var j = 0; j < data.length; j++) {
+                                            var data2 = data[j];
+                                            if ((typeof data2 === 'undefined' ? 'undefined' : _typeof(data2)) === 'object') {
+                                                if (Array.isArray(data2)) {
+                                                    for (var c = 0; c < data2.length; c++) {
+                                                        var data3 = data2[c];
+                                                        if ((typeof data3 === 'undefined' ? 'undefined' : _typeof(data3)) === 'object') {
+                                                            if (Array.isArray(data3)) {
+                                                                for (var w = 0; w < data3.length; w++) {
+                                                                    var data4 = data3[w];
+                                                                    if ((typeof data4 === 'undefined' ? 'undefined' : _typeof(data4)) === 'object') {
+                                                                        text += data4[0] + '&nbsp;';
+                                                                    } else {
+                                                                        text += data4 + '&nbsp;';
+                                                                    }
+                                                                }
+                                                            }
+                                                        } else {
+                                                            text += data3 + '&nbsp;';
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                text += data2 + '&nbsp;';
+                                            }
+                                        }
+                                    } else {
+                                        var subNodeKeys = Object.keys(data);
+                                        if (Array.isArray(subNodeKeys)) {
+                                            for (var b = 0; b < subNodeKeys.length; b++) {
+                                                var key2 = subNodeKeys[b];
+                                                if ((typeof key2 === 'undefined' ? 'undefined' : _typeof(key2)) === 'object') {
+                                                    if (Array.isArray(key2)) {
+                                                        for (var c = 0; c < key2.length; c++) {
+                                                            var key3 = key2[c];
+                                                            if ((typeof key3 === 'undefined' ? 'undefined' : _typeof(key3)) === 'object') {
+                                                                if (Array.isArray(key3)) {
+                                                                    for (var x = 0; x < key3.length; x++) {
+                                                                        var key4 = key3[x];
+                                                                        if ((typeof key4 === 'undefined' ? 'undefined' : _typeof(key4)) === 'object') {
+                                                                            text += data[key4][0] + '&nbsp;';
+                                                                        } else {
+                                                                            text += data[key4] + '&nbsp;';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                text += data[key3] + '&nbsp;';
+                                                            }
+                                                        }
+                                                    }
+                                                } else if (key2) {
+                                                    text += data[key2] + '&nbsp;';
+                                                }
+                                            }
+                                        } else {
+                                            text += data[subNodeKeys] + '&nbsp;';
+                                        }
+                                    }
+                                } else {
+                                    text += data;
+                                }
+                            }
+                        } else if (nodeKey) {
+                            var nodeKey2 = Object.keys(nodeValue);
+                            if ((typeof nodeKey2 === 'undefined' ? 'undefined' : _typeof(nodeKey2)) === 'object') {
+                                if (Array.isArray(nodeKey2)) {
+                                    for (var c = 0; c < nodeKey2.length; c++) {
+                                        var nodeKey3 = nodeKey2[c];
+                                        if (nodeKey3) {
+                                            var nodeValue3 = nodeValue[nodeKey3];
+                                            if (Array.isArray(nodeValue3)) {
+                                                nodeValue3 = nodeValue3[0];
+                                            }
+                                            if ((typeof nodeValue3 === 'undefined' ? 'undefined' : _typeof(nodeValue3)) === 'object') {
+                                                var nodeKey4 = Object.keys(nodeValue3);
+                                                if (Array.isArray(nodeKey4)) {
+                                                    for (var b = 0; b < nodeKey4.length; b++) {
+                                                        var nodeKey5 = nodeKey4[b];
+                                                        if (nodeKey5) {
+                                                            text += nodeValue3[nodeKey5] + '&nbsp;';
+                                                        }
+                                                    }
+                                                } else {
+                                                    text += nodeValue3[nodeKey4] + '&nbsp;';
+                                                }
+                                            } else {
+                                                text += nodeValue3 + '&nbsp;';
+                                            }
+                                        }
+                                    }
+                                }
+                            } else if (nodeKey2) {
+                                text += nodeValue[nodeKey2] + '&nbsp;';
+                            }
+                        }
+                    } else {
+                        text += nodeValue + '&nbsp;';
+                    }
+                }
+            }
+        } else {
+            text = obj;
+        }
+
+        return text;
     };
 
     return serviceObj;
@@ -703,7 +1165,7 @@ angular.module('viewCustom').service('customService', ['$http', '$sce', function
  */
 
 angular.module('viewCustom').component('customThumbnail', {
-    templateUrl: '/primo-explore/custom/HVD2/html/custom-thumbnail.html',
+    templateUrl: '/primo-explore/custom/HVD_IMAGES/html/custom-thumbnail.html',
     bindings: {
         itemdata: '<',
         searchdata: '<'
@@ -712,8 +1174,8 @@ angular.module('viewCustom').component('customThumbnail', {
     controller: ['$element', '$timeout', 'prmSearchService', function ($element, $timeout, prmSearchService) {
         var vm = this;
         var sv = prmSearchService;
-        vm.localScope = { 'imgclass': '', 'hideLockIcon': false };
-        vm.imageUrl = '/primo-explore/custom/HVD2/img/icon_image.png';
+        vm.localScope = { 'imgclass': '', 'hideLockIcon': false, 'hideTooltip': false };
+        vm.imageUrl = '/primo-explore/custom/HVD_IMAGES/img/icon_image.png';
         vm.src = '';
         vm.imageCaption = '';
         vm.restricted = false;
@@ -740,7 +1202,7 @@ angular.module('viewCustom').component('customThumbnail', {
                     // use default image if it is a broken link image
                     var pattern = /^(onLoad\?)/; // the broken image start with onLoad
                     if (pattern.test(vm.src)) {
-                        img.src = '/primo-explore/custom/HVD2/img/icon_image.png';
+                        img.src = '/primo-explore/custom/HVD_IMAGES/img/icon_image.png';
                     }
                     img.onload = vm.callback;
                     if (img.clientWidth > 50) {
@@ -772,18 +1234,32 @@ angular.module('viewCustom').component('customThumbnail', {
  * Created by samsan on 7/17/17.
  */
 
-angular.module('viewCustom').controller('customViewAllComponentMetadataController', ['$sce', '$element', '$location', 'prmSearchService', '$window', '$stateParams', '$timeout', 'customGoogleAnalytic', function ($sce, $element, $location, prmSearchService, $window, $stateParams, $timeout, customGoogleAnalytic) {
+angular.module('viewCustom').controller('customViewAllComponentMetadataController', ['$sce', '$element', '$location', 'prmSearchService', '$window', '$stateParams', '$timeout', 'customMapXmlKeys', '$mdMedia', 'customMapXmlValues', function ($sce, $element, $location, prmSearchService, $window, $stateParams, $timeout, customMapXmlKeys, $mdMedia, customMapXmlValues) {
 
-    var cga = customGoogleAnalytic;
     var vm = this;
     var sv = prmSearchService;
+    var cMap = customMapXmlKeys;
+    var cMapValue = customMapXmlValues;
     vm.params = $location.search();
     // get ui-router parameters
     vm.context = $stateParams.context;
     vm.docid = $stateParams.docid;
 
+    vm.toggleData = { 'icon': 'ic_remove_black_24px.svg', 'flag': false };
     vm.xmldata = [];
+    vm.keys = [];
     vm.items = {};
+
+    vm.toggle = function () {
+        if (vm.toggleData.flag) {
+            vm.toggleData.icon = 'ic_remove_black_24px.svg';
+            vm.toggleData.flag = false;
+        } else {
+            vm.toggleData.icon = 'ic_add_black_24px.svg';
+            vm.toggleData.flag = true;
+        }
+    };
+
     // ajax call to get data
     vm.getData = function () {
         var restUrl = vm.parentCtrl.searchService.cheetah.restUrl + '/' + vm.context + '/' + vm.docid;
@@ -795,24 +1271,72 @@ angular.module('viewCustom').controller('customViewAllComponentMetadataControlle
         sv.getAjax(restUrl, params, 'get').then(function (result) {
             vm.items = result.data;
             if (vm.items.pnx.addata) {
-                vm.xmldata = sv.getXMLdata(vm.items.pnx.addata.mis1[0]);
+                var result = sv.parseXml(vm.items.pnx.addata.mis1[0]);
+                if (result.work) {
+                    vm.xmldata = result.work[0];
+                    if (vm.items.pnx.display) {
+                        vm.keys = Object.keys(vm.items.pnx.display);
+                        var removeKeys = cMap.getRemoveList();
+                        for (var i = 0; i < removeKeys.length; i++) {
+                            var key = removeKeys[i];
+                            var index = vm.keys.indexOf(key);
+                            if (index !== -1) {
+                                vm.keys.splice(index, 1);
+                            }
+                        }
+                        vm.keys = cMap.sort(vm.keys);
+                    }
+                }
             }
         }, function (err) {
             console.log(err);
         });
     };
 
+    // get json key
+    vm.getKeys = function (obj) {
+        var keys = Object.keys(obj);
+        var removeList = cMap.getRemoveList();
+        for (var i = 0; i < removeList.length; i++) {
+            var key = removeList[i];
+            var index = keys.indexOf(key);
+            if (index !== -1) {
+                // remove image from the list
+                keys.splice(index, 1);
+            }
+        }
+        return cMap.getOrderList(keys);
+    };
+
+    // get json value base on dynamic key
+    vm.getValue = function (obj, key) {
+        var values = cMapValue.getValue(obj, key);
+        return values;
+    };
+
     // show the pop up image
-    vm.gotoFullPhoto = function (index) {
+    vm.gotoFullPhoto = function (index, data) {
+        var filename = '';
+        if (data.image) {
+            var urlList = data.image[0]._attr.href._value;
+            urlList = urlList.split('/');
+            if (urlList.length >= 3) {
+                filename = urlList[3];
+            }
+        } else if (data._attr) {
+            filename = data._attr.componentID._value;
+        }
+
         // go to full display page
-        var url = '/primo-explore/viewcomponent/' + vm.context + '/' + vm.docid + '/' + index + '?vid=' + vm.params.vid + '&lang=' + vm.params.lang;
+        var url = '/primo-explore/viewcomponent/' + vm.context + '/' + vm.docid + '?vid=' + vm.params.vid + '&imageId=' + filename;
         if (vm.params.adaptor) {
             url += '&adaptor=' + vm.params.adaptor;
         }
+
         $window.open(url, '_blank');
     };
 
-    vm.$onChanges = function () {
+    vm.$onInit = function () {
         // hide search box
         var el = $element[0].parentNode.parentNode.children[0].children[2];
         if (el) {
@@ -823,18 +1347,23 @@ angular.module('viewCustom').controller('customViewAllComponentMetadataControlle
         $timeout(function (e) {
             var topbar = $element[0].parentNode.parentNode.children[0].children[0].children[1];
             if (topbar) {
-                var divNode = document.createElement('div');
-                divNode.setAttribute('class', 'metadataHeader');
-                var textNode = document.createTextNode('FULL COMPONENT METADATA');
-                divNode.appendChild(textNode);
-                topbar.insertBefore(divNode, topbar.children[2]);
-                // remove pin and bookmark
-                topbar.children[3].remove();
-                // remove user login message
-                topbar.children[3].remove();
+
+                // remove bookmark and login area
+                if (topbar.children.length > 2) {
+                    topbar.children[2].remove();
+                    topbar.children[2].remove();
+                    topbar.children[1].remove();
+                }
+                // hide title in extra small screen size
+                if (!$mdMedia('xs')) {
+                    var divNode = document.createElement('div');
+                    divNode.setAttribute('class', 'metadataHeader');
+                    var textNode = document.createTextNode('FULL COMPONENT METADATA');
+                    divNode.appendChild(textNode);
+                    topbar.appendChild(divNode);
+                }
             }
-            cga.setPage('/viewallcomponentmetadata', vm.docid);
-        }, 500);
+        }, 1000);
 
         vm.getData();
     };
@@ -852,18 +1381,21 @@ angular.module('viewCustom').component('customViewAllComponentMetadata', {
  * This component is for a single image full display when a user click on thumbnail from a full display page
  */
 
-angular.module('viewCustom').controller('customViewComponentController', ['$sce', '$mdMedia', 'prmSearchService', '$location', '$stateParams', '$element', '$timeout', 'customService', 'customGoogleAnalytic', function ($sce, $mdMedia, prmSearchService, $location, $stateParams, $element, $timeout, customService, customGoogleAnalytic) {
+angular.module('viewCustom').controller('customViewComponentController', ['$sce', '$mdMedia', 'prmSearchService', '$location', '$stateParams', '$element', '$timeout', 'customMapXmlKeys', '$window', 'customMapXmlValues', function ($sce, $mdMedia, prmSearchService, $location, $stateParams, $element, $timeout, customMapXmlKeys, $window, customMapXmlValues) {
 
-    var cga = customGoogleAnalytic;
     var vm = this;
     var sv = prmSearchService;
-    var cisv = customService;
+    var cMap = customMapXmlKeys;
+    var cMapValue = customMapXmlValues;
     // get location parameter
     vm.params = $location.search();
     // get parameter from angular ui-router
     vm.context = $stateParams.context;
     vm.docid = $stateParams.docid;
-    vm.index = parseInt($stateParams.index);
+    vm.recordid = '';
+    vm.filename = vm.params.imageId;
+    vm.index = '';
+    vm.clientIp = sv.getClientIp();
 
     vm.photo = {};
     vm.flexsize = 80;
@@ -871,8 +1403,44 @@ angular.module('viewCustom').controller('customViewComponentController', ['$sce'
     vm.itemData = {};
     vm.imageNav = true;
     vm.xmldata = {};
+    vm.keys = [];
     vm.imageTitle = '';
     vm.jp2 = false;
+    vm.componentData = {}; // single component data
+    vm.componentKey = [];
+
+    // remove HVD_VIA from record id of vm.docid
+    vm.removeHVD_VIA = function () {
+        var pattern = /^(HVD_VIA)/;
+        var docid = angular.copy(vm.docid);
+        if (pattern.test(docid)) {
+            vm.recordid = docid.substring(7, docid.length);
+        } else {
+            vm.recordid = docid;
+        }
+    };
+
+    // find index base on file name
+    vm.findFilenameIndex = function (arrList, filename) {
+        var k = -1;
+        for (var i = 0; i < arrList.length; i++) {
+            var img = arrList[i];
+            if (img.image) {
+                var url = img.image[0]._attr.href._value;
+                if (url.match(vm.filename)) {
+                    k = i;
+                    i = arrList.length;
+                }
+            } else if (img._attr) {
+                var componentID = img._attr.componentID._value;
+                if (componentID === vm.filename) {
+                    k = i;
+                    i = arrList.length;
+                }
+            }
+        }
+        return k;
+    };
 
     // ajax call to get data
     vm.getData = function () {
@@ -885,18 +1453,34 @@ angular.module('viewCustom').controller('customViewComponentController', ['$sce'
         sv.getAjax(url, params, 'get').then(function (result) {
             vm.item = result.data;
             // convert xml to json
-            if (vm.item.pnx.addata) {
-                vm.xmldata = sv.getXMLdata(vm.item.pnx.addata.mis1[0]);
+            if (vm.item.pnx) {
+                if (vm.item.pnx.addata) {
+                    var result = sv.parseXml(vm.item.pnx.addata.mis1[0]);
+                    if (result.work) {
+                        vm.xmldata = result.work[0];
+                        if (vm.xmldata.component) {
+                            vm.total = vm.xmldata.component.length;
+                        }
+                        if (vm.item.pnx.display) {
+                            vm.keys = Object.keys(vm.item.pnx.display);
+                            // remove unwanted key
+                            var removeList = cMap.getRemoveList();
+                            for (var i = 0; i < removeList.length; i++) {
+                                var key = removeList[i];
+                                var index = vm.keys.indexOf(key);
+                                if (index !== -1) {
+                                    vm.keys.splice(index, 1);
+                                }
+                            }
+
+                            vm.keys = cMap.sort(vm.keys);
+                        }
+                    }
+                }
+            } else {
+                $window.location.href = '/primo-explore/search?vid=' + vm.params.vid;
             }
 
-            // show total of image
-            if (vm.xmldata.surrogate) {
-                vm.total = vm.xmldata.surrogate.length;
-            } else if (vm.xmldata.image) {
-                vm.total = vm.xmldata.image.length;
-            } else if (vm.xmldata.length) {
-                vm.total = vm.xmldata.length;
-            }
             // display photo
             vm.displayPhoto();
         }, function (error) {
@@ -904,37 +1488,67 @@ angular.module('viewCustom').controller('customViewComponentController', ['$sce'
         });
     };
 
-    vm.displayPhoto = function () {
-        vm.auth = cisv.getAuth();
-        vm.isLoggedIn = vm.auth.isLoggedIn;
-        if (vm.xmldata.surrogate && !vm.xmldata.image) {
-            if (vm.xmldata.surrogate[vm.index].image) {
-                vm.photo = vm.xmldata.surrogate[vm.index].image[0];
-                // find out if the image is jp2 or not
-                vm.jp2 = sv.findJP2(vm.photo);
-            } else {
-                vm.photo = vm.xmldata.surrogate[vm.index];
-                vm.jp2 = sv.findJP2(vm.photo);
+    // get json key and remove image from the key
+    vm.getKeys = function (obj) {
+        var keys = Object.keys(obj);
+        var removeList = cMap.getRemoveList();
+        for (var i = 0; i < removeList.length; i++) {
+            var key = removeList[i];
+            var index = keys.indexOf(key);
+            if (index !== -1) {
+                // remove image from the list
+                keys.splice(index, 1);
             }
-            if (vm.xmldata.surrogate[vm.index].title) {
-                vm.imageTitle = vm.xmldata.surrogate[vm.index].title[0].textElement[0]._text;
+        }
+        return cMap.getOrderList(keys);
+    };
+
+    // get value base on json key
+    vm.getValue = function (val, key) {
+        return cMapValue.getValue(val, key);
+    };
+
+    // display each component value key
+    vm.getComponentValue = function (key) {
+        var text = '';
+        if (vm.componentData && key) {
+            var data = vm.componentData[key];
+            text = sv.getValue(data, key);
+        }
+        return text;
+    };
+
+    // display each photo component
+    vm.displayPhoto = function () {
+        vm.isLoggedIn = sv.getLogInID();
+        vm.clientIp = sv.getClientIp();
+        if (vm.xmldata.component && !vm.xmldata.image) {
+            if (!vm.index && vm.index !== 0) {
+                vm.index = vm.findFilenameIndex(vm.xmldata.component, vm.filename);
+            }
+            if (vm.index >= 0 && vm.index < vm.total) {
+                vm.componentData = vm.xmldata.component[vm.index];
+                if (vm.componentData.image) {
+                    vm.photo = vm.componentData.image[0];
+                    // find out if the image is jp2 or not
+                    vm.jp2 = sv.findJP2(vm.photo);
+                }
             }
         } else if (vm.xmldata.image) {
-            vm.photo = vm.xmldata.image[vm.index];
+            vm.photo = vm.xmldata.image[0];
             vm.jp2 = sv.findJP2(vm.photo);
-        } else {
-            vm.photo = vm.xmldata[vm.index];
+            vm.componentData = vm.xmldata.image[0];
         }
 
         if (vm.photo._attr && vm.photo._attr.restrictedImage) {
-            if (vm.photo._attr.restrictedImage._value && vm.isLoggedIn === false) {
+            if (vm.photo._attr.restrictedImage._value && vm.isLoggedIn === false && !vm.clientIp.status) {
                 vm.imageNav = false;
             }
         }
     };
 
-    vm.$onChanges = function () {
-
+    vm.$onInit = function () {
+        vm.removeHVD_VIA();
         // if the smaller screen size, make the flex size to 100.
         if ($mdMedia('sm')) {
             vm.flexsize = 100;
@@ -953,19 +1567,19 @@ angular.module('viewCustom').controller('customViewComponentController', ['$sce'
         $timeout(function (e) {
             var topbar = $element[0].parentNode.parentNode.children[0].children[0].children[1];
             if (topbar) {
+                // remove pin and bookmark
+                if (topbar.children.length > 2) {
+                    topbar.children[2].remove();
+                    topbar.children[2].remove();
+                    topbar.children[1].remove();
+                }
                 var divNode = document.createElement('div');
                 divNode.setAttribute('class', 'metadataHeader');
                 var textNode = document.createTextNode('FULL IMAGE DETAIL');
                 divNode.appendChild(textNode);
-                topbar.insertBefore(divNode, topbar.children[2]);
-                // remove pin and bookmark
-                topbar.children[3].remove();
-                // remove user login message
-                topbar.children[3].remove();
+                topbar.appendChild(divNode);
             }
-
-            cga.setPage('/viewcomponent', vm.docid);
-        }, 500);
+        }, 1000);
     };
 
     // next photo
@@ -988,15 +1602,6 @@ angular.module('viewCustom').controller('customViewComponentController', ['$sce'
             vm.displayPhoto();
         }
     };
-
-    // check if the item is array or not
-    vm.isArray = function (obj) {
-        if (Array.isArray(obj)) {
-            return true;
-        } else {
-            return false;
-        }
-    };
 }]);
 
 angular.module('viewCustom').component('customViewComponent', {
@@ -1006,6 +1611,14 @@ angular.module('viewCustom').component('customViewComponent', {
     'templateUrl': '/primo-explore/custom/HVD2/html/custom-view-component.html'
 });
 
+// truncate word to limit 60 characters
+angular.module('viewCustom').filter('mapXmlFilter', ['customMapXmlKeys', function (customMapXmlKeys) {
+    var cMap = customMapXmlKeys;
+    return function (key) {
+        var newKey = cMap.mapKey(key);
+        return newKey.charAt(0).toUpperCase() + newKey.slice(1);
+    };
+}]);
 /**
  * Created by samsan on 5/23/17.
  * If image has height that is greater than 150 px, then it will resize it. Otherwise, it just display what it is.
@@ -1054,7 +1667,7 @@ angular.module('viewCustom').component('multipleThumbnail', {
                     // use default image if it is a broken link image
                     var pattern = /^(onLoad\?)/; // the broken image start with onLoad
                     if (pattern.test(vm.src)) {
-                        img.src = '/primo-explore/custom/HVD_IMAGES/img/icon_image.png';
+                        img.src = '/primo-explore/custom/HVD2/img/icon_image.png';
                     }
                     img.onload = vm.callback;
                     if (img.clientWidth > 50) {
@@ -1082,29 +1695,6 @@ angular.module('viewCustom').component('multipleThumbnail', {
     }]
 });
 
-// truncate word to limit 60 characters
-angular.module('viewCustom').filter('truncatefilter', function () {
-    return function (str) {
-        var newstr = str;
-        var index = 45;
-        if (str) {
-            if (str.length > 45) {
-                newstr = str.substring(0, 45);
-                for (var i = newstr.length; i > 20; i--) {
-                    var text = newstr.substring(i - 1, i);
-                    if (text === ' ') {
-                        index = i;
-                        i = 20;
-                    }
-                }
-                newstr = str.substring(0, index) + '...';
-            }
-        }
-
-        return newstr;
-    };
-});
-
 /**
  * Created by samsan on 8/16/17.
  */
@@ -1121,7 +1711,7 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
     vm.form = { 'phone': '', 'deviceType': '', 'body': '', 'error': '', 'mobile': false, 'msg': '', 'token': '', 'ip': '', 'sessionToken': '', 'isLoggedIn': false, 'iat': '', 'inst': '', 'vid': '', 'exp': '', 'userName': '', 'iss': '', 'onCampus': false };
 
     vm.$onChanges = function () {
-        vm.auth = cisv.getAuth();
+        vm.auth = cs.getAuth();
         if (vm.auth.primolyticsService.jwtUtilService) {
             vm.form.token = vm.auth.primolyticsService.jwtUtilService.storageUtil.sessionStorage.primoExploreJwt;
             vm.form.sessionToken = vm.auth.primolyticsService.jwtUtilService.storageUtil.localStorage.getJWTFromSessionStorage;
@@ -1184,7 +1774,7 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
     // this function is trigger only if a user is using laptop computer
     vm.sendText = function (k) {
         // get rest endpoint from config.html file. It's preload in prm-topbar-after.js
-        vm.api = cisv.getApi();
+        vm.api = cs.getApi();
         if (vm.api) {
             vm.restsmsUrl = vm.api.smsUrl;
         }
@@ -1352,16 +1942,65 @@ angular.module('viewCustom').component('prmActionListAfter', {
 });
 
 /**
- * Created by samsan on 8/7/17.
+ * Created by samsan on 5/25/17.
  */
 
-angular.module('viewCustom').controller('prmAuthenticationAfterController', ['customService', function (customService) {
+angular.module('viewCustom').controller('prmAuthenticationAfterController', ['prmSearchService', function (prmSearchService) {
     var vm = this;
     // initialize custom service search
-    var sv = customService;
+    var sv = prmSearchService;
+    vm.api = sv.getApi();
+    vm.form = { 'ip': '', 'status': false, 'token': '', 'sessionToken': '', 'isLoggedIn': '' };
+
+    vm.validateIP = function () {
+        vm.api = sv.getApi();
+        if (vm.api.ipUrl) {
+            sv.postAjax(vm.api.ipUrl, vm.form).then(function (result) {
+                sv.setClientIp(result.data);
+            }, function (error) {
+                console.log(error);
+            });
+        }
+    };
+
+    vm.getClientIP = function () {
+        vm.auth = sv.getAuth();
+        if (vm.auth.primolyticsService.jwtUtilService) {
+            vm.form.token = vm.auth.primolyticsService.jwtUtilService.storageUtil.sessionStorage.primoExploreJwt;
+            vm.form.sessionToken = vm.auth.primolyticsService.jwtUtilService.storageUtil.localStorage.getJWTFromSessionStorage;
+            vm.form.isLoggedIn = vm.auth.isLoggedIn;
+            // decode JWT Token to see if it is a valid token
+            var obj = vm.auth.authenticationService.userSessionManagerService.jwtUtilService.jwtHelper.decodeToken(vm.form.token);
+            vm.form.ip = obj.ip;
+
+            vm.validateIP();
+        }
+    };
+
+    // get rest endpoint Url
+    vm.getUrl = function () {
+        var configFile = sv.getEnv();
+        sv.getAjax('/primo-explore/custom/HVD_IMAGES/html/' + configFile, '', 'get').then(function (res) {
+            vm.api = res.data;
+            sv.setApi(vm.api);
+            vm.getClientIP();
+        }, function (error) {
+            console.log(error);
+        });
+    };
     // check if a user login
     vm.$onChanges = function () {
+        // This flag is return true or false
+        var loginID = vm.parentCtrl.isLoggedIn;
+        sv.setLogInID(loginID);
         sv.setAuth(vm.parentCtrl);
+        vm.api = sv.getApi();
+        if (!vm.api.ipUrl) {
+            vm.getUrl();
+        } else {
+            // get client ip address to see if a user is internal or external user
+            vm.getClientIP();
+        }
     };
 }]);
 
@@ -1473,12 +2112,19 @@ angular.module('viewCustom').controller('prmFullViewAfterCtrl', ['prmSearchServi
                 }
             }
 
+            for (var _i = 0; _i < vm.parentCtrl.services.length; _i++) {
+                // remove More section
+                if (vm.parentCtrl.services[_i].scrollId === 'getit_link2') {
+                    vm.parentCtrl.services.splice(_i, 1);
+                }
+            }
+
             // remove tags section
             if (vm.parentCtrl.services) {
-                for (var _i = 0; _i < vm.parentCtrl.services.length; _i++) {
+                for (var _i2 = 0; _i2 < vm.parentCtrl.services.length; _i2++) {
                     // remove More section
-                    if (vm.parentCtrl.services[_i].scrollId === 'tags') {
-                        vm.parentCtrl.services.splice(_i, 1);
+                    if (vm.parentCtrl.services[_i2].scrollId === 'tags') {
+                        vm.parentCtrl.services.splice(_i2, 1);
                     }
                 }
             }
@@ -1490,7 +2136,7 @@ angular.module('viewCustom').controller('prmFullViewAfterCtrl', ['prmSearchServi
             } else {
                 cga.setPage('/fulldisplay', 'Full display page');
             }
-        }, 500);
+        }, 1000);
     };
 }]);
 
@@ -1936,10 +2582,10 @@ angular.module('viewCustom').controller('prmOpacAfterCtrl', [function () {
                 }
             }
             var pnxTypes = vm.parentCtrl.item.pnx.display.type;
-            for (var _i2 = 0; _i2 < pnxTypes.length; _i2++) {
-                if (pnxTypes[_i2] === 'journal') {
+            for (var _i3 = 0; _i3 < pnxTypes.length; _i3++) {
+                if (pnxTypes[_i3] === 'journal') {
                     vm.borrowInfo.journal = true;
-                    _i2 = pnxTypes.length;
+                    _i3 = pnxTypes.length;
                 }
             }
             if (vm.parentCtrl.item.pnx.addata.isbn) {
@@ -1974,7 +2620,7 @@ angular.module('viewCustom').controller('prmPermalinkAfterCtrl', ['$scope', '$sc
         // change perm a link to correct url
         $scope.$watch('vm.parentCtrl.permalink', function () {
             if (vm.parentCtrl.item) {
-                if (vm.parentCtrl.item.pnx.display.lds03[0]) {
+                if (vm.parentCtrl.item.pnx.display.lds03) {
                     vm.parentCtrl.permalink = vm.parentCtrl.item.pnx.display.lds03[0];
                 }
             }
@@ -2323,6 +2969,19 @@ angular.module('viewCustom').component('prmSearchResultListAfter', {
 angular.module('viewCustom').service('prmSearchService', ['$http', '$window', '$filter', function ($http, $window, $filter) {
     var serviceObj = {};
 
+    // get environment to run config.html
+    serviceObj.getEnv = function () {
+        var host = $window.location.hostname;
+        var config = 'config-prod.html';
+        if (host.toLowerCase() === 'localhost') {
+            config = 'config-local.html';
+        } else if (host.toLowerCase() === 'harvard-primosb.hosted.exlibrisgroup.com') {
+            config = 'config-dev.html';
+        }
+
+        return config;
+    };
+
     serviceObj.getPlatform = function () {
         var userAgent = $window.navigator.userAgent;
         var browsers = { ios: /ios/i, android: /android/i, blackberry: /blackberry/i, tablet: /tablet/i, iphone: /iphone/i, ipad: /ipad/i, samsung: /samsung/i };
@@ -2572,244 +3231,41 @@ angular.module('viewCustom').service('prmSearchService', ['$http', '$window', '$
         if (str) {
             xmldata = serviceObj.parseXml(str);
             if (xmldata.work) {
-                listArray = [];
-                var work = xmldata.work[0];
-                if (!work.surrogate && work.image) {
-                    var data = work;
-                    if (work.image.length === 1) {
-                        listArray = data;
+                for (var k = 0; k < xmldata.work.length; k++) {
+                    var subLevel = xmldata.work[k];
+                    if (subLevel.component) {
+                        listArray = subLevel.component;
+                    } else if (subLevel.image) {
+                        listArray = subLevel;
                     } else {
-                        listArray = [];
-                        var images = angular.copy(work.image);
-                        delete work.image;
-                        for (var i = 0; i < images.length; i++) {
-                            data = angular.copy(work);
-                            data.image = [];
-                            data.image[0] = images[i];
-                            listArray.push(data);
-                        }
-                    }
-                } else if (work.surrogate && work.image) {
-                    var data = {};
-                    listArray = [];
-                    var images = angular.copy(work.image);
-                    var surrogate = angular.copy(work.surrogate);
-                    delete work.image;
-                    delete work.surrogate;
-                    for (var i = 0; i < images.length; i++) {
-                        data = angular.copy(work);
-                        data.image = [];
-                        data.image[0] = images[i];
-                        listArray.push(data);
-                    }
-
-                    data = {};
-                    for (var i = 0; i < surrogate.length; i++) {
-                        data = surrogate[i];
-                        if (surrogate[i].image) {
-                            for (var j = 0; j < surrogate[i].image.length; j++) {
-                                data = angular.copy(surrogate[i]);
-                                if (surrogate[i].image[j]) {
-                                    data.image = [];
-                                    data.image[0] = surrogate[i].image[j];
-                                    data.thumbnail = surrogate[i].image[j].thumbnail;
-                                    data._attr = surrogate[i].image[j]._attr;
-                                    data.caption = surrogate[i].image[j].caption;
-                                }
-                                listArray.push(data);
-                            }
-                        } else {
-                            listArray.push(data);
-                        }
+                        listArray = subLevel;
                     }
                 }
-
-                if (work.subwork && !work.surrogate) {
-                    listArray = [];
-                    for (var i = 0; i < work.subwork.length; i++) {
-                        var aSubwork = work.subwork[i];
-                        if (aSubwork.surrogate) {
-                            for (var j = 0; j < aSubwork.surrogate.length; j++) {
-                                var data = aSubwork.surrogate[j];
-                                listArray.push(data);
-                            }
-                        }
-                        if (aSubwork.image) {
-                            for (var k = 0; k < aSubwork.image.length; k++) {
-                                var data = aSubwork;
-                                data.thumbnail = aSubwork.image[k].thumbnail;
-                                data._attr = aSubwork.image[k]._attr;
-                                data.caption = aSubwork.image[k].caption;
-                                listArray.push(data);
-                            }
-                        }
-                        if (!aSubwork.image && !aSubwork.surrogate) {
-                            listArray.push(aSubwork);
-                        }
-                    }
-                }
-                if (work.subwork && work.surrogate) {
-                    listArray = [];
-                    for (var i = 0; i < work.subwork.length; i++) {
-                        var aSubwork = work.subwork[i];
-                        if (aSubwork.surrogate) {
-                            for (var j = 0; j < aSubwork.surrogate.length; j++) {
-                                var data = aSubwork.surrogate[j];
-                                listArray.push(data);
-                            }
-                        }
-                        if (aSubwork.image) {
-                            for (var k = 0; k < aSubwork.image.length; k++) {
-                                var data = aSubwork;
-                                data.thumbnail = aSubwork.image[k].thumbnail;
-                                data._attr = aSubwork.image[k]._attr;
-                                data.caption = aSubwork.image[k].caption;
-                                listArray.push(data);
-                            }
-                        }
-                    }
-                    for (var w = 0; w < work.surrogate.length; w++) {
-                        var aSurrogate = work.surrogate[w];
-                        if (aSurrogate.surrogate) {
-                            for (var j = 0; j < aSurrogate.surrogate.length; j++) {
-                                var data = aSurrogate.surrogate[j];
-                                listArray.push(data);
-                            }
-                        }
-                        if (aSurrogate.image) {
-                            for (var k = 0; k < aSurrogate.image.length; k++) {
-                                var data = aSurrogate;
-                                data.thumbnail = aSurrogate.image[k].thumbnail;
-                                data._attr = aSurrogate.image[k]._attr;
-                                data.caption = aSurrogate.image[k].caption;
-                                listArray.push(data);
-                            }
-                        }
-                    }
-                }
-                if (work.surrogate && !work.subwork) {
-                    listArray = [];
-                    for (var w = 0; w < work.surrogate.length; w++) {
-                        var aSurrogate = work.surrogate[w];
-                        if (aSurrogate.surrogate) {
-                            for (var j = 0; j < aSurrogate.surrogate.length; j++) {
-                                var data = aSurrogate.surrogate[j];
-                                listArray.push(data);
-                            }
-                        }
-                        if (aSurrogate.image) {
-                            for (var k = 0; k < aSurrogate.image.length; k++) {
-                                var data = angular.copy(aSurrogate);
-                                data.image[0] = aSurrogate.image[k];
-                                listArray.push(data);
-                            }
-                        }
-                        if (!aSurrogate.image && !aSurrogate.surrogate) {
-                            listArray.push(aSurrogate);
-                        }
-                    }
-                }
-
-                xmldata = work;
-                if (listArray.length > 0) {
-                    xmldata.surrogate = listArray;
-                }
-
-                /* end work section ***/
-            } else if (xmldata.group) {
-                listArray = [];
-                xmldata = xmldata.group[0];
-                if (xmldata.subwork && xmldata.surrogate) {
-                    var listArray = [];
-                    var subwork = xmldata.subwork;
-                    var surrogate = xmldata.surrogate;
-                    // get all the surrogate under subwork
-                    for (var i = 0; i < subwork.length; i++) {
-                        var aSubwork = subwork[i];
-                        if (aSubwork.surrogate) {
-                            for (var k = 0; k < aSubwork.surrogate.length; k++) {
-                                var data = aSubwork.surrogate[k];
-                                listArray.push(data);
-                            }
-                        }
-                        if (aSubwork.image) {
-                            for (var j = 0; j < aSubwork.image.length; j++) {
-                                var data = aSubwork;
-                                data.thumbnail = aSubwork.image[j].thumbnail;
-                                data._attr = aSubwork.image[j]._attr;
-                                data.caption = aSubwork.image[j].caption;
-                                listArray.push(data);
-                            }
-                        }
-                        if (!aSubwork.surrogate && !aSubwork.image) {
-                            listArray.push(aSubwork);
-                        }
-                    }
-                    // get all surrogate
-                    for (var i = 0; i < surrogate.length; i++) {
-                        var aSurrogate = surrogate[i];
-                        if (aSurrogate.surrogate) {
-                            for (var j = 0; j < aSurrogate.surrogate.length; j++) {
-                                var data = aSurrogate.surrogate[j];
-                                listArray.push(data);
-                            }
-                        }
-                        if (aSurrogate.image) {
-                            for (var j = 0; j < aSurrogate.image.length; j++) {
-                                var data = aSurrogate;
-                                data.thumbnail = aSurrogate.image[j].thumbnail;
-                                data._attr = aSurrogate.image[j]._attr;
-                                data.caption = aSurrogate.image[j].caption;
-                                listArray.push(data);
-                            }
-                        }
-                        if (!aSurrogate.surrogate && !aSurrogate.image) {
-                            listArray.push(aSurrogate);
-                        }
-                    }
-                    xmldata.surrogate = listArray;
-                } else if (xmldata.subwork && !xmldata.surrogate) {
-                    // transfer subwork to surrogate
-                    var surrogate = [];
-                    listArray = [];
-                    var subwork = angular.copy(xmldata.subwork);
-                    delete xmldata.subwork;
-                    for (var i = 0; i < subwork.length; i++) {
-                        if (subwork[i].surrogate) {
-                            surrogate = angular.copy(subwork[i].surrogate);
-                            delete subwork[i].surrogate;
-                            for (var k = 0; k < surrogate.length; k++) {
-                                if (surrogate[k].image) {
-                                    var images = angular.copy(surrogate[k].image);
-                                    delete surrogate[k].image;
-                                    for (var c = 0; c < images.length; c++) {
-                                        var data = surrogate[k];
-                                        data.image = [];
-                                        data.image[0] = images[c];
-                                        listArray.push(data);
-                                    }
-                                } else {
-                                    listArray.push(surrogate[k]);
-                                }
-                            }
-                        }
-                        if (subwork[i].image) {
-                            var images = angular.copy(subwork[i].image);
-                            delete subwork[i].image;
-                            for (var j = 0; j < images.length; j++) {
-                                var data = subwork[i];
-                                data.image = [];
-                                data.image[0] = images[j];
-                                listArray.push(data);
-                            }
-                        }
-                    }
-
-                    xmldata.surrogate = listArray;
-                }
+            } else {
+                listArray = xmldata;
             }
         }
-        return xmldata;
+
+        return listArray;
+    };
+
+    // store api rest url from config.html
+    serviceObj.api = {};
+    serviceObj.setApi = function (data) {
+        serviceObj.api = data;
+    };
+
+    serviceObj.getApi = function () {
+        return serviceObj.api;
+    };
+
+    // store validate client ip status
+    serviceObj.clientIp = {};
+    serviceObj.setClientIp = function (data) {
+        serviceObj.clientIp = data;
+    };
+    serviceObj.getClientIp = function () {
+        return serviceObj.clientIp;
     };
 
     return serviceObj;
@@ -2858,15 +3314,17 @@ angular.module('viewCustom').component('prmServiceLinksAfter', {
  *  This component is creating white top bar, link menu on the right, and remove some doms
  */
 
-angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', '$timeout', 'customService', 'customGoogleAnalytic', function ($element, $timeout, customService, customGoogleAnalytic) {
+angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', '$timeout', 'customService', 'customGoogleAnalytic', 'prmSearchService', function ($element, $timeout, customService, customGoogleAnalytic, prmSearchService) {
     var vm = this;
     var cs = customService;
     var cga = customGoogleAnalytic;
+    var pcs = prmSearchService;
     vm.api = {};
 
     // get rest endpoint Url
     vm.getUrl = function () {
-        cs.getAjax('/primo-explore/custom/HVD2/html/config.html', '', 'get').then(function (res) {
+        var configFile = pcs.getEnv();
+        cs.getAjax('/primo-explore/custom/HVD2/html/' + configFile, '', 'get').then(function (res) {
             vm.api = res.data;
             cs.setApi(vm.api);
         }, function (error) {
@@ -2930,88 +3388,49 @@ angular.module('viewCustom').component('prmTopbarAfter', {
  * Created by samsan on 5/17/17.
  * This component is to insert images into online section
  */
-angular.module('viewCustom').controller('prmViewOnlineAfterController', ['prmSearchService', '$window', '$location', 'customService', function (prmSearchService, $window, $location, customService) {
+angular.module('viewCustom').controller('prmViewOnlineAfterController', ['prmSearchService', '$mdDialog', '$timeout', '$window', '$location', function (prmSearchService, $mdDialog, $timeout, $window, $location) {
 
     var vm = this;
-
     var sv = prmSearchService;
-    var cisv = customService;
-    var auth = cisv.getAuth();
     var itemData = sv.getItem();
     vm.item = itemData.item;
     vm.searchData = itemData.searchData;
     vm.params = $location.search();
-    vm.zoomButtonFlag = true;
+    vm.zoomButtonFlag = false;
     vm.viewAllComponetMetadataFlag = false;
     vm.singleImageFlag = false;
-    vm.displayOnlineImage = false;
+    vm.photo = {}; // single imae
+    vm.jp2 = false;
+    vm.imageTitle = '';
+    vm.auth = sv.getAuth();
 
-    vm.$onChanges = function () {
-        auth = cisv.getAuth();
-        vm.isLoggedIn = auth.isLoggedIn;
+    vm.$onInit = function () {
+        vm.isLoggedIn = sv.getLogInID();
         // get item data from service
         itemData = sv.getItem();
         vm.item = itemData.item;
+        if (vm.item.pnx.addata.mis1) {
+            vm.item.mis1Data = sv.getXMLdata(vm.item.pnx.addata.mis1[0]);
+        }
         vm.searchData = itemData.searchData;
+        vm.searchData.sortby = vm.params.sortby;
+        vm.pageInfo = sv.getPage();
 
-        if (vm.item && vm.item.pnx) {
-            // show image if it is HVD_VIA
-            if (vm.item.pnx.control.sourceid) {
-                var sourceid = vm.item.pnx.control.sourceid;
-                if (sourceid.indexOf('HVD_VIA') !== -1) {
-                    vm.displayOnlineImage = true;
-                }
-            }
-            if (vm.displayOnlineImage) {
-                var data = sv.getXMLdata(vm.item.pnx.addata.mis1[0]);
-                if (data.surrogate) {
-                    vm.item.mis1Data = data.surrogate;
-                } else if (data.image) {
-                    if (data.image.length === 1) {
-                        vm.item.mis1Data = [];
-                        vm.item.mis1Data.push(data);
-                    } else {
-                        vm.item.mis1Data = data.image;
-                    }
-                } else {
-                    vm.item.mis1Data = [];
-                    vm.item.mis1Data.push(data);
-                }
-            }
-        }
-
-        if (vm.isLoggedIn === false && vm.item.mis1Data && vm.displayOnlineImage) {
-            if (vm.item.mis1Data.length === 1) {
-                if (vm.item.mis1Data[0].image) {
-                    if (vm.item.mis1Data[0].image[0]._attr.restrictedImage) {
-                        if (vm.item.mis1Data[0].image[0]._attr.restrictedImage._value) {
-                            vm.zoomButtonFlag = false;
-                        }
-                    }
-                } else if (vm.item.mis1Data[0]._attr) {
-                    if (vm.item.mis1Data[0]._attr.restrictedImage) {
-                        if (vm.item.mis1Data[0]._attr.restrictedImage._value) {
-                            vm.zoomButtonFlag = false;
-                        }
-                    }
-                }
-            }
-        }
-
-        if (vm.item.mis1Data && vm.displayOnlineImage) {
-            if (vm.item.mis1Data.length == 1) {
+        if (vm.item.mis1Data) {
+            if (Array.isArray(vm.item.mis1Data) === false) {
                 vm.singleImageFlag = true;
+                if (vm.item.mis1Data.image) {
+                    vm.photo = vm.item.mis1Data.image[0];
+                    vm.jp2 = sv.findJP2(vm.photo); // check to see if the image is jp2 or not
+                }
+                if (vm.item.mis1Data.title) {
+                    vm.imageTitle = vm.item.mis1Data.title[0].textElement[0]._text;
+                }
             } else {
                 vm.viewAllComponetMetadataFlag = true;
+                vm.singleImageFlag = false;
+                vm.zoomButtonFlag = true;
             }
-        } else {
-            vm.singleImageFlag = true;
-        }
-
-        // check to see if lds41 is exist
-        if (vm.item.pnx.display.lds41) {
-            vm.singleImageFlag = false;
-            vm.viewAllComponetMetadataFlag = false;
         }
     };
 
@@ -3019,15 +3438,24 @@ angular.module('viewCustom').controller('prmViewOnlineAfterController', ['prmSea
     vm.viewAllComponentMetaData = function () {
         var url = '/primo-explore/viewallcomponentmetadata/' + vm.item.context + '/' + vm.item.pnx.control.recordid[0] + '?vid=' + vm.params.vid;
         url += '&tab=' + vm.params.tab + '&search_scope=' + vm.params.search_scope;
-        url += '&lang=' + vm.params.lang;
-        url += '&adaptor=' + vm.params.adaptor;
+        url += '&adaptor=' + vm.item.adaptor;
         $window.open(url, '_blank');
     };
 
     // show the pop up image
     vm.gotoFullPhoto = function ($event, item, index) {
+        var filename = '';
+        if (item.image) {
+            var urlList = item.image[0]._attr.href._value;
+            urlList = urlList.split('/');
+            if (urlList.length >= 3) {
+                filename = urlList[3];
+            }
+        } else if (item._attr.componentID) {
+            filename = item._attr.componentID._value;
+        }
         // go to full display page
-        var url = '/primo-explore/viewcomponent/' + vm.item.context + '/' + vm.item.pnx.control.recordid[0] + '/' + index + '?vid=' + vm.searchData.vid + '&lang=' + vm.searchData.lang;
+        var url = '/primo-explore/viewcomponent/' + vm.item.context + '/' + vm.item.pnx.control.recordid[0] + '?vid=' + vm.searchData.vid + '&imageId=' + filename;
         if (vm.item.adaptor) {
             url += '&adaptor=' + vm.item.adaptor;
         } else {
@@ -3046,7 +3474,7 @@ angular.module('viewCustom').config(function ($stateProvider) {
             }
         }
     }).state('exploreMain.viewcomponent', {
-        url: '/viewcomponent/:context/:docid/:index',
+        url: '/viewcomponent/:context/:docid',
         views: {
             '': {
                 template: '<custom-view-component parent-ctrl="$ctrl" item="$ctrl.item" services="$ctrl.services" params="$ctrl.params"></custom-view-component>'
@@ -3059,6 +3487,28 @@ angular.module('viewCustom').config(function ($stateProvider) {
     'templateUrl': '/primo-explore/custom/HVD2/html/prm-view-online-after.html'
 });
 
+// truncate word to limit 60 characters
+angular.module('viewCustom').filter('truncatefilter', function () {
+    return function (str) {
+        var newstr = str;
+        var index = 45;
+        if (str) {
+            if (str.length > 45) {
+                newstr = str.substring(0, 45);
+                for (var i = newstr.length; i > 20; i--) {
+                    var text = newstr.substring(i - 1, i);
+                    if (text === ' ') {
+                        index = i;
+                        i = 20;
+                    }
+                }
+                newstr = str.substring(0, index) + '...';
+            }
+        }
+
+        return newstr;
+    };
+});
 /**
  * Created by samsan on 5/23/17.
  * If image width is greater than 600pixel, it will resize base on responsive css.
@@ -3073,21 +3523,19 @@ angular.module('viewCustom').component('responsiveImage', {
         restricted: '<'
     },
     controllerAs: 'vm',
-    controller: ['$element', '$window', '$location', 'prmSearchService', '$timeout', 'customService', function ($element, $window, $location, prmSearchService, $timeout, customService) {
+    controller: ['$element', '$window', '$location', 'prmSearchService', '$timeout', function ($element, $window, $location, prmSearchService, $timeout) {
         var vm = this;
         var sv = prmSearchService;
-        var cisv = customService;
-        var auth = cisv.getAuth();
         // set up local scope variables
         vm.showImage = true;
         vm.params = $location.search();
         vm.localScope = { 'imgClass': '', 'loading': true, 'hideLockIcon': false };
-        vm.isLoggedIn = auth.isLoggedIn;
+        vm.isLoggedIn = sv.getLogInID();
 
         // check if image is not empty and it has width and height and greater than 150, then add css class
         vm.$onChanges = function () {
-            auth = cisv.getAuth();
-            vm.isLoggedIn = auth.isLoggedIn;
+
+            vm.isLoggedIn = sv.getLogInID();
             if (vm.restricted && !vm.isLoggedIn) {
                 vm.showImage = false;
             }
@@ -3098,7 +3546,7 @@ angular.module('viewCustom').component('responsiveImage', {
                     // use default image if it is a broken link image
                     var pattern = /^(onLoad\?)/; // the broken image start with onLoad
                     if (pattern.test(vm.src)) {
-                        img.src = '/primo-explore/custom/HVD_IMAGES/img/icon_image.png';
+                        img.src = '/primo-explore/custom/HVD2/img/icon_image.png';
                     }
                     img.onload = vm.callback;
                     if (img.width > 50) {
@@ -3124,7 +3572,7 @@ angular.module('viewCustom').component('responsiveImage', {
         };
         // login
         vm.signIn = function () {
-            var auth = cisv.getAuth();
+            var auth = sv.getAuth();
             var params = { 'vid': '', 'targetURL': '' };
             params.vid = vm.params.vid;
             params.targetURL = $window.location.href;
@@ -3154,23 +3602,23 @@ angular.module('viewCustom').component('singleImage', {
         jp2: '<'
     },
     controllerAs: 'vm',
-    controller: ['$element', '$window', '$location', 'prmSearchService', '$timeout', '$sce', 'customService', function ($element, $window, $location, prmSearchService, $timeout, $sce, customService) {
+    controller: ['$element', '$window', '$location', 'prmSearchService', '$timeout', '$sce', function ($element, $window, $location, prmSearchService, $timeout, $sce) {
         var vm = this;
         var sv = prmSearchService;
-        var cisv = customService;
         // set up local scope variables
         vm.imageUrl = '';
         vm.showImage = true;
         vm.params = $location.search();
         vm.localScope = { 'imgClass': '', 'loading': true, 'hideLockIcon': false };
-        vm.auth = cisv.getAuth();
-        vm.isLoggedIn = vm.auth.isLoggedIn;
+        vm.isLoggedIn = sv.getLogInID();
+        vm.clientIp = sv.getClientIp();
 
         // check if image is not empty and it has width and height and greater than 150, then add css class
         vm.$onChanges = function () {
-            vm.auth = cisv.getAuth();
-            vm.isLoggedIn = vm.auth.isLoggedIn;
-            if (vm.restricted && !vm.isLoggedIn) {
+            vm.clientIp = sv.getClientIp();
+            vm.isLoggedIn = sv.getLogInID();
+
+            if (vm.restricted && !vm.isLoggedIn && !vm.clientIp.status) {
                 vm.showImage = false;
             }
             vm.localScope = { 'imgClass': '', 'loading': true, 'hideLockIcon': false };
@@ -3216,7 +3664,7 @@ angular.module('viewCustom').component('singleImage', {
 
         // login
         vm.signIn = function () {
-            var auth = cisv.getAuth();
+            var auth = sv.getAuth();
             var params = { 'vid': '', 'targetURL': '' };
             params.vid = vm.params.vid;
             params.targetURL = $window.location.href;
