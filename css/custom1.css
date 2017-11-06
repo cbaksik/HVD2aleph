@@ -999,14 +999,9 @@ prm-request-services {
 .browse-button {
     position: relative;
     margin-top:22px;
-    color:#ffffff;
     margin-left:0px;
 }
 
-
-.browse-button:hover {
-    color:#ffffff !important;
-}
 
 prm-browse-search-bar {
     background-color:#383838;

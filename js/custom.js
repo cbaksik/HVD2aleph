@@ -2656,17 +2656,45 @@ angular.module('viewCustom').component('prmPermalinkAfter', {
 });
 
 /**
+ * Created by samsan on 11/3/17.
+ */
+
+angular.module('viewCustom').controller('prmPersonalInfoAfterCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
+    var vm = this;
+    vm.$onInit = function () {
+        // watch for a user to edit or view the form
+        $scope.$watch('vm.parentCtrl.formMode', function () {
+            // hide form when a user edit
+            if (vm.parentCtrl.formMode === 'Edit') {
+                $timeout(function () {
+                    var inputTags = document.getElementsByTagName('input');
+                    for (var i = 0; i < inputTags.length - 1; i++) {
+                        inputTags[i].setAttribute('type', 'hidden');
+                    }
+                }, 500);
+            }
+        });
+    };
+}]);
+
+angular.module('viewCustom').component('prmPersonalInfoAfter', {
+    bindings: { parentCtrl: '<' },
+    controller: 'prmPersonalInfoAfterCtrl',
+    controllerAs: 'vm'
+});
+
+/**
  * Created by samsan on 9/25/17.
  */
 
 angular.module('viewCustom').controller('prmSearchBarAfterCtrl', ['$element', '$location', '$compile', '$scope', '$mdMedia', function ($element, $location, $compile, $scope, $mdMedia) {
     var vm = this;
-
+    vm.browseClass = 'switch-to-advanced md-button md-primoExplore-theme browse-button';
     vm.$onInit = function () {
         var el = $element[0].parentNode.children[0].children[0].children[2];
         var button = document.createElement('button');
         button.setAttribute('id', 'browseButton');
-        button.setAttribute('class', 'md-button md-primoExplore-theme browse-button');
+        button.setAttribute('ng-class', 'vm.browseClass');
         button.setAttribute('ng-click', 'vm.gotoBrowse()');
         var textNode = document.createTextNode('STARTS WITH (BROWSE BY...)');
         if ($mdMedia('xs') || $mdMedia('sm')) {
@@ -2679,6 +2707,14 @@ angular.module('viewCustom').controller('prmSearchBarAfterCtrl', ['$element', '$
             el.appendChild(button);
             $compile(el)($scope);
         }
+        // change css class start browse
+        $scope.$watch('vm.parentCtrl.$scope.$ctrl.advancedSearch', function () {
+            if (vm.parentCtrl.$scope.$ctrl.advancedSearch) {
+                vm.browseClass = 'switch-to-simple md-button md-primoExplore-theme browse-button';
+            } else {
+                vm.browseClass = 'switch-to-advanced md-button md-primoExplore-theme browse-button';
+            }
+        });
     };
 
     vm.gotoBrowse = function () {
