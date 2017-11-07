@@ -3,10 +3,11 @@
  */
 
 angular.module('viewCustom')
-    .controller('prmAuthenticationAfterController', ['prmSearchService', function (prmSearchService) {
+    .controller('prmAuthenticationAfterController', ['prmSearchService','customService', function (prmSearchService,customService) {
         let vm=this;
         // initialize custom service search
         let sv=prmSearchService;
+        let csv=customService;
         vm.api = sv.getApi();
         vm.form={'ip':'','status':false,'token':'','sessionToken':'','isLoggedIn':''};
 
@@ -57,6 +58,7 @@ angular.module('viewCustom')
             let loginID=vm.parentCtrl.isLoggedIn;
             sv.setLogInID(loginID);
             sv.setAuth(vm.parentCtrl);
+            csv.setAuth(vm.parentCtrl);
             vm.api = sv.getApi();
             if(!vm.api.ipUrl) {
                 vm.getUrl();

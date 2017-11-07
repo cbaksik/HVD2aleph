@@ -1945,10 +1945,11 @@ angular.module('viewCustom').component('prmActionListAfter', {
  * Created by samsan on 5/25/17.
  */
 
-angular.module('viewCustom').controller('prmAuthenticationAfterController', ['prmSearchService', function (prmSearchService) {
+angular.module('viewCustom').controller('prmAuthenticationAfterController', ['prmSearchService', 'customService', function (prmSearchService, customService) {
     var vm = this;
     // initialize custom service search
     var sv = prmSearchService;
+    var csv = customService;
     vm.api = sv.getApi();
     vm.form = { 'ip': '', 'status': false, 'token': '', 'sessionToken': '', 'isLoggedIn': '' };
 
@@ -1994,6 +1995,7 @@ angular.module('viewCustom').controller('prmAuthenticationAfterController', ['pr
         var loginID = vm.parentCtrl.isLoggedIn;
         sv.setLogInID(loginID);
         sv.setAuth(vm.parentCtrl);
+        csv.setAuth(vm.parentCtrl);
         vm.api = sv.getApi();
         if (!vm.api.ipUrl) {
             vm.getUrl();
@@ -2007,6 +2009,33 @@ angular.module('viewCustom').controller('prmAuthenticationAfterController', ['pr
 angular.module('viewCustom').component('prmAuthenticationAfter', {
     bindings: { parentCtrl: '<' },
     controller: 'prmAuthenticationAfterController'
+});
+
+/**
+ * Created by samsan on 11/6/17.
+ */
+
+angular.module('viewCustom').controller('prmBreadcrumbsAfterCtrl', ['$element', function ($element) {
+    var vm = this;
+    vm.$onChanges = function () {
+        //console.log('**** prm-breadcrumbs-after ****');
+        //console.log(vm.parentCtrl);
+    };
+
+    vm.hover = function (facet) {
+        if (facet.hover) {
+            facet.hover = false;
+        } else {
+            facet.hover = true;
+        }
+    };
+}]);
+
+angular.module('viewCustom').component('prmBreadcrumbsAfter', {
+    bindings: { parentCtrl: '<' },
+    controller: 'prmBreadcrumbsAfterCtrl',
+    controllerAs: 'vm'
+    //templateUrl:'/primo-explore/custom/HVD2/html/prm-breadcrumbs-after.html'
 });
 
 /**

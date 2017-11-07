@@ -1,0 +1,29 @@
+<div class="md-chips2 md-chips-wrap layout-wrap layout-row" layout="row" layout-wrap>
+    <div class="md-chip animate-chip" layout="row" layout-align="space-between center"
+         ng-repeat="facet in vm.parentCtrl.selectedFacets track by $index" ng-class="{'persistent-facet':facet.persistent,'white-chip':!facet.persistent}">
+        <div class="md-chip-content" layout="row" layout-align="start center">
+            <button class="md-icon-button md-mini-fab md-chip-remove  md-ink-ripple"
+                    ng-if="!facet.persistent" ng-click="vm.parentCtrl.addStickyFacet(facet)" ng-mouseEnter="vm.hover(facet)"  ng-mouseLeave="vm.hover(facet)">
+                <md-tooltip md-direction="bottom">Make this filter persistent throughout the session</md-tooltip>
+                <prm-icon ng-if="facet.hover"  icon-type="svg" svg-icon-set="primo-ui" icon-definition="persistent"></prm-icon>
+                <prm-icon ng-if="!facet.hover && !facet.persistent" icon-type="svg" svg-icon-set="primo-ui" icon-definition="remove-persistent"></prm-icon>
+            </button>
+            <button class="md-icon-button md-mini-fab md-chip-remove md-ink-ripple"
+                   ng-if="facet.persistent" ng-click="vm.parentCtrl.removeStickyFacet(facet)"
+                    aria-label="Cancel persistence {{facet.value}}" ng-mouseEnter="vm.hover(facet)"  ng-mouseLeave="vm.hover(facet)">
+                <md-tooltip md-direction="bottom">Cancel persistence</md-tooltip>
+                <prm-icon ng-if="facet.hover"  icon-type="svg" svg-icon-set="primo-ui" icon-definition="remove-persistent"></prm-icon>
+                <prm-icon ng-if="!facet.hover && facet.persistent"  icon-type="svg" svg-icon-set="primo-ui" icon-definition="persistent"></prm-icon>
+            </button>
+            <strong  translate="{{facet.label}}"></strong>
+        </div>
+        <div class="md-chip-remove-container">
+           <button class="md-icon-button md-mini-fab md-chip-remove" role="button" aria-label="{{facet.tooltip}}" ng-click="vm.parentCtrl.removeFacet(facet)">
+               <md-tooltip md-direction="bottom">{{facet.tooltip}}</md-tooltip>
+               <prm-icon icon-type="svg" svg-icon-set="primo-ui" icon-definition="remove"></prm-icon>
+           </button>
+        </div>
+    </div>
+</div>
+
+
