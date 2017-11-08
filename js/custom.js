@@ -503,7 +503,7 @@ angular.module('viewCustom').service('customMapXmlValues', [function () {
             var index = keys.indexOf('componentID');
             if (index !== -1) {
                 var componentID = nodeValue['componentID'];
-                if ((typeof componentID === 'undefined' ? 'undefined' : _typeof(componentID)) === 'object') {
+                if ((typeof componentID === 'undefined' ? 'undefined' : _typeof(componentID)) === 'object' && componentID !== null) {
                     componentID = componentID['_value'];
                 }
                 str = componentID;
@@ -520,23 +520,25 @@ angular.module('viewCustom').service('customMapXmlValues', [function () {
             for (var i = 0; i < keys.length; i++) {
                 var nodeKey = keys[i];
                 var values = nodeValue[nodeKey];
-                if ((typeof values === 'undefined' ? 'undefined' : _typeof(values)) === 'object') {
+                if ((typeof values === 'undefined' ? 'undefined' : _typeof(values)) === 'object' && values !== null) {
                     var nodeKeys2 = Object.keys(values);
                     for (var k = 0; k < nodeKeys2.length; k++) {
                         var nodekey3 = nodeKeys2[k];
                         if (nodekey3) {
                             var values2 = values[nodekey3];
-                            if ((typeof values2 === 'undefined' ? 'undefined' : _typeof(values2)) === 'object') {
+                            if ((typeof values2 === 'undefined' ? 'undefined' : _typeof(values2)) === 'object' && values2 !== null) {
                                 var nodekeys4 = Object.keys(values2);
                                 if (nodekeys4) {
                                     var values3 = values2[nodekeys4];
-                                    if ((typeof values3 === 'undefined' ? 'undefined' : _typeof(values3)) === 'object') {
+                                    if ((typeof values3 === 'undefined' ? 'undefined' : _typeof(values3)) === 'object' && values3 !== null) {
                                         var nodeKeys5 = Object.keys(values3);
                                         for (var c = 0; c < nodeKeys5.length; c++) {
                                             var nodekey5 = nodeKeys5[c];
-                                            str += values3[nodekey5] + ';&nbsp;';
+                                            if (values3[nodekey5]) {
+                                                str += values3[nodekey5] + ';&nbsp;';
+                                            }
                                         }
-                                    } else {
+                                    } else if (values3) {
                                         str += values3 + ';&nbsp;';
                                     }
                                 }
@@ -564,19 +566,19 @@ angular.module('viewCustom').service('customMapXmlValues', [function () {
                 var values = nodeValue[nodeKey];
                 if (values) {
                     var nodeKeys = Object.keys(values);
-                    if ((typeof nodeKeys === 'undefined' ? 'undefined' : _typeof(nodeKeys)) === 'object') {
+                    if ((typeof nodeKeys === 'undefined' ? 'undefined' : _typeof(nodeKeys)) === 'object' && nodeKeys !== null) {
                         for (var k = 0; k < nodeKeys.length; k++) {
                             var key2 = nodeKeys[k];
                             if (key2) {
                                 var values2 = values[key2];
-                                if ((typeof values2 === 'undefined' ? 'undefined' : _typeof(values2)) === 'object') {
+                                if ((typeof values2 === 'undefined' ? 'undefined' : _typeof(values2)) === 'object' && values2 !== null) {
                                     var nodeKeys2 = Object.keys(values2);
-                                    if ((typeof nodeKeys2 === 'undefined' ? 'undefined' : _typeof(nodeKeys2)) === 'object') {
+                                    if ((typeof nodeKeys2 === 'undefined' ? 'undefined' : _typeof(nodeKeys2)) === 'object' && nodeKeys2 !== null) {
                                         for (var c = 0; c < nodeKeys2.length; c++) {
                                             var key3 = nodeKeys2[c];
                                             if (key3) {
                                                 var values3 = values2[key3];
-                                                if ((typeof values3 === 'undefined' ? 'undefined' : _typeof(values3)) === 'object') {
+                                                if ((typeof values3 === 'undefined' ? 'undefined' : _typeof(values3)) === 'object' && values3 !== null) {
                                                     var nodeKeys3 = Object.keys(values3);
                                                     for (var j = 0; j < nodeKeys3.length; j++) {
                                                         var key4 = nodeKeys3[j];
@@ -629,6 +631,7 @@ angular.module('viewCustom').service('customMapXmlValues', [function () {
                 case 'relatedWork':
                     text = serviceObj.getRelatedWork(values);
                     break;
+                case 'hvd_topic':
                 case 'topic':
                     text = serviceObj.getTopic(values);
                     break;
@@ -645,49 +648,51 @@ angular.module('viewCustom').service('customMapXmlValues', [function () {
     // get json value base on dynamic key
     serviceObj.getOtherValue = function (obj, key) {
         var text = '';
-        if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
+        if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && obj !== null) {
             if (Array.isArray(obj)) {
                 obj = obj[0];
             }
             var keys = Object.keys(obj);
-
             for (var k = 0; k < keys.length; k++) {
                 var nodeKey = keys[k];
                 if (nodeKey) {
                     var nodeValue = obj[nodeKey];
+
                     if (Array.isArray(nodeValue)) {
                         nodeValue = nodeValue[0];
                     }
+                    if ((typeof nodeValue === 'undefined' ? 'undefined' : _typeof(nodeValue)) === 'object' && nodeValue !== null) {
 
-                    if ((typeof nodeValue === 'undefined' ? 'undefined' : _typeof(nodeValue)) === 'object') {
                         if (Array.isArray(nodeValue)) {
                             for (var i = 0; i < nodeValue.length; i++) {
                                 var data = nodeValue[i];
-                                if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object') {
+                                if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object' && data !== null) {
                                     if (Array.isArray(data)) {
                                         for (var j = 0; j < data.length; j++) {
                                             var data2 = data[j];
-                                            if ((typeof data2 === 'undefined' ? 'undefined' : _typeof(data2)) === 'object') {
+                                            if ((typeof data2 === 'undefined' ? 'undefined' : _typeof(data2)) === 'object' && data2 !== null) {
                                                 if (Array.isArray(data2)) {
                                                     for (var c = 0; c < data2.length; c++) {
                                                         var data3 = data2[c];
-                                                        if ((typeof data3 === 'undefined' ? 'undefined' : _typeof(data3)) === 'object') {
+                                                        if ((typeof data3 === 'undefined' ? 'undefined' : _typeof(data3)) === 'object' && data3 !== null) {
                                                             if (Array.isArray(data3)) {
                                                                 for (var w = 0; w < data3.length; w++) {
                                                                     var data4 = data3[w];
-                                                                    if ((typeof data4 === 'undefined' ? 'undefined' : _typeof(data4)) === 'object') {
-                                                                        text += data4[0] + '&nbsp;';
-                                                                    } else {
+                                                                    if ((typeof data4 === 'undefined' ? 'undefined' : _typeof(data4)) === 'object' && data4 !== null) {
+                                                                        if (data4[0]) {
+                                                                            text += data4[0] + '&nbsp;';
+                                                                        }
+                                                                    } else if (data4) {
                                                                         text += data4 + '&nbsp;';
                                                                     }
                                                                 }
                                                             }
-                                                        } else {
+                                                        } else if (data3) {
                                                             text += data3 + '&nbsp;';
                                                         }
                                                     }
                                                 }
-                                            } else {
+                                            } else if (data2) {
                                                 text += data2 + '&nbsp;';
                                             }
                                         }
@@ -696,31 +701,35 @@ angular.module('viewCustom').service('customMapXmlValues', [function () {
                                         if (Array.isArray(subNodeKeys)) {
                                             for (var b = 0; b < subNodeKeys.length; b++) {
                                                 var key2 = subNodeKeys[b];
-                                                if ((typeof key2 === 'undefined' ? 'undefined' : _typeof(key2)) === 'object') {
+                                                if ((typeof key2 === 'undefined' ? 'undefined' : _typeof(key2)) === 'object' && key2 !== null) {
                                                     if (Array.isArray(key2)) {
                                                         for (var c = 0; c < key2.length; c++) {
                                                             var key3 = key2[c];
-                                                            if ((typeof key3 === 'undefined' ? 'undefined' : _typeof(key3)) === 'object') {
+                                                            if ((typeof key3 === 'undefined' ? 'undefined' : _typeof(key3)) === 'object' && key3 !== null) {
                                                                 if (Array.isArray(key3)) {
                                                                     for (var x = 0; x < key3.length; x++) {
                                                                         var key4 = key3[x];
-                                                                        if ((typeof key4 === 'undefined' ? 'undefined' : _typeof(key4)) === 'object') {
-                                                                            text += data[key4][0] + '&nbsp;';
-                                                                        } else {
+                                                                        if ((typeof key4 === 'undefined' ? 'undefined' : _typeof(key4)) === 'object' && key4 !== null) {
+                                                                            if (data[key4][0]) {
+                                                                                text += data[key4][0] + '&nbsp;';
+                                                                            }
+                                                                        } else if (data[key4]) {
                                                                             text += data[key4] + '&nbsp;';
                                                                         }
                                                                     }
                                                                 }
-                                                            } else {
+                                                            } else if (data[key3]) {
                                                                 text += data[key3] + '&nbsp;';
                                                             }
                                                         }
                                                     }
                                                 } else if (key2) {
-                                                    text += data[key2] + '&nbsp;';
+                                                    if (data[key2]) {
+                                                        text += data[key2] + '&nbsp;';
+                                                    }
                                                 }
                                             }
-                                        } else {
+                                        } else if (data[subNodeKeys]) {
                                             text += data[subNodeKeys] + '&nbsp;';
                                         }
                                     }
@@ -730,7 +739,7 @@ angular.module('viewCustom').service('customMapXmlValues', [function () {
                             }
                         } else if (nodeKey) {
                             var nodeKey2 = Object.keys(nodeValue);
-                            if ((typeof nodeKey2 === 'undefined' ? 'undefined' : _typeof(nodeKey2)) === 'object') {
+                            if ((typeof nodeKey2 === 'undefined' ? 'undefined' : _typeof(nodeKey2)) === 'object' && nodeKey2 !== null) {
                                 if (Array.isArray(nodeKey2)) {
                                     for (var c = 0; c < nodeKey2.length; c++) {
                                         var nodeKey3 = nodeKey2[c];
@@ -739,29 +748,34 @@ angular.module('viewCustom').service('customMapXmlValues', [function () {
                                             if (Array.isArray(nodeValue3)) {
                                                 nodeValue3 = nodeValue3[0];
                                             }
-                                            if ((typeof nodeValue3 === 'undefined' ? 'undefined' : _typeof(nodeValue3)) === 'object') {
+
+                                            if ((typeof nodeValue3 === 'undefined' ? 'undefined' : _typeof(nodeValue3)) === 'object' && nodeValue3 !== null) {
                                                 var nodeKey4 = Object.keys(nodeValue3);
                                                 if (Array.isArray(nodeKey4)) {
                                                     for (var b = 0; b < nodeKey4.length; b++) {
                                                         var nodeKey5 = nodeKey4[b];
                                                         if (nodeKey5) {
-                                                            text += nodeValue3[nodeKey5] + '&nbsp;';
+                                                            if (nodeValue3[nodeKey5]) {
+                                                                text += nodeValue3[nodeKey5] + '&nbsp;';
+                                                            }
                                                         }
                                                     }
-                                                } else {
+                                                } else if (nodeValue3[nodeKey4]) {
                                                     text += nodeValue3[nodeKey4] + '&nbsp;';
                                                 }
-                                            } else {
+                                            } else if (nodeValue3) {
                                                 text += nodeValue3 + '&nbsp;';
                                             }
                                         }
                                     }
                                 }
                             } else if (nodeKey2) {
-                                text += nodeValue[nodeKey2] + '&nbsp;';
+                                if (nodeValue[nodeKey2]) {
+                                    text += nodeValue[nodeKey2] + '&nbsp;';
+                                }
                             }
                         }
-                    } else {
+                    } else if (nodeValue) {
                         text += nodeValue + '&nbsp;';
                     }
                 }
