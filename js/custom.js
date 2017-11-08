@@ -3451,7 +3451,8 @@ angular.module('viewCustom').component('prmTopbarAfter', {
 
 /**
  * Created by samsan on 5/17/17.
- * This component is to insert images into online section
+ * This component is to insert images into online section and book covers.
+ * If pnx.display.lds41 exist, it will display book covers. Then hide image view.
  */
 angular.module('viewCustom').controller('prmViewOnlineAfterController', ['prmSearchService', '$mdDialog', '$timeout', '$window', '$location', function (prmSearchService, $mdDialog, $timeout, $window, $location) {
 
