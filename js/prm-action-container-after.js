@@ -47,8 +47,8 @@ angular.module('viewCustom')
                 }
             } else if(e.which > 96 && e.which < 123) {
                 vm.form.error = 'Enter invalid phone number';
-            } else {
-                vm.form.error = 'Enter invalid phone number';
+            } else if(e.which === 32) {
+                vm.form.error = 'No space is allowed';
             }
         };
 
