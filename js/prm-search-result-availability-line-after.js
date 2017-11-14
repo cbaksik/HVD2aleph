@@ -1,5 +1,8 @@
 /**
  * Created by samsan on 9/13/17.
+ * List Table of content, HathiTrust, and Open Street Map.
+ * This section show in search result list and full display page
+ *
  */
 
 
@@ -109,9 +112,9 @@ angular.module('viewCustom')
             if(vm.api.hathiTrustUrl) {
                 chts.doPost(vm.api.hathiTrustUrl, vm.hathiTrust)
                     .then(function (data) {
-                            if (data.data.items) {
-                                vm.hathiTrustItem = chts.validateHarvard(data.data.items);
-                            }
+                        if (data.data.items) {
+                            vm.hathiTrustItem = chts.validateHarvard(data.data.items);
+                        }
                         },
                         function (error) {
                             console.log(error);

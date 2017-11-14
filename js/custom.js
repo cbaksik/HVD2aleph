@@ -2779,6 +2779,9 @@ angular.module('viewCustom').component('prmSearchBarAfter', {
 
 /**
  * Created by samsan on 9/13/17.
+ * List Table of content, HathiTrust, and Open Street Map.
+ * This section show in search result list and full display page
+ *
  */
 
 angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtrl', ['customMapService', '$timeout', 'customHathiTrustService', 'customService', 'customGoogleAnalytic', '$q', 'prmSearchService', function (customMapService, $timeout, customHathiTrustService, customService, customGoogleAnalytic, $q, prmSearchService) {

@@ -1085,6 +1085,9 @@ prm-browse-search-bar button.md-button.simple-btn:hover {
     font-size:16pt;
     font-weight: bold;
 }
+.full-view-hathitrust {
+    color: #0f7d00;
+}
 .serviceLinkBox {
     padding:0px;
     background: transparent !important;
