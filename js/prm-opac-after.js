@@ -8,6 +8,7 @@ angular.module('viewCustom')
     .controller('prmOpacAfterCtrl',[function () {
         var vm=this;
         vm.borrowInfo={'flag':false,'journal':false,'query':''};
+        vm.marginTop30='';
 
         // validate to see if pnx data meet criteria
         vm.validatePNX=function () {
@@ -39,7 +40,15 @@ angular.module('viewCustom')
             vm.validatePNX();
         };
 
-
+        vm.$doCheck=function(){
+            // set up top margin when there is one item
+            if(vm.parentCtrl.locationsService.results) {
+                vm.marginTop30='';
+                if(vm.parentCtrl.locationsService.results[0].length===1) {
+                    vm.marginTop30='margin-top-30';
+                }
+            }
+        }
 
     }]);
 

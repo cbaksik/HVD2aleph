@@ -1,4 +1,4 @@
-<div ng-repeat="line in $ctrl.parentCtrl.currLoc.summaryHoldings.allLines track by $index">
+<div ng-repeat="line in $ctrl.parentCtrl.currLoc.summaryHoldings.allLines track by $index" class="margin-left-15">
     <div class="margin-top-small">
         <span class="bold-text" translate="{{line.key}}"></span>
         <span ng-repeat="lineItem in line.value track by $index">

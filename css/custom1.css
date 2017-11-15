@@ -1005,6 +1005,12 @@ prm-breadcrumbs .md-chips .md-chip-content .persistence-button prm-icon.show-on-
 prm-brief-result-container.list-item:hover {
     background:#ffffff;
 }
+
+md-input-container.md-input-focused label:not(.md-no-float), md-input-container.md-input-has-placeholder label:not(.md-no-float), md-input-container.md-input-has-value label:not(.md-no-float) {
+    opacity: 1.0;
+    color: #000000;
+    transform: translate3d(0,6px,0) scale(.85);
+}
 .placeIcon {
     position: absolute;
     cursor: pointer;
@@ -1015,6 +1021,10 @@ prm-brief-result-container.list-item:hover {
 
 .capitalize {
     text-transform: capitalize;
+}
+
+.margin-left-15 {
+    margin-left: 15px;
 }
 
 
@@ -1036,6 +1046,9 @@ prm-brief-result-container.list-item:hover {
     width:33px;
     height:auto;
     padding-bottom:10px;
+}
+.margin-top-30 {
+    margin-top:30px;
 }
 .highlite {
     background: #FFFCC4;
