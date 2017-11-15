@@ -839,6 +839,12 @@ angular.module('viewCustom').controller('customPrintPageCtrl', ['$element', '$st
                 actionList.remove();
             }
 
+            // remove right column of the page
+            var el2 = $element[0].children[1].children[0].children[1];
+            if (el2) {
+                el2.remove();
+            }
+
             // set google analytic page request statistic
             cga.setPage('/printPage', vm.docid);
         }, 1000);
@@ -3477,7 +3483,7 @@ angular.module('viewCustom').component('prmTopbarAfter', {
  * This component is to insert images into online section and book covers.
  * If pnx.display.lds41 exist, it will display book covers. Then hide image view.
  */
-angular.module('viewCustom').controller('prmViewOnlineAfterController', ['prmSearchService', '$mdDialog', '$timeout', '$window', '$location', function (prmSearchService, $mdDialog, $timeout, $window, $location) {
+angular.module('viewCustom').controller('prmViewOnlineAfterController', ['prmSearchService', '$mdDialog', '$timeout', '$window', '$location', '$mdMedia', function (prmSearchService, $mdDialog, $timeout, $window, $location, $mdMedia) {
 
     var vm = this;
     var sv = prmSearchService;
@@ -3492,6 +3498,7 @@ angular.module('viewCustom').controller('prmViewOnlineAfterController', ['prmSea
     vm.jp2 = false;
     vm.imageTitle = '';
     vm.auth = sv.getAuth();
+    vm.gridColumn = '3'; // default print view size
 
     vm.$onInit = function () {
         vm.isLoggedIn = sv.getLogInID();
@@ -3520,6 +3527,13 @@ angular.module('viewCustom').controller('prmViewOnlineAfterController', ['prmSea
                 vm.singleImageFlag = false;
                 vm.zoomButtonFlag = true;
             }
+        }
+
+        // show print view base on the screen size
+        if ($mdMedia('xs')) {
+            vm.gridColumn = '1';
+        } else if ($mdMedia('sm')) {
+            vm.gridColumn = '2';
         }
     };
 

@@ -53,6 +53,12 @@ angular.module('viewCustom')
                     actionList.remove();
                 }
 
+                // remove right column of the page
+                var el2=$element[0].children[1].children[0].children[1];
+                if(el2) {
+                    el2.remove();
+                }
+
                 // set google analytic page request statistic
                 cga.setPage('/printPage', vm.docid);
 

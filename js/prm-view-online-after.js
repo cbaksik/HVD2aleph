@@ -4,7 +4,7 @@
  * If pnx.display.lds41 exist, it will display book covers. Then hide image view.
  */
 angular.module('viewCustom')
-    .controller('prmViewOnlineAfterController', ['prmSearchService','$mdDialog','$timeout','$window','$location', function (prmSearchService, $mdDialog, $timeout,$window,$location) {
+    .controller('prmViewOnlineAfterController', ['prmSearchService','$mdDialog','$timeout','$window','$location','$mdMedia', function (prmSearchService, $mdDialog, $timeout,$window,$location, $mdMedia) {
 
         var vm = this;
         var sv=prmSearchService;
@@ -19,6 +19,7 @@ angular.module('viewCustom')
         vm.jp2 = false;
         vm.imageTitle = '';
         vm.auth = sv.getAuth();
+        vm.gridColumn='3'; // default print view size
 
         vm.$onInit=function() {
             vm.isLoggedIn=sv.getLogInID();
@@ -48,6 +49,13 @@ angular.module('viewCustom')
                    vm.zoomButtonFlag = true;
                }
            }
+
+            // show print view base on the screen size
+            if($mdMedia('xs')) {
+                vm.gridColumn='1';
+            } else if($mdMedia('sm')){
+                vm.gridColumn='2';
+            }
 
         };
 

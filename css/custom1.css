@@ -635,6 +635,11 @@ div.hollis-logo a:hover {
 }
 	
 
+.hvfullsize {
+    width:100%;
+    height: auto;
+}
+
 .hv-md-card {
     padding-top: 0px !important;
     margin-top:0px !important;
@@ -647,7 +652,7 @@ div.hollis-logo a:hover {
 
 .hvInline {list-style: none; margin-left:-45px; margin-top: -20px;}
 
-.hvInline > li { display: inline-block; text-align: left; cursor: pointer; display: -moz-inline-stack;
+.hvInline > li { display: inline-block; text-align: left; cursor: pointer;
     margin-bottom:5px; margin-right:10px; width: auto; vertical-align: top; padding:0px;}
 
 
@@ -829,6 +834,15 @@ a.thumbnail > img:focus {
 }
 
 
+prm-view-online-after md-grid-list {
+    padding:0px;
+    margin:0px;
+}
+
+prm-view-online-after md-grid-list > md-grid-tile {
+    box-shadow: none !important;
+}
+
 
 @media only screen and (max-width: 800px) {
     .hvPanel {
@@ -848,13 +862,13 @@ a.thumbnail > img:focus {
 @media print {
 
     .hvfullsize {
-        width: 800px;
+        width: 100%;
         height: auto;
     }
 
-    .hvInline {list-style: none; margin-left:-45px; margin-top: -20px;word-break:break-all; width:800px;}
+    .hvInline {list-style: none; margin-left:-45px; margin-top: -20px;word-break:break-all;}
 
-    .hvInline > li {display:table-cell; white-space: pre-wrap; word-break:break-all; text-align: left; cursor: pointer; display: -moz-inline-stack;
+    .hvInline > li {display:inline-block; word-break:break-all; text-align: left; cursor: pointer;
         margin-bottom:5px; margin-right:10px; width: auto; vertical-align: top; padding:0px;}
 }
 
