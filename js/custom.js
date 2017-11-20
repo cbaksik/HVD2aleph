@@ -432,7 +432,14 @@ angular.module('viewCustom').service('customMapXmlValues', [function () {
                     }
                     var index2 = nodeKeys.indexOf('_attr');
                     if (index2 !== -1) {
-                        url = values['_attr']['href']['_value'];
+                        var href = values['_attr'];
+                        if (href) {
+                            var nodeKeys2 = Object.keys(href);
+                            var index3 = nodeKeys2.indexOf('href');
+                            if (index3 !== -1) {
+                                url = values['_attr']['href']['_value'];
+                            }
+                        }
                     }
                     if (url && text) {
                         str = '<a href="' + url + '" target="_blank">' + text + '</a><br/>';
@@ -590,10 +597,10 @@ angular.module('viewCustom').service('customMapXmlValues', [function () {
                                                 }
                                             }
                                         }
-                                    } else {
+                                    } else if (values2[nodeKeys2]) {
                                         str += values2[nodeKeys2] + '<br/>';
                                     }
-                                } else {
+                                } else if (values2) {
                                     str += values2 + '<br/>';
                                 }
                             }
@@ -1533,7 +1540,7 @@ angular.module('viewCustom').controller('customViewComponentController', ['$sce'
         var text = '';
         if (vm.componentData && key) {
             var data = vm.componentData[key];
-            text = sv.getValue(data, key);
+            text = cMapValue.getValue(data, key);
         }
         return text;
     };

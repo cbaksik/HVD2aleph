@@ -144,7 +144,7 @@ angular.module('viewCustom')
            var text='';
            if(vm.componentData && key) {
                var data=vm.componentData[key];
-               text = sv.getValue(data,key);
+               text = cMapValue.getValue(data,key);
            }
            return text;
         };
