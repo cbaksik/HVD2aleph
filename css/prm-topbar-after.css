@@ -42,6 +42,15 @@ prm-topbar {
     background-color:#000000;
 }
 
+prm-topbar .md-button.button-over-dark {
+    color:#EBEBE5;
+}
+
+prm-main-menu[menu-type=menu] .md-button {
+    padding: 0 1.79em;
+    font-size: 0.85em;
+}
+
 prm-topbar > div.top-nav-bar {
     background-color:#000000;
 }
