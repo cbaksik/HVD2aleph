@@ -2,9 +2,15 @@
     display: table-cell;
 }
 
+.hlShield {
+    display: table-cell;
+    padding-right: 10px;
+
+}
+
 .boxHollis {
     padding-top:5px;
-    margin-left:34px;
+    margin-left:20px;
     white-space: nowrap;
 }
 
