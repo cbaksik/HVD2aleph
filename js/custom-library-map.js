@@ -4,10 +4,11 @@
  */
 
 angular.module('viewCustom')
-    .controller('customLibraryMapCtrl',['customService','$window',function (customService, $window) {
+    .controller('customLibraryMapCtrl',['customService','customConfigService','$window',function (customService, customConfigService, $window) {
         var vm=this;
         var sv=customService;
-        vm.api=sv.getApi();
+        var ccs=customConfigService;
+        vm.api=ccs.getHVD2Config();
         vm.mapLocData={};
 
         vm.getMapIt=function () {
@@ -26,7 +27,7 @@ angular.module('viewCustom')
         };
 
         vm.$onInit=function() {
-           vm.api=sv.getApi();
+           vm.api=ccs.getHVD2Config();
            vm.getMapIt();
         };
 

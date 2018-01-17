@@ -7,15 +7,16 @@
 
 
 angular.module('viewCustom')
-    .controller('prmSearchResultAvailabilityLineAfterCtrl',['customMapService','$timeout','customHathiTrustService','customService','customGoogleAnalytic','$q','prmSearchService',function (customMapService,$timeout, customHathiTrustService,customService, customGoogleAnalytic, $q, prmSearchService) {
+    .controller('prmSearchResultAvailabilityLineAfterCtrl',['customMapService','$timeout','customHathiTrustService','customService','customGoogleAnalytic','$q','prmSearchService','customConfigService',function (customMapService,$timeout, customHathiTrustService,customService, customGoogleAnalytic, $q, prmSearchService,customConfigService) {
         var vm=this;
         var cga=customGoogleAnalytic;
         var custService=customService;
         var cs=customMapService;
         var chts=customHathiTrustService;
         var prmsv=prmSearchService;
+        var ccs=customConfigService;
         // get endpoint url from config.html file
-        vm.api = custService.getApi();
+        vm.api = ccs.getHVD2Config();
         // display of table of content
         vm.TOC = {'type':'HVD_ALEPH','isbn':[],'display':false};
         vm.itemPNX={};
@@ -124,7 +125,7 @@ angular.module('viewCustom')
         };
 
         vm.$onInit=function() {
-            vm.api = custService.getApi();
+            vm.api = ccs.getHVD2Config()
             vm.itemPNX=vm.parentCtrl.result;
             // get table of content
             vm.findTOC();
@@ -256,7 +257,7 @@ angular.module('viewCustom')
 
             if(vm.hathiTrust.flag) {
                 // get rest endpoint url from config.html where it preload prm-tobar-after.js
-                vm.api=custService.getApi();
+                vm.api=ccs.getHVD2Config();
                 vm.getHathiTrustData();
             }
 

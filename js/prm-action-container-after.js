@@ -4,11 +4,12 @@
 
 
 angular.module('viewCustom')
-    .controller('prmActionContainerAfterCtrl',['customService','prmSearchService','$window','customGoogleAnalytic',function (customService,prmSearchService,$window, customGoogleAnalytic) {
+    .controller('prmActionContainerAfterCtrl',['customService','prmSearchService','$window','customGoogleAnalytic','customConfigService',function (customService,prmSearchService,$window, customGoogleAnalytic, customConfigService) {
 
         var cisv=customService;
         var cs=prmSearchService;
         var cga=customGoogleAnalytic;
+        var ccs=customConfigService;
         var vm=this;
         vm.restsmsUrl='';
         vm.locations=[];
@@ -83,7 +84,7 @@ angular.module('viewCustom')
         // this function is trigger only if a user is using laptop computer
         vm.sendText=function (k) {
             // get rest endpoint from config.html file. It's preload in prm-topbar-after.js
-            vm.api=cs.getApi();
+            vm.api=ccs.getHVD2Config();
             if(vm.api) {
                 vm.restsmsUrl=vm.api.smsUrl;
             }

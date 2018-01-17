@@ -11,6 +11,69 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 angular.module('viewCustom', ['angularLoad']);
 
 /**
+* Created by gr on 1/11/2018
+* A custom service for loading the configuration file
+*/
+
+angular.module('viewCustom').service('customConfigService', ['$http', '$window', 'customService', function ($http, $window, customService) {
+
+    var serviceObj = {};
+    serviceObj.HVD_IMAGES_config = {};
+    serviceObj.HVD2_config = {};
+
+    // Get configuration file name for this environment
+    serviceObj.getConfigFileName = function () {
+        var host = $window.location.hostname;
+        var configFileName = 'config-prod.html';
+        if (host.toLowerCase() === 'localhost') {
+            configFileName = 'config-local.html';
+        } else if (host.toLowerCase() === 'harvard-primosb.hosted.exlibrisgroup.com') {
+            configFileName = 'config-dev.html';
+        } else if (host.toLowerCase() === 'qa.hollis.harvard.edu') {
+            configFileName = 'config-dev.html';
+        }
+        return configFileName;
+    };
+
+    serviceObj.getHVD2Config = function () {
+        if (angular.equals({}, serviceObj.HVD2_config)) {
+            var configFile = serviceObj.getConfigFileName();
+            customService.getAjax('/primo-explore/custom/HVD2/html/' + configFile, '', 'get').then(function (res) {
+                serviceObj.setHVD2Config(res.data);
+            }, function (error) {
+                console.log(error);
+            });
+        }
+        return serviceObj.HVD2_config;
+    };
+
+    serviceObj.setHVD2Config = function (data) {
+        serviceObj.HVD2_config = data;
+    };
+
+    serviceObj.getHVDImagesConfig = function () {
+        if (angular.equals({}, serviceObj.HVD_IMAGES_config)) {
+            var configFile = serviceObj.getConfigFileName();
+            customService.getAjax('/primo-explore/custom/HVD_IMAGES/html/' + configFile, '', 'get').then(function (res) {
+                serviceObj.setHVD2Config(res.data);
+            }, function (error) {
+                console.log(error);
+            });
+        }
+        return serviceObj.HVD_IMAGES_config;
+    };
+
+    serviceObj.setHVD2Config = function (data) {
+        serviceObj.HVD2_config = data;
+    };
+
+    serviceObj.setHVDImagesConfig = function (data) {
+        serviceObj.HVD_IMAGES_config = data;
+    };
+
+    return serviceObj;
+}]);
+/**
  * Created by samsan on 9/22/17.
  */
 
@@ -186,10 +249,11 @@ angular.module('viewCustom').service('customImagesService', ['$filter', function
  * Create Map it link, place icon, and display the library name
  */
 
-angular.module('viewCustom').controller('customLibraryMapCtrl', ['customService', '$window', function (customService, $window) {
+angular.module('viewCustom').controller('customLibraryMapCtrl', ['customService', 'customConfigService', '$window', function (customService, customConfigService, $window) {
     var vm = this;
     var sv = customService;
-    vm.api = sv.getApi();
+    var ccs = customConfigService;
+    vm.api = ccs.getHVD2Config();
     vm.mapLocData = {};
 
     vm.getMapIt = function () {
@@ -205,7 +269,7 @@ angular.module('viewCustom').controller('customLibraryMapCtrl', ['customService'
     };
 
     vm.$onInit = function () {
-        vm.api = sv.getApi();
+        vm.api = ccs.getHVD2Config();
         vm.getMapIt();
     };
 
@@ -1726,11 +1790,12 @@ angular.module('viewCustom').component('multipleThumbnail', {
  * Created by samsan on 8/16/17.
  */
 
-angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customService', 'prmSearchService', '$window', 'customGoogleAnalytic', function (customService, prmSearchService, $window, customGoogleAnalytic) {
+angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customService', 'prmSearchService', '$window', 'customGoogleAnalytic', 'customConfigService', function (customService, prmSearchService, $window, customGoogleAnalytic, customConfigService) {
 
     var cisv = customService;
     var cs = prmSearchService;
     var cga = customGoogleAnalytic;
+    var ccs = customConfigService;
     var vm = this;
     vm.restsmsUrl = '';
     vm.locations = [];
@@ -1801,7 +1866,7 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
     // this function is trigger only if a user is using laptop computer
     vm.sendText = function (k) {
         // get rest endpoint from config.html file. It's preload in prm-topbar-after.js
-        vm.api = cs.getApi();
+        vm.api = ccs.getHVD2Config();
         if (vm.api) {
             vm.restsmsUrl = vm.api.smsUrl;
         }
@@ -1972,16 +2037,17 @@ angular.module('viewCustom').component('prmActionListAfter', {
  * Created by samsan on 5/25/17.
  */
 
-angular.module('viewCustom').controller('prmAuthenticationAfterController', ['prmSearchService', 'customService', function (prmSearchService, customService) {
+angular.module('viewCustom').controller('prmAuthenticationAfterController', ['prmSearchService', 'customService', 'customConfigService', function (prmSearchService, customService, customConfigService) {
     var vm = this;
     // initialize custom service search
     var sv = prmSearchService;
     var csv = customService;
-    vm.api = sv.getApi();
+    var ccs = customConfigService;
+    vm.api = ccs.getHVD2Config();
     vm.form = { 'ip': '', 'status': false, 'token': '', 'sessionToken': '', 'isLoggedIn': '' };
 
     vm.validateIP = function () {
-        vm.api = sv.getApi();
+        vm.api = ccs.getHVD2Config();
         if (vm.api.ipUrl) {
             sv.postAjax(vm.api.ipUrl, vm.form).then(function (result) {
                 sv.setClientIp(result.data);
@@ -2007,15 +2073,12 @@ angular.module('viewCustom').controller('prmAuthenticationAfterController', ['pr
 
     // get rest endpoint Url
     vm.getUrl = function () {
-        var configFile = sv.getEnv();
-        sv.getAjax('/primo-explore/custom/HVD_IMAGES/html/' + configFile, '', 'get').then(function (res) {
-            vm.api = res.data;
-            sv.setApi(vm.api);
+        vm.api = ccs.getHVD2Config();
+        if (vm.api.ipUrl) {
             vm.getClientIP();
-        }, function (error) {
-            console.log(error);
-        });
+        }
     };
+
     // check if a user login
     vm.$onChanges = function () {
         // This flag is return true or false
@@ -2023,10 +2086,8 @@ angular.module('viewCustom').controller('prmAuthenticationAfterController', ['pr
         sv.setLogInID(loginID);
         sv.setAuth(vm.parentCtrl);
         csv.setAuth(vm.parentCtrl);
-        vm.api = sv.getApi();
-        if (!vm.api.ipUrl) {
-            vm.getUrl();
-        } else {
+        vm.api = ccs.getHVD2Config();
+        if (vm.api.ipUrl) {
             // get client ip address to see if a user is internal or external user
             vm.getClientIP();
         }
@@ -2784,66 +2845,22 @@ angular.module('viewCustom').component('prmResourceRecommenderCardContentAfter',
 });
 
 /**
- * Created by samsan on 9/25/17.
- */
-
-angular.module('viewCustom').controller('prmSearchBarAfterCtrl', ['$element', '$location', '$compile', '$scope', '$mdMedia', function ($element, $location, $compile, $scope, $mdMedia) {
-    var vm = this;
-    vm.browseClass = 'switch-to-advanced md-button md-primoExplore-theme browse-button';
-    vm.$onInit = function () {
-        var el = $element[0].parentNode.children[0].children[0].children[2];
-        var button = document.createElement('button');
-        button.setAttribute('id', 'browseButton');
-        button.setAttribute('ng-class', 'vm.browseClass');
-        button.setAttribute('ng-click', 'vm.gotoBrowse()');
-        var textNode = document.createTextNode('STARTS WITH (BROWSE BY...)');
-        if ($mdMedia('xs') || $mdMedia('sm')) {
-            textNode = document.createTextNode('BROWSE');
-        }
-        button.appendChild(textNode);
-        var browseBtn = document.getElementById('browseButton');
-        // if browse button doesn't exist, add new one
-        if (!browseBtn) {
-            el.appendChild(button);
-            $compile(el)($scope);
-        }
-        // change css class start browse
-        $scope.$watch('vm.parentCtrl.$scope.$ctrl.advancedSearch', function () {
-            if (vm.parentCtrl.$scope.$ctrl.advancedSearch) {
-                vm.browseClass = 'switch-to-simple md-button md-primoExplore-theme browse-button';
-            } else {
-                vm.browseClass = 'switch-to-advanced md-button md-primoExplore-theme browse-button';
-            }
-        });
-    };
-
-    vm.gotoBrowse = function () {
-        $location.path('/browse');
-    };
-}]);
-
-angular.module('viewCustom').component('prmSearchBarAfter', {
-    bindings: { parentCtrl: '<' },
-    controller: 'prmSearchBarAfterCtrl',
-    controllerAs: 'vm'
-});
-
-/**
  * Created by samsan on 9/13/17.
  * List Table of content, HathiTrust, and Open Street Map.
  * This section show in search result list and full display page
  *
  */
 
-angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtrl', ['customMapService', '$timeout', 'customHathiTrustService', 'customService', 'customGoogleAnalytic', '$q', 'prmSearchService', function (customMapService, $timeout, customHathiTrustService, customService, customGoogleAnalytic, $q, prmSearchService) {
+angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtrl', ['customMapService', '$timeout', 'customHathiTrustService', 'customService', 'customGoogleAnalytic', '$q', 'prmSearchService', 'customConfigService', function (customMapService, $timeout, customHathiTrustService, customService, customGoogleAnalytic, $q, prmSearchService, customConfigService) {
     var vm = this;
     var cga = customGoogleAnalytic;
     var custService = customService;
     var cs = customMapService;
     var chts = customHathiTrustService;
     var prmsv = prmSearchService;
+    var ccs = customConfigService;
     // get endpoint url from config.html file
-    vm.api = custService.getApi();
+    vm.api = ccs.getHVD2Config();
     // display of table of content
     vm.TOC = { 'type': 'HVD_ALEPH', 'isbn': [], 'display': false };
     vm.itemPNX = {};
@@ -2941,7 +2958,7 @@ angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtr
     };
 
     vm.$onInit = function () {
-        vm.api = custService.getApi();
+        vm.api = ccs.getHVD2Config();
         vm.itemPNX = vm.parentCtrl.result;
         // get table of content
         vm.findTOC();
@@ -3063,7 +3080,7 @@ angular.module('viewCustom').controller('prmSearchResultAvailabilityLineAfterCtr
 
         if (vm.hathiTrust.flag) {
             // get rest endpoint url from config.html where it preload prm-tobar-after.js
-            vm.api = custService.getApi();
+            vm.api = ccs.getHVD2Config();
             vm.getHathiTrustData();
         }
     };
@@ -3446,81 +3463,6 @@ angular.module('viewCustom').component('prmServiceLinksAfter', {
     controller: 'prmServiceLinksAfterCtrl',
     controllerAs: 'vm',
     templateUrl: '/primo-explore/custom/HVD2/html/prm-service-links-after.html'
-});
-
-/**
- * Created by samsan on 8/9/17.
- *  This component is creating white top bar, link menu on the right, and remove some doms
- */
-
-angular.module('viewCustom').controller('prmTopbarAfterCtrl', ['$element', '$timeout', 'customService', 'customGoogleAnalytic', 'prmSearchService', function ($element, $timeout, customService, customGoogleAnalytic, prmSearchService) {
-    var vm = this;
-    var cs = customService;
-    var cga = customGoogleAnalytic;
-    var pcs = prmSearchService;
-    vm.api = {};
-
-    // get rest endpoint Url
-    vm.getUrl = function () {
-        var configFile = pcs.getEnv();
-        cs.getAjax('/primo-explore/custom/HVD2/html/' + configFile, '', 'get').then(function (res) {
-            vm.api = res.data;
-            cs.setApi(vm.api);
-        }, function (error) {
-            console.log(error);
-        });
-    };
-
-    vm.topRightMenus = [{ 'title': 'Research Guides', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:portal_resguides', 'label': 'Go to Research guides' }, { 'title': 'Libraries / Hours', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:bannerfindlib', 'label': 'Go to Library hours' }, { 'title': 'All My Accounts', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:banneraccounts', 'label': 'Go to all my accounts' }, { 'title': 'Feedback', 'url': 'http://nrs.harvard.edu/urn-3:HUL.ois:hollis-v2-feedback', 'label': 'Go to Feedback' }, { 'title': 'Ask Us', 'url': 'http://nrs.harvard.edu/urn-3:hul.ois:dsref', 'label': 'Go to Ask Us' }];
-
-    vm.$onInit = function () {
-        // initialize google analytic
-        cga.init();
-
-        // pre-load config.html file
-        vm.getUrl();
-
-        $timeout(function () {
-            // create new div for the top white menu
-            var el = $element[0].parentNode.parentNode.parentNode.parentNode.parentNode;
-            var div = document.createElement('div');
-            div.setAttribute('id', 'customTopMenu');
-            div.setAttribute('class', 'topMenu');
-            // if the topMenu class does not exist, add it.
-            var topMenu = document.getElementById('customTopMenu');
-            if (topMenu === null) {
-                el.prepend(div);
-            }
-            var el2 = $element[0].parentNode.children[1].children;
-            if (el2) {
-                // remove menu
-                el2[2].remove();
-                el2[2].remove();
-            }
-
-            // create script tag link leafletJS.com to use openstreetmap.org
-            var bodyTag = document.getElementsByTagName('body')[0];
-            var scriptTag = document.createElement('script');
-            scriptTag.setAttribute('src', 'https://unpkg.com/leaflet@1.2.0/dist/leaflet.js');
-            scriptTag.setAttribute('integrity', 'sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==');
-            scriptTag.setAttribute('crossorigin', '');
-            bodyTag.append(scriptTag);
-            // create link tag
-            var linkTag = document.createElement('link');
-            linkTag.setAttribute('href', 'https://unpkg.com/leaflet@1.2.0/dist/leaflet.css');
-            linkTag.setAttribute('integrity', 'sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==');
-            linkTag.setAttribute('crossorigin', '');
-            linkTag.setAttribute('rel', 'stylesheet');
-            bodyTag.append(linkTag);
-        }, 500);
-    };
-}]);
-
-angular.module('viewCustom').component('prmTopbarAfter', {
-    bindings: { parentCtrl: '<' },
-    controller: 'prmTopbarAfterCtrl',
-    controllerAs: 'vm',
-    templateUrl: '/primo-explore/custom/HVD2/html/prm-topbar-after.html'
 });
 
 /**

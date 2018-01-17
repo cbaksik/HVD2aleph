@@ -3,16 +3,17 @@
  */
 
 angular.module('viewCustom')
-    .controller('prmAuthenticationAfterController', ['prmSearchService','customService', function (prmSearchService,customService) {
+    .controller('prmAuthenticationAfterController', ['prmSearchService','customService', 'customConfigService', function (prmSearchService,customService,customConfigService) {
         let vm=this;
         // initialize custom service search
         let sv=prmSearchService;
         let csv=customService;
-        vm.api = sv.getApi();
+        let ccs=customConfigService;
+        vm.api = ccs.getHVD2Config();
         vm.form={'ip':'','status':false,'token':'','sessionToken':'','isLoggedIn':''};
 
         vm.validateIP=function () {
-            vm.api = sv.getApi();
+            vm.api=ccs.getHVD2Config();
             if(vm.api.ipUrl) {
                 sv.postAjax(vm.api.ipUrl, vm.form)
                     .then(function (result) {
@@ -40,18 +41,12 @@ angular.module('viewCustom')
 
         // get rest endpoint Url
         vm.getUrl=function () {
-            var configFile=sv.getEnv();
-            sv.getAjax('/primo-explore/custom/HVD_IMAGES/html/'+configFile,'','get')
-                .then(function (res) {
-                        vm.api=res.data;
-                        sv.setApi(vm.api);
-                        vm.getClientIP();
-                    },
-                    function (error) {
-                        console.log(error);
-                    }
-                )
+            vm.api = ccs.getHVD2Config();
+            if (vm.api.ipUrl){
+                vm.getClientIP();
+            }
         };
+
         // check if a user login
         vm.$onChanges=function(){
             // This flag is return true or false
@@ -59,10 +54,8 @@ angular.module('viewCustom')
             sv.setLogInID(loginID);
             sv.setAuth(vm.parentCtrl);
             csv.setAuth(vm.parentCtrl);
-            vm.api = sv.getApi();
-            if(!vm.api.ipUrl) {
-                vm.getUrl();
-            } else {
+            vm.api = ccs.getHVD2Config();
+            if(vm.api.ipUrl) {
                 // get client ip address to see if a user is internal or external user
                 vm.getClientIP();
             }
