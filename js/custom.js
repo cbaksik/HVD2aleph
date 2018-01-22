@@ -2445,7 +2445,11 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
             vm.locationInfo = sv.getLocation(vm.currLoc);
             vm.parentData = sv.getParentData();
             vm.getItemCategoryCodes();
-            vm.createMapIt();
+            //remove the mapit functionality as it introduced a bug
+            //  the prm-location-item-after component is only loaded if there are items
+            //  which resulted in the location items section not being updated when there were no items
+            //  as a result it displayed the incorrect data
+            //vm.createMapIt();
         });
     };
 
