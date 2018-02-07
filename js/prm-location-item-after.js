@@ -15,7 +15,7 @@ angular.module('viewCustom')
         vm.requestLinks=[];
         vm.auth={};
         var sv=customService;
-        // get item category code
+        // get item category code, the item category code does not exist in currloc item.
         vm.getItemCategoryCodes=function () {
            if(vm.parentData.opacService && vm.currLoc.location) {
                var url = vm.parentData.opacService.restBaseURLs.ILSServicesBaseURL + '/holdings';
@@ -58,34 +58,40 @@ angular.module('viewCustom')
 
         // create map it link to library
         vm.createMapIt=function () {
-            var el=$element[0].parentNode.parentNode.parentNode.children[1].children[0];
-            if(el) {
-                // remove library name, use new component.
-                el.children[0].remove();
-                var customLibraryMap=document.createElement('custom-library-map');
-                customLibraryMap.setAttribute('loc','vm.currLoc.location');
-                el.appendChild(customLibraryMap);
-                $compile(el)($scope);
+            if($element[0].parentNode.parentNode.parentNode) {
+                var el = $element[0].parentNode.parentNode.parentNode.children;
+                if (el) {
+                    // remove library name, use new component.
+                    if (el.length > 0) {
+                        for (var i = 0; i < el.length; i++) {
+                            if (el[i].className.indexOf('tab-content-header') !== -1) {
+                                el[i].remove();
+                            }
+                            // remove custom-library-map directive if it is existing, so it won't duplicate
+                            if(el[i].children) {
+                                for(var k=0; k < el[i].children.length; k++) {
+                                    if (el[i].children[k].tagName.toLowerCase() === 'custom-library-map') {
+                                        el[i].children[k].remove();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (el.length > 0) {
+                        var customLibraryMap = document.createElement('custom-library-map');
+                        customLibraryMap.setAttribute('loc', 'vm.currLoc.location');
+                        customLibraryMap.setAttribute('class', 'tab-content-header');
+                        el[0].appendChild(customLibraryMap);
+                        $compile(el[0])($scope);
+                    }
+                }
             }
         };
-
-
-
+        
         // make comparison to see it is true so it can display the link
         vm.compare=function (itemsCategory) {
             // get the index of the element
             var index=0;
-            var el=$element[0].previousSibling.parentNode;
-            if($element[0].parentNode.parentNode) {
-                var md_list = $element[0].parentNode.parentNode.children[0];
-                for (var i = 0; i < md_list.length; i++) {
-                    if (md_list[i] === el) {
-                        index = i;
-                        i = md_list.length;
-                    }
-                }
-            }
-
             var requestLinks=[];
             // get requestItem
             if(vm.locationInfo.requestItem) {
@@ -113,43 +119,44 @@ angular.module('viewCustom')
 
 
         vm.$onInit=function () {
+            // get rest url so it can make ajax call to get item category code. The itemcategorycode is numbers.
+            vm.parentData=sv.getParentData();
+
             // watch for variable change, then call an ajax to get current location of itemcategorycode
             // it won't work on angular 2
             $scope.$watch('vm.currLoc',function () {
-                vm.locationInfo=sv.getLocation(vm.currLoc);
-                vm.parentData=sv.getParentData();
-                vm.getItemCategoryCodes();
-                //remove the mapit functionality as it introduced a bug
-                //  the prm-location-item-after component is only loaded if there are items
-                //  which resulted in the location items section not being updated when there were no items
-                //  as a result it displayed the incorrect data
-                //vm.createMapIt();
+                if(vm.currLoc){
+                    vm.locationInfo=sv.getLocation(vm.currLoc);
+                    vm.requestLinks=vm.compare(vm.currLoc.location);
+                    vm.getItemCategoryCodes();
+                    if(vm.currLoc.items) {
+                        // remove booking request and photo copy request
+                        for(var k=0; k < vm.currLoc.items.length; k++) {
+                            if(vm.currLoc.items[k].listOfServices) {
+                                for (var i = 0; i < vm.currLoc.items[k].listOfServices.length; i++) {
+                                    if (vm.currLoc.items[k].listOfServices[i].type === 'BookingRequest' || vm.currLoc.items[k].listOfServices[i].type === 'PhotocopyRequest') {
+                                        vm.currLoc.items[k].listOfServices.splice(i, 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
             });
         };
 
         vm.$doCheck=function () {
-            vm.data=sv.getItems();
-            vm.currLoc=vm.data.currLoc;
-            // remove bookingRequest and photocopy request
-            if(vm.currLoc.items) {
-                for(var k=0; k < vm.currLoc.items.length; k++) {
-                    if(vm.currLoc.items[k].listOfServices) {
-                        for (var i = 0; i < vm.currLoc.items[k].listOfServices.length; i++) {
-                            if (vm.currLoc.items[k].listOfServices[i].type === 'BookingRequest' || vm.currLoc.items[k].listOfServices[i].type === 'PhotocopyRequest') {
-                                vm.currLoc.items[k].listOfServices.splice(i, 1);
-                            }
-                        }
-                    }
-                }
+            if(vm.parentCtrl){
+                vm.currLoc=vm.parentCtrl.currLoc;
             }
-
-
         };
 
         vm.$onChanges=function (ev) {
             // list of logic xml data list that convert into json array
             vm.logicList = sv.getLogicList();
             vm.auth = sv.getAuth();
+
         };
 
         vm.signIn=function () {

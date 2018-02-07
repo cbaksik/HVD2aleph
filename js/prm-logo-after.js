@@ -4,8 +4,14 @@
  */
 
 angular.module('viewCustom')
-    .controller('prmLogoAfterCtrl',['$element',function ($element) {
+    .controller('prmLogoAfterCtrl',['$element','customGoogleAnalytic',function ($element,customGoogleAnalytic) {
         var vm=this;
+        var cga=customGoogleAnalytic;
+        vm.$onInit=function() {
+          // initialize Google Analytic so it can use in other controllers
+          cga.init();
+        };
+
         vm.$onChanges=function () {
             // remove image logo
             var el=$element[0].parentNode.children[0];

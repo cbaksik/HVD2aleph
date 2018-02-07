@@ -1,6 +1,7 @@
 <div class="requestLinkSpace">
     <a tabindex="0" tabindex="0" ng-repeat="r in vm.requestLinks track by $index" ng-if="r.flag && r.displayflag"
-            class="button-as-link md-button md-primoExplore-theme md-ink-ripple" aria-label="{{r.text}}"  ng-keypress="vm.keypressGoto($event,r)" ng-click="vm.goto(r)">
+       class="button-as-link md-button md-primoExplore-theme md-ink-ripple" aria-label="{{r.text}}"
+       ng-keypress="vm.keypressGoto($event,r)" ng-click="vm.goto(r)">
         <span>{{r.text}}</span>
     </a>
 </div>

@@ -29,26 +29,7 @@ angular.module('viewCustom')
 
         };
 
-        vm.$doCheck=function() {
-            // insert place icon and align it
-            var el = $element[0].parentNode.children[0].children[0].children[0].children[0];
-            if(el.children) {
-                if (el.children[0].tagName === 'H3' && !vm.libraryName) {
-                    var text = el.children[0].innerText;
-                    if (text) {
-                        vm.libraryName = text;
-                    }
-
-                }
-            }
-        };
-
         vm.$onInit=function() {
-          $scope.$watch('vm.libraryName',function () {
-              if(vm.libraryName) {
-                  vm.createIcon();
-              }
-          });
 
         };
 

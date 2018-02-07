@@ -2297,26 +2297,7 @@ angular.module('viewCustom').controller('prmLocationAfterCtrl', ['$element', '$c
         }
     };
 
-    vm.$doCheck = function () {
-        // insert place icon and align it
-        var el = $element[0].parentNode.children[0].children[0].children[0].children[0];
-        if (el.children) {
-            if (el.children[0].tagName === 'H3' && !vm.libraryName) {
-                var text = el.children[0].innerText;
-                if (text) {
-                    vm.libraryName = text;
-                }
-            }
-        }
-    };
-
-    vm.$onInit = function () {
-        $scope.$watch('vm.libraryName', function () {
-            if (vm.libraryName) {
-                vm.createIcon();
-            }
-        });
-    };
+    vm.$onInit = function () {};
 
     vm.goPlace = function (loc, e) {
         e.stopPropagation();
@@ -2348,7 +2329,7 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
     vm.requestLinks = [];
     vm.auth = {};
     var sv = customService;
-    // get item category code
+    // get item category code, the item category code does not exist in currloc item.
     vm.getItemCategoryCodes = function () {
         if (vm.parentData.opacService && vm.currLoc.location) {
             var url = vm.parentData.opacService.restBaseURLs.ILSServicesBaseURL + '/holdings';
@@ -2387,14 +2368,33 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
 
     // create map it link to library
     vm.createMapIt = function () {
-        var el = $element[0].parentNode.parentNode.parentNode.children[1].children[0];
-        if (el) {
-            // remove library name, use new component.
-            el.children[0].remove();
-            var customLibraryMap = document.createElement('custom-library-map');
-            customLibraryMap.setAttribute('loc', 'vm.currLoc.location');
-            el.appendChild(customLibraryMap);
-            $compile(el)($scope);
+        if ($element[0].parentNode.parentNode.parentNode) {
+            var el = $element[0].parentNode.parentNode.parentNode.children;
+            if (el) {
+                // remove library name, use new component.
+                if (el.length > 0) {
+                    for (var i = 0; i < el.length; i++) {
+                        if (el[i].className.indexOf('tab-content-header') !== -1) {
+                            el[i].remove();
+                        }
+                        // remove custom-library-map directive if it is existing, so it won't duplicate
+                        if (el[i].children) {
+                            for (var k = 0; k < el[i].children.length; k++) {
+                                if (el[i].children[k].tagName.toLowerCase() === 'custom-library-map') {
+                                    el[i].children[k].remove();
+                                }
+                            }
+                        }
+                    }
+                }
+                if (el.length > 0) {
+                    var customLibraryMap = document.createElement('custom-library-map');
+                    customLibraryMap.setAttribute('loc', 'vm.currLoc.location');
+                    customLibraryMap.setAttribute('class', 'tab-content-header');
+                    el[0].appendChild(customLibraryMap);
+                    $compile(el[0])($scope);
+                }
+            }
         }
     };
 
@@ -2402,17 +2402,6 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
     vm.compare = function (itemsCategory) {
         // get the index of the element
         var index = 0;
-        var el = $element[0].previousSibling.parentNode;
-        if ($element[0].parentNode.parentNode) {
-            var md_list = $element[0].parentNode.parentNode.children[0];
-            for (var i = 0; i < md_list.length; i++) {
-                if (md_list[i] === el) {
-                    index = i;
-                    i = md_list.length;
-                }
-            }
-        }
-
         var requestLinks = [];
         // get requestItem
         if (vm.locationInfo.requestItem) {
@@ -2439,34 +2428,35 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
     };
 
     vm.$onInit = function () {
+        // get rest url so it can make ajax call to get item category code. The itemcategorycode is numbers.
+        vm.parentData = sv.getParentData();
+
         // watch for variable change, then call an ajax to get current location of itemcategorycode
         // it won't work on angular 2
         $scope.$watch('vm.currLoc', function () {
-            vm.locationInfo = sv.getLocation(vm.currLoc);
-            vm.parentData = sv.getParentData();
-            vm.getItemCategoryCodes();
-            //remove the mapit functionality as it introduced a bug
-            //  the prm-location-item-after component is only loaded if there are items
-            //  which resulted in the location items section not being updated when there were no items
-            //  as a result it displayed the incorrect data
-            //vm.createMapIt();
-        });
-    };
-
-    vm.$doCheck = function () {
-        vm.data = sv.getItems();
-        vm.currLoc = vm.data.currLoc;
-        // remove bookingRequest and photocopy request
-        if (vm.currLoc.items) {
-            for (var k = 0; k < vm.currLoc.items.length; k++) {
-                if (vm.currLoc.items[k].listOfServices) {
-                    for (var i = 0; i < vm.currLoc.items[k].listOfServices.length; i++) {
-                        if (vm.currLoc.items[k].listOfServices[i].type === 'BookingRequest' || vm.currLoc.items[k].listOfServices[i].type === 'PhotocopyRequest') {
-                            vm.currLoc.items[k].listOfServices.splice(i, 1);
+            if (vm.currLoc) {
+                vm.locationInfo = sv.getLocation(vm.currLoc);
+                vm.requestLinks = vm.compare(vm.currLoc.location);
+                vm.getItemCategoryCodes();
+                if (vm.currLoc.items) {
+                    // remove booking request and photo copy request
+                    for (var k = 0; k < vm.currLoc.items.length; k++) {
+                        if (vm.currLoc.items[k].listOfServices) {
+                            for (var i = 0; i < vm.currLoc.items[k].listOfServices.length; i++) {
+                                if (vm.currLoc.items[k].listOfServices[i].type === 'BookingRequest' || vm.currLoc.items[k].listOfServices[i].type === 'PhotocopyRequest') {
+                                    vm.currLoc.items[k].listOfServices.splice(i, 1);
+                                }
+                            }
                         }
                     }
                 }
             }
+        });
+    };
+
+    vm.$doCheck = function () {
+        if (vm.parentCtrl) {
+            vm.currLoc = vm.parentCtrl.currLoc;
         }
     };
 
@@ -2563,27 +2553,7 @@ angular.module('viewCustom').controller('prmLocationItemsAfterCtrl', ['customSer
     };
 
     vm.$doCheck = function () {
-        // hide location that has no item text display
-        if (vm.parentCtrl.loc) {
-            if (vm.parentCtrl.loc.items.length === 0) {
-                if ($element[0].parentNode) {
-                    var el = $element[0].parentNode.children;
-                    if (el) {
-                        if (el.length > 2) {
-                            el[2].style.display = 'none';
-                        }
-                    }
-                }
-            } else if ($element[0].parentNode.children) {
-                var el = $element[0].parentNode.children;
-                if (el) {
-                    if (el.length > 2) {
-                        el[2].style.display = 'block';
-                    }
-                }
-            }
-        }
-        vm.removeDom();
+        //vm.removeDom();
         sv.setItems(vm.parentCtrl);
     };
 }]);
@@ -2637,16 +2607,18 @@ angular.module('viewCustom').controller('prmLocationsAfterCtrl', ['customService
 
     vm.$doCheck = function () {
         // remove network resource display from location
-        var results = vm.parentCtrl.getLocations();
-        var temp = [];
-        for (var i = 0; i < results.length; i++) {
-            if (results[i].location.libraryCode !== 'HVD_NET') {
-                temp.push(results[i]);
+        if (vm.parentCtrl.locations) {
+            var results = vm.parentCtrl.locations;
+            var temp = [];
+            for (var i = 0; i < results.length; i++) {
+                if (results[i].location.libraryCode !== 'HVD_NET') {
+                    temp.push(results[i]);
+                }
             }
-        }
-        if (temp.length > 0) {
-            // reset location
-            vm.parentCtrl.locations[0] = temp;
+            if (temp.length > 0) {
+                // reset location
+                vm.parentCtrl.locations[0] = temp;
+            }
         }
 
         // capture restBaseUrl to use it in prm-location-item-after component
@@ -2665,8 +2637,14 @@ angular.module('viewCustom').component('prmLocationsAfter', {
  * It remove old logo and replace it with new logo
  */
 
-angular.module('viewCustom').controller('prmLogoAfterCtrl', ['$element', function ($element) {
+angular.module('viewCustom').controller('prmLogoAfterCtrl', ['$element', 'customGoogleAnalytic', function ($element, customGoogleAnalytic) {
     var vm = this;
+    var cga = customGoogleAnalytic;
+    vm.$onInit = function () {
+        // initialize Google Analytic so it can use in other controllers
+        cga.init();
+    };
+
     vm.$onChanges = function () {
         // remove image logo
         var el = $element[0].parentNode.children[0];
