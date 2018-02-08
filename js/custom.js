@@ -1136,20 +1136,14 @@ angular.module('viewCustom').service('customService', ['$http', '$sce', function
                         var itemCategoryCodeList = '';
                         if (json._attr.itemcategorycode) {
                             itemCategoryCodeList = json._attr.itemcategorycode._value;
-                            if (itemCategoryCodeList.length > 1) {
-                                itemCategoryCodeList = itemCategoryCodeList.toString();
+                            itemCategoryCodeList = itemCategoryCodeList.toString();
+                            if (itemCategoryCodeList.includes(';')) {
                                 itemCategoryCodeList = itemCategoryCodeList.split(';'); // convert comma into array
                             } else {
-                                if (parseInt(itemCategoryCodeList)) {
-                                    // add 0 infront of a number
-                                    var arr = [];
-                                    itemCategoryCodeList = '0' + itemCategoryCodeList.toString();
-                                    arr.push(itemCategoryCodeList);
-                                    itemCategoryCodeList = arr;
-                                } else {
-                                    itemCategoryCodeList = itemCategoryCodeList.toString();
-                                    itemCategoryCodeList = itemCategoryCodeList.split(';');
-                                }
+                                var arr = [];
+                                itemCategoryCodeList = itemCategoryCodeList.toString();
+                                arr.push(itemCategoryCodeList);
+                                itemCategoryCodeList = arr;
                             }
                         }
                         var itemStatusNameList = '';
@@ -1171,6 +1165,7 @@ angular.module('viewCustom').service('customService', ['$http', '$sce', function
                         if (itemCategoryCodeList.length > 0) {
                             // compare if item category code is number
                             if (itemCategoryCodeList.indexOf(item.itemcategorycode) !== -1) {
+
                                 if (item.processingstatus === '') {
                                     item.processingstatus = 'NULL';
                                 }
@@ -2366,38 +2361,6 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
         }
     };
 
-    // create map it link to library
-    vm.createMapIt = function () {
-        if ($element[0].parentNode.parentNode.parentNode) {
-            var el = $element[0].parentNode.parentNode.parentNode.children;
-            if (el) {
-                // remove library name, use new component.
-                if (el.length > 0) {
-                    for (var i = 0; i < el.length; i++) {
-                        if (el[i].className.indexOf('tab-content-header') !== -1) {
-                            el[i].remove();
-                        }
-                        // remove custom-library-map directive if it is existing, so it won't duplicate
-                        if (el[i].children) {
-                            for (var k = 0; k < el[i].children.length; k++) {
-                                if (el[i].children[k].tagName.toLowerCase() === 'custom-library-map') {
-                                    el[i].children[k].remove();
-                                }
-                            }
-                        }
-                    }
-                }
-                if (el.length > 0) {
-                    var customLibraryMap = document.createElement('custom-library-map');
-                    customLibraryMap.setAttribute('loc', 'vm.currLoc.location');
-                    customLibraryMap.setAttribute('class', 'tab-content-header');
-                    el[0].appendChild(customLibraryMap);
-                    $compile(el[0])($scope);
-                }
-            }
-        }
-    };
-
     // make comparison to see it is true so it can display the link
     vm.compare = function (itemsCategory) {
         // get the index of the element
@@ -2415,13 +2378,13 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
         }
         // get scan & deliver link
         if (vm.locationInfo.scanDeliver) {
-            var dataList = sv.getRequestLinks(vm.locationInfo.scanDeliver[0].json, itemsCategory, 'scanDeliver', 'Scan & Deliver', index, true);
-            requestLinks.push(dataList);
+            var _dataList = sv.getRequestLinks(vm.locationInfo.scanDeliver[0].json, itemsCategory, 'scanDeliver', 'Scan & Deliver', index, true);
+            requestLinks.push(_dataList);
         }
         // get schedule visit link
         if (vm.locationInfo.aeonrequest) {
-            var dataList = sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json, itemsCategory, 'aeonrequest', 'Request Item', index, true);
-            requestLinks.push(dataList);
+            var _dataList2 = sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json, itemsCategory, 'aeonrequest', 'Request Item', index, true);
+            requestLinks.push(_dataList2);
         }
 
         return requestLinks;
@@ -2458,10 +2421,6 @@ angular.module('viewCustom').controller('prmLocationItemAfterCtrl', ['customServ
         if (vm.parentCtrl) {
             vm.currLoc = vm.parentCtrl.currLoc;
         }
-    };
-
-    vm.$onChanges = function (ev) {
-        // list of logic xml data list that convert into json array
         vm.logicList = sv.getLogicList();
         vm.auth = sv.getAuth();
     };

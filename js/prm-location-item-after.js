@@ -56,38 +56,7 @@ angular.module('viewCustom')
         };
 
 
-        // create map it link to library
-        vm.createMapIt=function () {
-            if($element[0].parentNode.parentNode.parentNode) {
-                var el = $element[0].parentNode.parentNode.parentNode.children;
-                if (el) {
-                    // remove library name, use new component.
-                    if (el.length > 0) {
-                        for (var i = 0; i < el.length; i++) {
-                            if (el[i].className.indexOf('tab-content-header') !== -1) {
-                                el[i].remove();
-                            }
-                            // remove custom-library-map directive if it is existing, so it won't duplicate
-                            if(el[i].children) {
-                                for(var k=0; k < el[i].children.length; k++) {
-                                    if (el[i].children[k].tagName.toLowerCase() === 'custom-library-map') {
-                                        el[i].children[k].remove();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (el.length > 0) {
-                        var customLibraryMap = document.createElement('custom-library-map');
-                        customLibraryMap.setAttribute('loc', 'vm.currLoc.location');
-                        customLibraryMap.setAttribute('class', 'tab-content-header');
-                        el[0].appendChild(customLibraryMap);
-                        $compile(el[0])($scope);
-                    }
-                }
-            }
-        };
-        
+
         // make comparison to see it is true so it can display the link
         vm.compare=function (itemsCategory) {
             // get the index of the element
@@ -100,17 +69,17 @@ angular.module('viewCustom')
                 if(auth.isLoggedIn) {
                     flag=false;
                 }
-               var dataList=sv.getRequestLinks(vm.locationInfo.requestItem[0].json,itemsCategory,'requestItem','Request Item',index, flag);
+               let dataList=sv.getRequestLinks(vm.locationInfo.requestItem[0].json,itemsCategory,'requestItem','Request Item',index, flag);
                requestLinks.push(dataList);
             }
             // get scan & deliver link
             if(vm.locationInfo.scanDeliver) {
-                var dataList=sv.getRequestLinks(vm.locationInfo.scanDeliver[0].json,itemsCategory,'scanDeliver','Scan & Deliver',index,true);
+                let dataList=sv.getRequestLinks(vm.locationInfo.scanDeliver[0].json,itemsCategory,'scanDeliver','Scan & Deliver',index,true);
                 requestLinks.push(dataList);
             }
             // get schedule visit link
             if(vm.locationInfo.aeonrequest) {
-                var dataList=sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json,itemsCategory,'aeonrequest','Request Item',index,true);
+                let dataList=sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json,itemsCategory,'aeonrequest','Request Item',index,true);
                 requestLinks.push(dataList);
             }
 
@@ -150,14 +119,10 @@ angular.module('viewCustom')
             if(vm.parentCtrl){
                 vm.currLoc=vm.parentCtrl.currLoc;
             }
-        };
-
-        vm.$onChanges=function (ev) {
-            // list of logic xml data list that convert into json array
             vm.logicList = sv.getLogicList();
             vm.auth = sv.getAuth();
-
         };
+
 
         vm.signIn=function () {
             var auth=sv.getAuth();

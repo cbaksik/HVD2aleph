@@ -136,20 +136,14 @@ angular.module('viewCustom')
                             var itemCategoryCodeList = '';
                             if (json._attr.itemcategorycode) {
                                 itemCategoryCodeList = json._attr.itemcategorycode._value;
-                                if (itemCategoryCodeList.length > 1) {
-                                    itemCategoryCodeList = itemCategoryCodeList.toString();
+                                itemCategoryCodeList = itemCategoryCodeList.toString();
+                                if (itemCategoryCodeList.includes(';')) {
                                     itemCategoryCodeList = itemCategoryCodeList.split(';'); // convert comma into array
                                 } else {
-                                    if(parseInt(itemCategoryCodeList)) {
-                                        // add 0 infront of a number
-                                        var arr = [];
-                                        itemCategoryCodeList = '0' + itemCategoryCodeList.toString();
-                                        arr.push(itemCategoryCodeList);
-                                        itemCategoryCodeList = arr;
-                                    } else {
-                                        itemCategoryCodeList = itemCategoryCodeList.toString();
-                                        itemCategoryCodeList = itemCategoryCodeList.split(';')
-                                    }
+                                    var arr = [];
+                                    itemCategoryCodeList = itemCategoryCodeList.toString();
+                                    arr.push(itemCategoryCodeList);
+                                    itemCategoryCodeList = arr;
                                 }
                             }
                             var itemStatusNameList = '';
@@ -171,6 +165,7 @@ angular.module('viewCustom')
                             if (itemCategoryCodeList.length > 0) {
                                 // compare if item category code is number
                                 if (itemCategoryCodeList.indexOf(item.itemcategorycode) !== -1) {
+
                                     if(item.processingstatus==='') {
                                         item.processingstatus='NULL';
                                     }
@@ -178,15 +173,15 @@ angular.module('viewCustom')
                                         item.queue='NULL';
                                     }
                                     if (itemStatusNameList.indexOf(item.itemstatusname) !== -1 && processingStatusList.indexOf(item.processingstatus) !== -1) {
-                                            if(queueList.indexOf(item.queue) !== -1) {
-                                                requestItem.flag = true;
-                                                requestItem.item = item;
-                                                i = locationInfoArray.length;
-                                            } else if(!queueList) {
-                                                requestItem.flag = true;
-                                                requestItem.item = item;
-                                                i = locationInfoArray.length;
-                                            }
+                                        if(queueList.indexOf(item.queue) !== -1) {
+                                            requestItem.flag = true;
+                                            requestItem.item = item;
+                                            i = locationInfoArray.length;
+                                        } else if(!queueList) {
+                                            requestItem.flag = true;
+                                            requestItem.item = item;
+                                            i = locationInfoArray.length;
+                                        }
 
                                     } else if(itemStatusNameList.length > 0) {
                                         for(var k=0; k < itemStatusNameList.length; k++) {
