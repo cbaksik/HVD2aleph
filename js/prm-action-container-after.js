@@ -4,7 +4,7 @@
 
 
 angular.module('viewCustom')
-    .controller('prmActionContainerAfterCtrl',['customService','prmSearchService','$window','customGoogleAnalytic','customConfigService',function (customService,prmSearchService,$window, customGoogleAnalytic, customConfigService) {
+    .controller('prmActionContainerAfterCtrl',['customService','prmSearchService','$window','customGoogleAnalytic','customConfigService','$scope',function (customService,prmSearchService,$window, customGoogleAnalytic, customConfigService, $scope) {
 
         var cisv=customService;
         var cs=prmSearchService;
@@ -12,11 +12,12 @@ angular.module('viewCustom')
         var ccs=customConfigService;
         var vm=this;
         vm.restsmsUrl='';
+        vm.actionName='';
         vm.locations=[];
         vm.temp = {'phone':''};
         vm.form={'phone':'','deviceType':'','body':'','error':'','mobile':false,'msg':'','token':'','ip':'','sessionToken':'','isLoggedIn':false,'iat':'','inst':'','vid':'','exp':'','userName':'','iss':'','onCampus':false};
 
-        vm.$onChanges=function(){
+        vm.$onChanges=()=>{
             vm.auth=cs.getAuth();
             if(vm.auth.primolyticsService.jwtUtilService) {
                 vm.form.token=vm.auth.primolyticsService.jwtUtilService.storageUtil.sessionStorage.primoExploreJwt;
@@ -34,6 +35,7 @@ angular.module('viewCustom')
                 vm.form.onCampus=obj.onCampus;
 
             }
+
         };
 
         vm.keyChange=function (e) {
@@ -63,20 +65,22 @@ angular.module('viewCustom')
                 vm.form.deviceType=cs.getBrowserType();
             }
 
-            vm.locations=vm.parentCtrl.item.delivery.holding;
-            for(let i=0; i < vm.locations.length; i++) {
-                vm.locations[i].cssClass='textsms-row';
-            }
-
+            $scope.$watch('vm.actionName',()=>{
+                if(vm.actionName==='textsms') {
+                    if (vm.parentCtrl.item.delivery) {
+                        vm.locations = vm.parentCtrl.item.delivery.holding;
+                        for (let i = 0; i < vm.locations.length; i++) {
+                            vm.locations[i].cssClass = 'textsms-row';
+                        }
+                    }
+                }
+            });
         };
 
         vm.$doCheck=function(){
             // get action name when a user click on each action list
-            var actionName=cisv.getActionName();
-            if(actionName && vm.parentCtrl.actionName !== 'none') {
-                vm.parentCtrl.actionName=actionName;
-            } else if(actionName==='textsms') {
-                vm.parentCtrl.actionName=actionName;
+            if(vm.parentCtrl.actionName) {
+                vm.actionName = vm.parentCtrl.actionName;
             }
 
         };

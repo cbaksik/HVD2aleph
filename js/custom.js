@@ -1246,6 +1246,29 @@ angular.module('viewCustom').service('customService', ['$http', '$sce', function
 }]);
 
 /**
+ * Created by samsan on 2/13/18.
+ * This component is to create text sms icon by inserting it dynamic at prm-action-list-after.js
+ */
+
+angular.module('viewCustom').controller('customSmsCtrl', ['customService', function (customService) {
+    var vm = this;
+    var cs = customService;
+    // display prm-action-container-after when a user click text sms icon
+    vm.sendsms = function () {
+        vm.parentCtrl.activeAction = 'textsms';
+        vm.parentCtrl.selectedAction = 'textsms';
+        vm.parentCtrl.expandedAction = '';
+    };
+}]);
+
+angular.module('viewCustom').component('customSms', {
+    bindings: { parentCtrl: '<' },
+    controller: 'customSmsCtrl',
+    controllerAs: 'vm',
+    templateUrl: '/primo-explore/custom/HVD2/html/custom-sms.html'
+});
+
+/**
  * Created by samsan on 5/23/17.
  * If image has height that is greater than 150 px, then it will resize it. Otherwise, it just display what it is.
  */
@@ -1785,7 +1808,7 @@ angular.module('viewCustom').component('multipleThumbnail', {
  * Created by samsan on 8/16/17.
  */
 
-angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customService', 'prmSearchService', '$window', 'customGoogleAnalytic', 'customConfigService', function (customService, prmSearchService, $window, customGoogleAnalytic, customConfigService) {
+angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customService', 'prmSearchService', '$window', 'customGoogleAnalytic', 'customConfigService', '$scope', function (customService, prmSearchService, $window, customGoogleAnalytic, customConfigService, $scope) {
 
     var cisv = customService;
     var cs = prmSearchService;
@@ -1793,6 +1816,7 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
     var ccs = customConfigService;
     var vm = this;
     vm.restsmsUrl = '';
+    vm.actionName = '';
     vm.locations = [];
     vm.temp = { 'phone': '' };
     vm.form = { 'phone': '', 'deviceType': '', 'body': '', 'error': '', 'mobile': false, 'msg': '', 'token': '', 'ip': '', 'sessionToken': '', 'isLoggedIn': false, 'iat': '', 'inst': '', 'vid': '', 'exp': '', 'userName': '', 'iss': '', 'onCampus': false };
@@ -1842,19 +1866,22 @@ angular.module('viewCustom').controller('prmActionContainerAfterCtrl', ['customS
             vm.form.deviceType = cs.getBrowserType();
         }
 
-        vm.locations = vm.parentCtrl.item.delivery.holding;
-        for (var i = 0; i < vm.locations.length; i++) {
-            vm.locations[i].cssClass = 'textsms-row';
-        }
+        $scope.$watch('vm.actionName', function () {
+            if (vm.actionName === 'textsms') {
+                if (vm.parentCtrl.item.delivery) {
+                    vm.locations = vm.parentCtrl.item.delivery.holding;
+                    for (var i = 0; i < vm.locations.length; i++) {
+                        vm.locations[i].cssClass = 'textsms-row';
+                    }
+                }
+            }
+        });
     };
 
     vm.$doCheck = function () {
         // get action name when a user click on each action list
-        var actionName = cisv.getActionName();
-        if (actionName && vm.parentCtrl.actionName !== 'none') {
-            vm.parentCtrl.actionName = actionName;
-        } else if (actionName === 'textsms') {
-            vm.parentCtrl.actionName = actionName;
+        if (vm.parentCtrl.actionName) {
+            vm.actionName = vm.parentCtrl.actionName;
         }
     };
 
@@ -1961,63 +1988,46 @@ angular.module('viewCustom').component('prmActionContainerAfter', {
 
 /**
  * Created by samsan on 8/15/17.
- * This component will insert textsms and its icon into the action list
+ * This component will insert textsms and print
  */
 
 angular.module('viewCustom').controller('prmActionListAfterCtrl', ['$element', '$compile', '$scope', '$timeout', 'customService', function ($element, $compile, $scope, $timeout, customService) {
     var vm = this;
     var cisv = customService;
     vm.$onInit = function () {
-        // if holding location is existed, then insert Text call # into action list
-        if (vm.parentCtrl.item.delivery.holding.length > 0) {
-            // insert  textsms into existing action list
-            vm.parentCtrl.actionLabelNamesMap.textsms = 'Text call #';
-            vm.parentCtrl.actionListService.actionsToIndex.textsms = vm.parentCtrl.requiredActionsList.length + 1;
-            if (vm.parentCtrl.actionListService.requiredActionsList.indexOf('textsms') === -1) {
-                vm.parentCtrl.actionListService.requiredActionsList.push('textsms');
-            }
-        }
-    };
-
-    vm.$onChanges = function () {
-        $timeout(function () {
-            // if holding location is existed, then insert sms text call icon
-            if (vm.parentCtrl.item.delivery.holding.length > 0) {
-                var el = document.getElementById('textsms');
-                if (el) {
-                    //remove prm-icon
-                    var prmIcon = el.children[0].children[0].children[0].children[0];
-                    prmIcon.remove();
-                    // insert new icon
-                    var childNode = el.children[0].children[0].children[0];
-                    var mdIcon = document.createElement('md-icon');
-                    mdIcon.setAttribute('md-svg-src', '/primo-explore/custom/HVD2/img/ic_textsms_black_24px.svg');
-                    childNode.prepend(mdIcon);
-                    $compile(childNode)($scope); // refresh the dom
+        // insert custom-sms and custom-print tag when it is not in favorite section.
+        if (!vm.parentCtrl.displaymode) {
+            $timeout(function () {
+                // if holding location is existed, then insert sms text call icon
+                if (vm.parentCtrl.item.delivery) {
+                    if (vm.parentCtrl.item.delivery.holding.length > 0) {
+                        var textsmsExist = document.getElementById('textsms');
+                        // if textsms doesn't exist, insert it.
+                        if (!textsmsExist) {
+                            var prmActionList = document.getElementsByTagName('prm-action-list')[0];
+                            var ul = prmActionList.getElementsByTagName('ul')[0];
+                            var li = ul.querySelector('#scrollActionList');
+                            if (li) {
+                                var smsTag = document.createElement('custom-sms');
+                                smsTag.setAttribute('parent-ctrl', 'vm.parentCtrl');
+                                li.insertBefore(smsTag, li.childNodes[0]);
+                                $compile(li.children[0])($scope);
+                            }
+                        }
+                    }
                 }
-            } else {
-                var el = document.getElementById('textsms');
-                if (el) {
-                    el.remove();
+
+                // if print icon exist, then add custom-print tag
+                var printEl = document.getElementById('Print');
+                if (printEl) {
+                    // when remove it, cause javascript error
+                    printEl.children[0].style.display = 'none';
+                    var printTag = document.createElement('custom-print');
+                    printTag.setAttribute('parent-ctrl', 'vm.parentCtrl.item');
+                    printEl.appendChild(printTag);
+                    $compile(printEl.children[1])($scope);
                 }
-            }
-
-            // print
-            var printEl = document.getElementById('Print');
-            if (printEl) {
-                printEl.children[0].remove();
-                var printTag = document.createElement('custom-print');
-                printTag.setAttribute('parent-ctrl', 'vm.parentCtrl.item');
-                printEl.appendChild(printTag);
-                $compile(printEl.children[0])($scope);
-            }
-        }, 2000);
-    };
-
-    vm.$doCheck = function () {
-        // pass active action to prm-action-container-after
-        if (vm.parentCtrl.activeAction) {
-            cisv.setActionName(vm.parentCtrl.activeAction);
+            }, 2000);
         }
     };
 }]);
@@ -2565,20 +2575,6 @@ angular.module('viewCustom').controller('prmLocationsAfterCtrl', ['customService
     var sv = customService;
 
     vm.$doCheck = function () {
-        // remove network resource display from location
-        if (vm.parentCtrl.locations) {
-            var results = vm.parentCtrl.locations;
-            var temp = [];
-            for (var i = 0; i < results.length; i++) {
-                if (results[i].location.libraryCode !== 'HVD_NET') {
-                    temp.push(results[i]);
-                }
-            }
-            if (temp.length > 0) {
-                // reset location
-                vm.parentCtrl.locations[0] = temp;
-            }
-        }
 
         // capture restBaseUrl to use it in prm-location-item-after component
         sv.setParentData(vm.parentCtrl);

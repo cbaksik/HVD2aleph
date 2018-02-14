@@ -3,7 +3,6 @@
  */
 
 
-
 angular.module('viewCustom')
     .controller('prmSearchResultListAfterCtrl',['customGoogleAnalytic','$element',function (customGoogleAnalytic, $element) {
         var vm=this;
