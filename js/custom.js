@@ -2754,6 +2754,34 @@ angular.module('viewCustom').component('prmPersonalInfoAfter', {
     controllerAs: 'vm'
 });
 
+/* Author: Sam San
+ It hide Request Item link under GET IT section after a user login
+*/
+
+angular.module('viewCustom').component('prmRequestServicesAfter', {
+    bindings: { parentCtrl: '<' },
+    controllerAs: 'vm',
+    controller: 'prmRequestServicesAfterCtrl'
+});
+
+angular.module('viewCustom').controller('prmRequestServicesAfterCtrl', ['$element', 'customService', function ($element, customService) {
+    var vm = this;
+    var cs = customService;
+
+    vm.$onInit = function () {
+        setTimeout(function () {
+            var auth = cs.getAuth();
+            // if a user login, hide the request item link under GET IT
+            if (auth.isLoggedIn) {
+                var el = $element[0].parentNode.childNodes[1];
+                if (el) {
+                    el.style.display = 'none';
+                }
+            }
+        }, 1500);
+    };
+}]);
+
 /**
  * Created by samsan on 11/16/17.
  * It display the recommend resource above the search result list - search for fake news
