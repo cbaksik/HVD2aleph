@@ -11,6 +11,42 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 angular.module('viewCustom', ['angularLoad']);
 
 /**
+ * Created by samsan on 3/19/18.
+ * This custom alert component is used for home page on the right side splash
+ * If you need to turn off or on, just set status in json file to on or off
+ */
+
+(function () {
+    angular.module('viewCustom').controller('customAlertCtrl', ['customService', 'customConfigService', '$scope', function (customService, customConfigService, $scope) {
+        var vm = this;
+        var cs = customService;
+        var config = customConfigService;
+        vm.apiUrl = {};
+        vm.alertMsg = {};
+
+        vm.$onInit = function () {
+            vm.apiUrl = config.getHVD2Config();
+            $scope.$watch('vm.apiUrl.alertUrl', function () {
+                if (vm.apiUrl.alertUrl) {
+                    cs.getAjax(vm.apiUrl.alertUrl, '', 'get').then(function (res) {
+                        vm.alertMsg = res.data;
+                    }, function (err) {
+                        console.log(err);
+                    });
+                }
+            });
+        };
+    }]);
+
+    angular.module('viewCustom').component('customAlert', {
+        bindings: { parentCtrl: '<' },
+        controller: 'customAlertCtrl',
+        controllerAs: 'vm',
+        templateUrl: '/primo-explore/custom/HVD2/html/custom-alert.html'
+    });
+})();
+
+/**
 * Created by gr on 1/11/2018
 * A custom service for loading the configuration file
 */

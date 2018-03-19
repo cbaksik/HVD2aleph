@@ -496,6 +496,13 @@ md-toolbar.default-toolbar:not(.md-menu-toolbar) {
   color: gray; }
 
 /* primary color hook end*/
+#homePageAlert {
+    background: rgb(255, 0, 0); background: rgba(165,28,48,0.2);
+}
+
+#homePageAlert a {
+    color: #750000;
+}
 
 .scanList {list-style: none; margin-left:-45px;}
 
