@@ -14,9 +14,26 @@ angular.module('viewCustom')
         vm.logicList=[]; // store logic list from the xml file
         vm.requestLinks=[];
         vm.auth={};
+        var startIndex = 0;
+        var flagAjax = true;
         var sv=customService;
         // get item category code, the item category code does not exist in currloc item.
         vm.getItemCategoryCodes=function () {
+            let prmLocationItems = document.getElementsByTagName('prm-location-items')[0];
+            let mdList = prmLocationItems.querySelector('md-list');
+            let items = mdList.querySelectorAll('md-list-item');
+
+            // current md-listi-item when a user click on it
+            let mdListItem=$element[0].parentNode;
+
+            // loop it through to get index
+            for(let i=0; i < items.length; i++) {
+                let item = items[i];
+                if(item===mdListItem) {
+                    startIndex = i + 1;
+                }
+            }
+
            if(vm.parentData.opacService && vm.currLoc.location) {
                var url = vm.parentData.opacService.restBaseURLs.ILSServicesBaseURL + '/holdings';
                var jsonObj = {
@@ -25,8 +42,8 @@ angular.module('viewCustom')
                        'collection': '',
                        'holid': '',
                        ilsRecordList: [{'institution': 'HVD', 'recordId': ''}],
-                       'noItem': 6,
-                       'startPos': 1,
+                       'noItem': startIndex + 1,
+                       'startPos': startIndex,
                        'sublibrary': 'WID',
                        'sublibs': 'WID',
                        'vid': 'HVD2'
@@ -35,7 +52,7 @@ angular.module('viewCustom')
                };
                jsonObj.filters.holid = vm.currLoc.location.holdId;
                jsonObj.filters.vid = vm.parentData.locationsService.vid;
-               jsonObj.filters.noItem = vm.parentData.locationsService.noItems;
+               jsonObj.filters.noItem = 1;
                jsonObj.filters.sublibrary = vm.currLoc.location.mainLocation;
                jsonObj.filters.sublibs = vm.currLoc.location.mainLocation;
                jsonObj.filters.ilsRecordList[0].institution = vm.currLoc.location.organization;
@@ -56,11 +73,11 @@ angular.module('viewCustom')
         };
 
 
-
         // make comparison to see it is true so it can display the link
         vm.compare=function (itemsCategory) {
             // get the index of the element
-            var index=0;
+            var index = 0;
+
             var requestLinks=[];
             // get requestItem
             if(vm.locationInfo.requestItem) {
@@ -82,22 +99,23 @@ angular.module('viewCustom')
                 let dataList=sv.getRequestLinks(vm.locationInfo.aeonrequest[0].json,itemsCategory,'aeonrequest','Request Item',index,true);
                 requestLinks.push(dataList);
             }
-
+            
             return requestLinks;
         };
 
 
         vm.$onInit=function () {
+            if(vm.parentCtrl) {
+                vm.currLoc=vm.parentCtrl.currLoc;
+            }
             // get rest url so it can make ajax call to get item category code. The itemcategorycode is numbers.
             vm.parentData=sv.getParentData();
 
             // watch for variable change, then call an ajax to get current location of itemcategorycode
             // it won't work on angular 2
-            $scope.$watch('vm.currLoc',function () {
+            $scope.$watch('vm.currLoc.items',function () {
                 if(vm.currLoc){
                     vm.locationInfo=sv.getLocation(vm.currLoc);
-                    vm.requestLinks=vm.compare(vm.currLoc.location);
-                    vm.getItemCategoryCodes();
                     if(vm.currLoc.items) {
                         // remove booking request and photo copy request
                         for(var k=0; k < vm.currLoc.items.length; k++) {
@@ -111,16 +129,20 @@ angular.module('viewCustom')
                         }
                     }
 
+                    // set delay time so it can access the dom after angular rendering
+                    setTimeout(()=>{
+                        vm.getItemCategoryCodes();
+                    },1000);
+
                 }
             });
         };
 
+        // get ajax data from prm-location-items-after.js
         vm.$doCheck=function () {
-            if(vm.parentCtrl){
-                vm.currLoc=vm.parentCtrl.currLoc;
-            }
             vm.logicList = sv.getLogicList();
             vm.auth = sv.getAuth();
+
         };
 
 
