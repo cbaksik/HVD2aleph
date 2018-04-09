@@ -18,6 +18,20 @@
 			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01"/>
 		</requestItem>				 
 	</mainlocationcode>
+	
+	<mainlocationcode id="ARG">
+		<aeonrequest>
+			<json processingstatus="BD;BP;CO;HD;RD;MI;RE;" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
+		</aeonrequest>
+	</mainlocationcode>
+	
+	<mainlocationcode id="ARN">
+		<aeonrequest>
+			<json processingstatus="BD;BP;CO;HD;RD;MI;RE;" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
+		</aeonrequest>
+	</mainlocationcode>
 
 	<mainlocationcode id="BAK">
 		<requestItem>
@@ -107,6 +121,10 @@
 			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
 			<json processingstatus="HD;BD" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
 		</scanDeliver>
+		<aeonrequest>
+			<json processingstatus="BD;BP;CO;HD;RD;RE;" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
+		</aeonrequest>
 	</mainlocationcode>
 
 	<mainlocationcode id="DOC">
@@ -119,6 +137,13 @@
 		<scanDeliver>
 			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01"/>
 		</scanDeliver>
+	</mainlocationcode>
+	
+	<mainlocationcode id="ECB">
+		<aeonrequest>
+			<json processingstatus="BD;BP;CO;HD;RD;MI;RE;" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
+		</aeonrequest>
 	</mainlocationcode>
 
 	<mainlocationcode id="FAL">
@@ -134,7 +159,21 @@
 			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
 		</scanDeliver>
 		<aeonrequest>
-			<json processingstatus="HD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="92"/>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91;92"/>
+		</aeonrequest>
+	</mainlocationcode>
+	
+	<mainlocationcode id="FAR">
+		<aeonrequest>
+			<json processingstatus="BD;BP;CO;HD;RD;MI;RE;" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
+		</aeonrequest>
+	</mainlocationcode>
+	
+	<mainlocationcode id="GRA">
+		<aeonrequest>
+			<json processingstatus="BD;BP;CO;HD;RD;MI;RE;" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
 		</aeonrequest>
 	</mainlocationcode>
 
@@ -165,13 +204,13 @@
 			<json processingstatus="NULL" queue="NOTNULL" itemcategorycode="01;"/>
 		</requestItem>
 		<aeonrequest>
-			<json processingstatus="HD" itemstatusname="Not checked out" queue="NULL" itemcategorycode="92"/>
+			<json processingstatus="HD;RD" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91;92"/>
 		</aeonrequest>
 	</mainlocationcode> 
 
 	<mainlocationcode id="HOU">
 		<aeonrequest>
-			<json processingstatus="HD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02;92"/>
+			<json processingstatus="HD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02;91;92"/>
 		</aeonrequest>
 	</mainlocationcode>
 
@@ -188,7 +227,7 @@
 			<json processingstatus="HD;RD" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02;26"/>
 		</scanDeliver>
 		<aeonrequest>
-			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="92"/>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91;92"/>
 		</aeonrequest>
 	</mainlocationcode>
 
@@ -233,8 +272,8 @@
 
 	<mainlocationcode id="MAP">
 		<aeonrequest>
-			<json processingstatus="BD;BP;CO;HD;MI;OR;RE;" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02"/>
-			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02"/>
+			<json processingstatus="BD;BP;CO;HD;MI;OR;RE;" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02;91"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02;91"/>
 		</aeonrequest>
 	</mainlocationcode>
 
@@ -261,6 +300,10 @@
 			<json processingstatus="HD;RD" itemstatusname="Not checked out" queue="NULL" itemcategorycode="92"/>
 			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02"/>
 		</scanDeliver>
+		<aeonrequest>
+			<json processingstatus="BD;BP;CO;HD;MI;OR;RE;" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
+		</aeonrequest>
 	</mainlocationcode>
 
 	<mainlocationcode id="MED">
@@ -300,7 +343,14 @@
 			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
 		</scanDeliver>
 		<aeonrequest>
-			<json processingstatus="HD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="92"/>
+			<json processingstatus="HD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91;92"/>
+		</aeonrequest>
+	</mainlocationcode>
+
+	<mainlocationcode id="ORC">
+		<aeonrequest>
+			<json processingstatus="BD;BP;CO;HD;RD;MI;RE;" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91"/>
 		</aeonrequest>
 	</mainlocationcode>
 
@@ -342,7 +392,7 @@
 			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
 		</scanDeliver>
 		<aeonrequest>
-			<json processingstatus="HD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="92"/>
+			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91;92"/>
 		</aeonrequest>
 	</mainlocationcode>
 
@@ -354,7 +404,7 @@
 	
 	<mainlocationcode id="THE">
 		<aeonrequest>
-			<json processingstatus="HD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02;92"/>
+			<json processingstatus="HD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="02;91;92"/>
 		</aeonrequest>
 	</mainlocationcode>
 
@@ -372,7 +422,7 @@
 			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;04"/>
 		</scanDeliver>
 		<aeonrequest>
-			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="92"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91;92"/>
 		</aeonrequest>					 
 	</mainlocationcode>
 
