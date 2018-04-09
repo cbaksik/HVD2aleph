@@ -392,7 +392,8 @@
 			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="01;02"/>
 		</scanDeliver>
 		<aeonrequest>
-			<json processingstatus="HD;RD;NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91;92"/>
+			<json processingstatus="HD;RD" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91;92"/>
+			<json processingstatus="NULL" itemstatusname="Not checked out" queue="NULL" itemcategorycode="91;92"/>
 		</aeonrequest>
 	</mainlocationcode>
 
