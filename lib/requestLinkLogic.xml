@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <requestlinkconfig>
 
-	<!-- copied and modified from producation version on 7/21/17 ;
+	<!--
+
+		DO NOT USE THIS COPY *********************
+
+	 copied and modified from producation version on 7/21/17 ;
 		itemProcessStatus is now processingstatus;
 		item-status is now itemcategorycode;
 		xserver is now json;
