@@ -1,3 +1,4 @@
+
 prm-logo {
 	display: flex;
 	flex-direction: row;
@@ -15,3 +16,18 @@ div.hollis-logo a:hover {
 	box-shadow: inset 0 -1px 0 0 #fff;
 }
 	
+/* for background of overlay menu from top nav ... */
+md-dialog.light-on-dark-dialog {
+    background-color: rgba(56,56,61,.5);
+ }
+/* my favorites global action icons disabled */
+prm-favorites-tool-bar .disabledFavTool {
+    color: #695F5F;
+}
+prm-favorites-edit-labels-menu .disabledFavTool {
+    color: #695F5F;
+}
+/* facet counts in parens */
+.section-content .md-chips .md-chip .md-chip-content {
+	color:#6E6868;
+}
